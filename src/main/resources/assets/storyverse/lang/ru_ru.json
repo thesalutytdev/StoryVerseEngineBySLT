@@ -1,0 +1,11 @@
+{
+  "prefix.storyverse.mob_controller": "Контроллер Мобов",
+  "prefix.storyverse.world_actions": "Управление Миром",
+  "prefix.storyverse.sound": "Звук",
+  "prefix.storyverse.player": "Игрок",
+  "keylist.storyverse": "StoryVerse Engine",
+  "key.storyverse.next_act": "Следующее действие",
+  "damage.storyverse.script": "Скриптовый урон",
+  "error_code.storyverse.scriptFalied": "Скрипт не может быть исполнен",
+  "text.storyverse.fade_screen": "Продолжение следует"
+}

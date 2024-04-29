@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
+license="${mod_license}"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+[[mods]]
+modId="storyverse"
+version="${mod_version}"
+displayName="StoryVerse"
+# A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+#logoFile="storyverse.png" #optional
+#credits="Thanks for this example mod goes to Java" #optional
+authors="TheSALUTYT" #optional
+description='''idk'''
+[[dependencies.storyverse]]
+   modId="forge"
+   mandatory=true
+   versionRange="${forge_version_range}"
+   ordering="NONE"
+   side="BOTH"
+[[dependencies.storyverse]]
+   modId="minecraft"
+   mandatory=true
+   versionRange="${minecraft_version_range}"
+   ordering="NONE"
+   side="BOTH"
+# [[dependencies.storyverse]]
+#    modId="geckolib"
+#    mandatory=true
+#    versionRange="[1.0,"
+#    ordering="BEFORE"
+#    side="BOTH"

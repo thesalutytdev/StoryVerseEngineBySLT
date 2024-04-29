@@ -1,0 +1,11 @@
+{
+  "prefix.storyverse.mob_controller": "Mob Controller",
+  "prefix.storyverse.world_actions": "World Actions",
+  "prefix.storyverse.sound": "Sound",
+  "prefix.storyverse.player": "Player",
+  "keylist.storyverse": "StoryVerse Engine",
+  "key.storyverse.next_act": "Next action",
+  "damage.storyverse.script": "Scripted damage",
+  "error_code.storyverse.script": "Script can't be executed",
+  "text.storyverse.fade_screen": "To Be Continued"
+}
