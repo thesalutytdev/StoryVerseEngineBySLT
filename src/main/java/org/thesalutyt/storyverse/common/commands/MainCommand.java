@@ -11,16 +11,23 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
+import org.mozilla.javascript.Scriptable;
+import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 
+import org.mozilla.javascript.Context;
 import java.io.FileNotFoundException;
 
 public class MainCommand {
+    Context context = Context.enter();
+    Scriptable scope = context.initStandardObjects();
     public MainCommand(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("storyverse")
                                 .then(Commands.literal("blockpos")
@@ -242,6 +249,8 @@ public class MainCommand {
             Chat.sendAsEngine(player, "Set choice 2 as " + choice1);
             mob0.setName("Оксимирон");
             mob0.send("Привет, все хорошо?");
+
+            context.evaluateString(scope, "java.lang.System.out.println('Писька');", "<cmd>", 1, null);
         }).start();
 
         return 1;

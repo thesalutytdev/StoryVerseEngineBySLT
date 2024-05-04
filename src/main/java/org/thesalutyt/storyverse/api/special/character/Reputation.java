@@ -16,4 +16,7 @@ public class Reputation {
 
         return this;
     }
+    public Double getReputation(MobController entity) {
+        return this.reputation.get(entity);
+    }
 }

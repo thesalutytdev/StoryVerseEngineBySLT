@@ -12,10 +12,11 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.util.UUID;
 
-public class Player implements EnvResource {
+public class Player extends ScriptableObject implements EnvResource{
     private static PlayerEntity player;
     public LegacyEventManager eventManager;
 
@@ -285,4 +286,8 @@ public class Player implements EnvResource {
         return "player";
     }
 
+    @Override
+    public String getClassName() {
+        return "player";
+    }
 }
