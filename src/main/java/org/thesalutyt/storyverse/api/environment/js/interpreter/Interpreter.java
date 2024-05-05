@@ -2,6 +2,9 @@ package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.thesalutyt.storyverse.api.features.Player;
+
+import javax.swing.text.PlainDocument;
 
 
 public class Interpreter {
@@ -15,6 +18,7 @@ public class Interpreter {
             scope = ctx.initStandardObjects();
             ExternalFunctions.putIntoScope(scope, rootDir);
             Asynchronous.putIntoScope(scope, loop);
+            Player.putIntoScope(scope);
         });
     }
 

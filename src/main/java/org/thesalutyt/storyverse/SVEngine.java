@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse;
 
 import com.mojang.serialization.Codec;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -17,14 +18,15 @@ public class SVEngine {
     public static String description = "Mod what allows and helps you create story-based maps and series!";
     public static final Path GAME_DIR_PATH = FMLPaths.GAMEDIR.get().toAbsolutePath();
     public static final String GAME_DIR = GAME_DIR_PATH.toString();
-    public static final String SCRIPTS_PATH = GAME_DIR + "/storyverse/";
+    public static final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
+    public static final Interpreter interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
     public static final String MOB_CONTROLLER_PREFIX = "prefix.storyverse.mob_controller";
     public static final String WORLD_WRAPPER_PREFIX = "prefix.storyverse.world_actions";
     public static final String SOUNDS_ENGINE_PREFIX = "prefix.storyverse.sound";
     public static final String PLAYER_ACTIONS_PREFIX = "prefix.storyverse.player";
     public static final String DAMAGE_SOURCE_PREFIX = "damage.storyverse.script";
-    public static final String FILE_FORMAT = ".svsc";
+    public static final String FILE_FORMAT = ".js";
     public static final String GUI_CONTAINER_NAME = "gui_container";
     public static final Integer KEY_START_CODE = 72;
     public static boolean IS_DEBUG = true;

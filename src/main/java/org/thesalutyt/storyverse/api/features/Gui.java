@@ -13,6 +13,6 @@ public class Gui {
     final int HEIGHT = mc.screen.height;
     Gui s_c_g = new Gui();
     public void test() {
-
+        IngameGui.fill(new MatrixStack(), 1, 1, 1, 1, 1);
     }
 }

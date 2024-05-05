@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import jdk.jfr.internal.EventWriter;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -16,6 +17,7 @@ import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
@@ -240,18 +242,8 @@ public class MainCommand {
         Chat chat = new Chat();
         Script script = new Script();
         Sounds sounds = new Sounds();
-
-        new Thread(() -> {
-            MobController mob0 = new MobController(world.spawnEntity(player.blockPosition(), EntityType.WITHER_SKELETON));
-            String choice0 = "<" + player.getName().getContents() + "> Да";
-            String choice1 = "<" + player.getName().getContents() + "> Нет";
-            Chat.sendAsEngine(player, "Set choice 1 as " + choice0);
-            Chat.sendAsEngine(player, "Set choice 2 as " + choice1);
-            mob0.setName("Оксимирон");
-            mob0.send("Привет, все хорошо?");
-
-            context.evaluateString(scope, "java.lang.System.out.println('Писька');", "<cmd>", 1, null);
-        }).start();
+        Interpreter interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
+        interpreter.executeString("ExternalFunctions.import_file(\"script.js\")");
 
         return 1;
     }

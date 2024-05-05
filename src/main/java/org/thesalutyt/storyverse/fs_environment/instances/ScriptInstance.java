@@ -12,7 +12,7 @@ public class ScriptInstance {
     public final ServerPlayerEntity player;
     public final LegacyEventManager eventManager = new LegacyEventManager();
     private final SVEnvironment env;
-    public final ArrayList<Action> actsJs = new ArrayList();
+    public final ArrayList<Action> actsJs = new ArrayList<>();
     public int curActIndex = 0;
     public boolean inCutscene = false;
     public int ticks;
