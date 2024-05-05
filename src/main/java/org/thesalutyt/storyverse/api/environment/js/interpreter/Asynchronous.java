@@ -68,7 +68,7 @@ public class Asynchronous extends ScriptableObject {
             ctx.evaluateString(
                     scope,
                     "Async.__timeouts__[" + localId + "]();",
-                    "Async",
+                    "Async_timeout_" + localId,
                     1,
                     null
             );
@@ -103,7 +103,7 @@ public class Asynchronous extends ScriptableObject {
             ctx.evaluateString(
                     scope,
                     "Async.__intervals__[" + localId + "]();",
-                    "Async",
+                    "Async_interval_"+localId,
                     1,
                     null
             );

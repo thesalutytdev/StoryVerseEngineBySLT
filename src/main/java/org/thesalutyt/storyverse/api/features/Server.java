@@ -48,13 +48,14 @@ public class Server extends ScriptableObject implements EnvResource {
             desc = "Returns players list"
     )
     public static List<ServerPlayerEntity> getPlayers() {
+
         return server.getPlayerList().getPlayers();
     }
     public static ServerPlayerEntity getDevPlayer() {
         return server.getPlayerList().getPlayerByName("TheSALUTYT");
     }
     public static ServerPlayerEntity getServerPlayer() {
-        return server.getPlayerList().getPlayers().get(0);
+        return server.getPlayerList().getPlayerByName();;
     }
 
     @Documentate(

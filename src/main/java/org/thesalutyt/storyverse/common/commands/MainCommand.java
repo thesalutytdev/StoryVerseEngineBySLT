@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import jdk.jfr.internal.EventWriter;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

@@ -34,9 +34,7 @@ public class StoryVerse {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        final Path GAME_DIR_PATH = FMLPaths.GAMEDIR.get().toAbsolutePath();
-        final String GAME_DIR = GAME_DIR_PATH.toString();
-        final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
-        SVELogger.create_dir(SCRIPTS_PATH);
+        SVEngine.createEngineDirectory();
+        SVEngine.sendInfoMessage();
     }
 }

@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse;
 import com.mojang.serialization.Codec;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,5 +43,14 @@ public class SVEngine {
         String descLine = onLineBorder + description + onLineBorder;
         String docsLine = onLineBorder + "Docs: " + docLink + onLineBorder;
         String finalLine = border + prefix + border;
+        StoryVerse.LOGGER.info(firstLine);
+        StoryVerse.LOGGER.info(infoLine);
+        StoryVerse.LOGGER.info(descLine);
+        StoryVerse.LOGGER.info(docsLine);
+        StoryVerse.LOGGER.info(finalLine);
+    }
+    public static void createEngineDirectory() {
+        SVELogger.create_dir(SCRIPTS_PATH);
+        System.out.println("[SVEngine :: Directory Creating] Created main directory");
     }
 }

@@ -1,9 +1,12 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
+import org.mozilla.javascript.RhinoException;
+
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 public class EventLoop {
     private final LoopExecutor executor;
@@ -66,6 +69,31 @@ public class EventLoop {
         private int intervalCounter = 0;
         private static final int LOOP_SLEEP_DELAY = 10;
 
+        private String printLoopError (Exception e) {
+            if (RhinoException.class.isInstance(e)) {
+                RhinoException re = (RhinoException) e;
+                return String.format(
+                        "RhinoException:\n%s\nIn source %s\nOn line %d",
+                        re.getMessage(),
+                        re.sourceName(),
+                        re.lineNumber()
+                );
+            } else {
+                StackTraceElement[] st = e.getStackTrace();
+                String[] str_st = new String[st.length];
+
+                for (int i=0; i<st.length; i++) {
+                    str_st[i] = st[i].toString();
+                }
+
+                return String.format(
+                        "Java exception:\n%s\n%s",
+                        e.getMessage(),
+                        String.join("\n", str_st)
+                );
+            }
+        }
+
         public void run () {
             while (!terminate) {
                 loopLock.lock();
@@ -76,7 +104,7 @@ public class EventLoop {
                     try {
                         task.run();
                     } catch (final Exception e) {
-                        System.out.println("EVENT LOOP ERROR: " + e);
+                        System.out.println(printLoopError(e));
                     }
                 }
                 // loop through scheduled tasks and add them into task queue

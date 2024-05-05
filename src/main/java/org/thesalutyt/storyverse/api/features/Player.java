@@ -289,7 +289,7 @@ public class Player extends ScriptableObject implements EnvResource{
 
     public static void putIntoScope (Scriptable scope) {
         // Создаем объект, к которому потом будем обращаться
-        Player ef = new Player(Server.getPlayers().get(0));
+        Player ef = new Player(Server.getDevPlayer());
         // Это не обязательно, но я указываю, что у этого объекта есть объект выше уровнем
         ef.setParentScope(scope);
 
