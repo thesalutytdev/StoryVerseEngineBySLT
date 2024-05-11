@@ -23,7 +23,7 @@ public class GuiContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 }

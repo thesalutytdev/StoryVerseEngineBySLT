@@ -39,28 +39,28 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's experience levels"
     )
-    public static void giveXPLevels(int levels) {
+    public static void giveXPLevels(Integer levels) {
         player.giveExperienceLevels(levels);
     }
 
     @Documentate(
             desc = "Returns player's experience points"
     )
-    public static void giveXPPoints(int points) {
+    public static void giveXPPoints(Integer points) {
         player.giveExperiencePoints(points);
     }
 
     @Documentate(
             desc = "Sets player non-killable"
     )
-    public static void setInvulnerable(boolean is) {
+    public static void setInvulnerable(Boolean is) {
         player.setInvulnerable(is);
     }
 
     @Documentate(
             desc = "Sets player invisible"
     )
-    public static void setInvisible(boolean is) {
+    public static void setInvisible(Boolean is) {
         player.setInvisible(is);
     }
 
@@ -79,11 +79,15 @@ public class Player extends ScriptableObject implements EnvResource{
     }
 
     @Documentate(
-            desc = "Returns player's name"
+            desc = "Sets player's head rotation"
     )
-    public static void setHeadRotation(float pitch, float yaw) {
-        player.yHeadRot = yaw;
-        player.xRot = pitch;
+    public static void setHeadRotation(Double pitch, Double yaw) {
+        player.yHeadRot = yaw.floatValue();
+        player.xRot = pitch.floatValue();
+    }
+    public static void setHeadRotation(Double[] rotation) {
+        player.yHeadRot = rotation[0].floatValue();
+        player.xRot = rotation[1].floatValue();
     }
 
     @Documentate(
@@ -110,27 +114,27 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's position"
     )
-    public double[] getPosition() {
-        return new double[]{this.getX(), this.getY(), this.getZ()};
+    public Double[] getPosition() {
+        return new Double[]{getX(), getY(), getZ()};
     }
     public BlockPos getBlockPosition() {return player.blockPosition();}
 
     @Documentate(
             desc = "Sets player's position"
     )
-    public static void setPosition(double[] pos) {
+    public static void setPosition(Double[] pos) {
         player.moveTo(pos[0], pos[1], pos[2]);
     }
 
-    public static void setPosition(double x, double y, double z) {
-        setPosition(new double[]{x, y, z});
+    public static void setPosition(Double x, Double y, Double z) {
+        setPosition(new Double[]{x, y, z});
     }
 
     @Documentate(
             desc = "Teleports player"
     )
-    public static void teleportTo(double x, double y, double z) {
-        setPosition(new double[]{x, y, z});
+    public static void teleportTo(Double x, Double y, Double z) {
+        setPosition(new Double[]{x, y, z});
     }
 
     @Documentate(
@@ -157,28 +161,28 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Sets player's X position"
     )
-    public static void setX(double x) {
+    public static void setX(Double x) {
         setPosition(x, getY(), getZ());
     }
 
     @Documentate(
             desc = "Sets player's Y position"
     )
-    public static void setY(double y) {
+    public static void setY(Double y) {
         setPosition(getX(), y, getZ());
     }
 
     @Documentate(
             desc = "Sets player's Z position"
     )
-    public static void setZ(double z) {
+    public static void setZ(Double z) {
         setPosition(getX(), getY(), z);
     }
 
     @Documentate(
             desc = "Sets player's game mode"
     )
-    public static void setGameMode(int mode) {
+    public static void setGameMode(Integer mode) {
         if (mode == 0) {
             player.setGameMode(GameType.SURVIVAL);
 
@@ -229,34 +233,34 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Toggles player's abilities"
     )
-    public static void canBuild(boolean method) {
+    public static void canBuild(Boolean method) {
         player.abilities.mayBuild = method;
     }
 
-    public static void canFly(boolean method) {
+    public static void canFly(Boolean method) {
         player.abilities.flying = method;
     }
 
-    public static void instantBuild(boolean method) {
+    public static void instantBuild(Boolean method) {
         player.abilities.instabuild = method;
     }
 
-    public static void canDie(boolean method) {
+    public static void canDie(Boolean method) {
         player.abilities.invulnerable = method;
     }
 
     @Documentate(
             desc = "Sets player's speed"
     )
-    public static void setWalkSpeed(float walkSpeed) {
-        player.abilities.setWalkingSpeed(walkSpeed);
+    public static void setWalkSpeed(Double walkSpeed) {
+        player.abilities.setWalkingSpeed(walkSpeed.floatValue());
     }
 
     @Documentate(
             desc = "Sets player's fly speed"
     )
-    public static void setFlyingSpeed(float flyingSpeed) {
-        player.abilities.setFlyingSpeed(flyingSpeed);
+    public static void setFlyingSpeed(Double flyingSpeed) {
+        player.abilities.setFlyingSpeed(flyingSpeed.floatValue());
     }
 
     @Documentate(
@@ -276,10 +280,10 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Hurts player"
     )
-    public static void hurt(float damage, String damageSource) {
-        player.hurt(new DamageSource(damageSource), damage);
+    public static void hurt(Double damage, String damageSource) {
+        player.hurt(new DamageSource(damageSource), damage.floatValue());
     }
-    public static void hurt(float damage) {
+    public static void hurt(Double damage) {
         hurt(damage, "storyverse:script");
     }
 
@@ -302,31 +306,33 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(sendMessage);
             Method sendNamed = Player.class.getMethod("sendNamed", String.class, String.class);
             methodsToAdd.add(sendNamed);
-            Method giveXPP = Player.class.getMethod("giveXPPoints", int.class);
+            Method giveXPP = Player.class.getMethod("giveXPPoints", Integer.class);
             methodsToAdd.add(giveXPP);
-            Method giveXPL = Player.class.getMethod("giveXPLevels", int.class);
+            Method giveXPL = Player.class.getMethod("giveXPLevels", Integer.class);
             methodsToAdd.add(giveXPL);
-            Method setHeadRot = Player.class.getMethod("setHeadRotation", float.class, float.class);
+            Method setHeadRot = Player.class.getMethod("setHeadRotation", Double.class, Double.class);
             methodsToAdd.add(setHeadRot);
-            Method setPosition = Player.class.getMethod("setPosition", double[].class);
+            Method setHeadRot0 = Player.class.getMethod("setHeadRotation", Double[].class);
+            methodsToAdd.add(setHeadRot0);
+            Method setPosition = Player.class.getMethod("setPosition", Double[].class);
             methodsToAdd.add(setPosition);
-            Method setPosD = Player.class.getMethod("setPosition", double.class, double.class, double.class);
+            Method setPosD = Player.class.getMethod("setPosition", Double.class, Double.class, Double.class);
             methodsToAdd.add(setPosD);
-            Method setX = Player.class.getMethod("setX", double.class);
+            Method setX = Player.class.getMethod("setX", Double.class);
             methodsToAdd.add(setX);
-            Method setY = Player.class.getMethod("setY", double.class);
+            Method setY = Player.class.getMethod("setY", Double.class);
             methodsToAdd.add(setY);
-            Method setZ = Player.class.getMethod("setZ", double.class);
+            Method setZ = Player.class.getMethod("setZ", Double.class);
             methodsToAdd.add(setZ);
-            Method teleport = Player.class.getMethod("teleportTo", double.class, double.class, double.class);
+            Method teleport = Player.class.getMethod("teleportTo", Double.class, Double.class, Double.class);
             methodsToAdd.add(teleport);
-            Method hurt = Player.class.getMethod("hurt", float.class);
+            Method hurt = Player.class.getMethod("hurt", Double.class);
             methodsToAdd.add(hurt);
-            Method hurt_ds = Player.class.getMethod("hurt", float.class, String.class);
+            Method hurt_ds = Player.class.getMethod("hurt", Double.class, String.class);
             methodsToAdd.add(hurt_ds);
             Method setGameMode = Player.class.getMethod("setGameMode", String.class);
             methodsToAdd.add(setGameMode);
-            Method setGMInt = Player.class.getMethod("setGameMode", int.class);
+            Method setGMInt = Player.class.getMethod("setGameMode", Integer.class);
             methodsToAdd.add(setGMInt);
             Method getX = Player.class.getMethod("getX");
             methodsToAdd.add(getX);
@@ -346,23 +352,23 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(getName);
             Method getNative = Player.class.getMethod("getNative");
             methodsToAdd.add(getNative);
-            Method canFly = Player.class.getMethod("canFly", boolean.class);
+            Method canFly = Player.class.getMethod("canFly", Boolean.class);
             methodsToAdd.add(canFly);
-            Method canBuild = Player.class.getMethod("canBuild", boolean.class);
+            Method canBuild = Player.class.getMethod("canBuild", Boolean.class);
             methodsToAdd.add(canBuild);
-            Method canDie = Player.class.getMethod("canDie", boolean.class);
+            Method canDie = Player.class.getMethod("canDie", Boolean.class);
             methodsToAdd.add(canDie);
-            Method setFlySpeed = Player.class.getMethod("setFlyingSpeed", float.class);
+            Method setFlySpeed = Player.class.getMethod("setFlyingSpeed", Double.class);
             methodsToAdd.add(setFlySpeed);
-            Method setWalkSpeed = Player.class.getMethod("setWalkSpeed", float.class);
+            Method setWalkSpeed = Player.class.getMethod("setWalkSpeed", Double.class);
             methodsToAdd.add(setWalkSpeed);
             Method startRiding = Player.class.getMethod("startRiding", Entity.class);
             methodsToAdd.add(startRiding);
             Method stopRiding = Player.class.getMethod("stopRiding");
             methodsToAdd.add(stopRiding);
-            Method setInvisible = Player.class.getMethod("setInvisible", boolean.class);
+            Method setInvisible = Player.class.getMethod("setInvisible", Boolean.class);
             methodsToAdd.add(setInvisible);
-            Method setInvulnerable = Player.class.getMethod("setInvulnerable", boolean.class);
+            Method setInvulnerable = Player.class.getMethod("setInvulnerable", Boolean.class);
             methodsToAdd.add(setInvulnerable);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

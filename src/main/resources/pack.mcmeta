@@ -1,7 +1,7 @@
 {
     "pack": {
-        "description": "StoryVerse resources",
+        "description": "StoryVerse Resources",
                 "pack_format": 6,
-        "_comment": "yes"
+        "_comment": "StoryVerse Resources"
     }
 }

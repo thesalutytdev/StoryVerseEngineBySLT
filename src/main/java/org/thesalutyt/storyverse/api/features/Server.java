@@ -55,20 +55,20 @@ public class Server extends ScriptableObject implements EnvResource {
         return server.getPlayerList().getPlayerByName("TheSALUTYT");
     }
     public static ServerPlayerEntity getServerPlayer() {
-        return server.getPlayerList().getPlayerByName();;
+        return server.getPlayerList().getPlayers().get(0);
     }
 
     @Documentate(
             desc = "Toggles PvP"
     )
-    public static void allowPvP(boolean method) {
+    public static void allowPvP(Boolean method) {
         server.setPvpAllowed(method);
     }
 
     @Documentate(
             desc = "Sets max build height"
     )
-    public static void setMaxBuildHeight(int maxBuildHeight) {
+    public static void setMaxBuildHeight(Integer maxBuildHeight) {
         server.setMaxBuildHeight(maxBuildHeight);
     }
 
@@ -82,7 +82,7 @@ public class Server extends ScriptableObject implements EnvResource {
     @Documentate(
             desc = "Toggles flight"
     )
-    public static void setFlightAllowed(boolean method){
+    public static void setFlightAllowed(Boolean method){
         server.setFlightAllowed(method);
     }
 
@@ -133,15 +133,15 @@ public class Server extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getPlayer);
             Method close = Server.class.getMethod("close");
             methodsToAdd.add(close);
-            Method allowPvP = Server.class.getMethod("allowPvP", boolean.class);
+            Method allowPvP = Server.class.getMethod("allowPvP", Boolean.class);
             methodsToAdd.add(allowPvP);
-            Method setMaxBuildHeight = Server.class.getMethod("setMaxBuildHeight", int.class);
+            Method setMaxBuildHeight = Server.class.getMethod("setMaxBuildHeight", Integer.class);
             methodsToAdd.add(setMaxBuildHeight);
             Method getClientPlayer = Server.class.getMethod("getPlayer");
             methodsToAdd.add(getClientPlayer);
             Method getDevPlayer = Server.class.getMethod("getDevPlayer");
             methodsToAdd.add(getDevPlayer);
-            Method setFlightAllowed = Server.class.getMethod("setFlightAllowed", boolean.class);
+            Method setFlightAllowed = Server.class.getMethod("setFlightAllowed", Boolean.class);
             methodsToAdd.add(setFlightAllowed);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

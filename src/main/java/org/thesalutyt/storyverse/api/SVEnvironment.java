@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.api;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
 import org.thesalutyt.storyverse.api.features.*;
@@ -9,7 +10,7 @@ import org.thesalutyt.storyverse.fs_environment.Environment;
 import org.thesalutyt.storyverse.fs_environment.instances.ScriptInstance;
 
 public class SVEnvironment extends Environment {
-    public static String envId = "svenv";
+    public static String envId = "storyverse";
     public static String version = "1";
     public Environment env = this;
     public Player player;
@@ -29,5 +30,20 @@ public class SVEnvironment extends Environment {
         this.cutscene = new Cutscene();
         this.camera = new Camera();
         this.world = new WorldWrapper();
+    }
+    public static class Root {
+        public static Integer ticks = 0;
+        public static void tick() {
+            ticks++;
+        }
+        public static void resetTick() {
+            ticks = 0;
+        }
+        public static void setTicks(Integer new_ticks_amount) {
+            ticks = new_ticks_amount;
+        }
+        public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
+
+        }
     }
 }

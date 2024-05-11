@@ -20,9 +20,8 @@ public class Scripts implements EnvResource {
     public static HashMap<Path, String> getScripts() {
         return scripts;
     }
-
     @Override
     public String getResourceId() {
-        return "ScriptsBackground";
+        return "ScriptsBackend";
     }
 }

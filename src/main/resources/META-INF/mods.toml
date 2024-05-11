@@ -11,9 +11,9 @@ displayName="StoryVerse"
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 #logoFile="storyverse.png" #optional
-#credits="Thanks for this example mod goes to Java" #optional
+credits="Thanks to Tripod311 for some big help with this mod" #optional
 authors="TheSALUTYT" #optional
-description='''idk'''
+description='''Mod, that helps you with creating story-based maps from StoryVerse Team!'''
 [[dependencies.storyverse]]
    modId="forge"
    mandatory=true
@@ -26,9 +26,9 @@ description='''idk'''
    versionRange="${minecraft_version_range}"
    ordering="NONE"
    side="BOTH"
-# [[dependencies.storyverse]]
-#    modId="geckolib"
-#    mandatory=true
-#    versionRange="[1.0,"
-#    ordering="BEFORE"
-#    side="BOTH"
+[[dependencies.storyverse]]
+   modId="geckolib3"
+   mandatory=true
+   versionRange="[0.0, 4.0)"
+   ordering="BEFORE"
+   side="BOTH"

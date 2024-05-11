@@ -35,9 +35,10 @@ public class Cutscene implements EnvResource {
                         cameraEntity)
         );
         mc.setCameraEntity(cameraEntityController.getEntity());
-        cameraEntityController.setInvisible(true);
-        cameraEntityController.addEffect(Effects.INVISIBILITY, 999999, 99);
-        cameraEntityController.setNoAI(true);
+        new Thread(() -> {cameraEntityController.setInvisible(true);
+            cameraEntityController.addEffect(Effects.INVISIBILITY, 999999, 99);
+            cameraEntityController.setNoAI(true);
+        }).start();
         this.cameraType = type;
         this.player = player;
         player.setGameMode(GameType.SPECTATOR);
@@ -50,7 +51,7 @@ public class Cutscene implements EnvResource {
             desc = "Makes camera entity move"
     )
     public CameraResult move(BlockPos pos, Integer speed) {
-        if (this.cameraType == CameraType.FULL || this.cameraType == CameraType.POS_ONLY) {
+        if (this.cameraType == CameraType.FULL || this.cameraType == CameraType.POS_ONLY || this.cameraType == CameraType.ROT_ONLY) {
             return CameraResult.CAMERA_FAILED;
         } else {
             new Thread(() -> {
