@@ -21,6 +21,7 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunction
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 
 import org.mozilla.javascript.Context;
@@ -202,7 +203,7 @@ public class MainCommand {
     public int testFade(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
 
-        Player.showFadeScreen(player, 5000);
+        FadeScreen fadeScreen = new FadeScreen();
 
         return 1;
     }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 public class Script implements EnvResource {

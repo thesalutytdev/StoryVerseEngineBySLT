@@ -1,12 +1,9 @@
 package org.thesalutyt.storyverse.common.events;
 
-import net.minecraft.advancements.criterion.KilledTrigger;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.conditions.KilledByPlayer;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -17,11 +14,8 @@ import net.minecraftforge.server.command.ConfigCommand;
 
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
-import org.thesalutyt.storyverse.api.environment.action.ActPlayer;
-import org.thesalutyt.storyverse.api.environment.action.ActionPacket;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
-import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
 import org.thesalutyt.storyverse.common.commands.CrashMyGame;
 import org.thesalutyt.storyverse.common.commands.MainCommand;
 import org.thesalutyt.storyverse.common.commands.home.ClearHome;
@@ -29,10 +23,7 @@ import org.thesalutyt.storyverse.common.commands.home.GetHomePos;
 import org.thesalutyt.storyverse.common.commands.home.ReturnHome;
 import org.thesalutyt.storyverse.common.commands.home.SetHome;
 import org.thesalutyt.storyverse.common.commands.scripts.PlayerFuncsDebug;
-import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 
-import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -87,14 +78,4 @@ public class ModEvents {
             System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
         }
     }
-
-//    @SubscribeEvent
-//    public static void clientTick(TickEvent.ClientTickEvent event) {
-//        if (event.phase == TickEvent.Phase.START) {
-//            boolean btnDown = ClientModEvents.keyStory.isDown();
-//            if (btnDown) {
-//                EventManager.runOnButtonPress(ClientModEvents.keyStory);
-//            }
-//        }
-//    }
 }
