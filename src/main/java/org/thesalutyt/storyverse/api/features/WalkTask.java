@@ -5,10 +5,14 @@ import net.minecraft.util.math.BlockPos;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
+import java.util.UUID;
+
 public class WalkTask implements EnvResource {
     private final BlockPos pos;
     private final MobEntity entity;
     private final MobController controller;
+    private final UUID taskID;
+    public static WalkTask task = null;
 
     @Documentate(
             desc = "Makes entity walk to some position"
@@ -17,6 +21,8 @@ public class WalkTask implements EnvResource {
         this.pos = pos;
         this.entity = entity;
         this.controller = controller;
+        this.taskID = UUID.randomUUID();
+        task = this;
     }
 
     @Documentate(
@@ -32,7 +38,18 @@ public class WalkTask implements EnvResource {
     public MobEntity getEntity() {
         return entity;
     }
-
+    public UUID getTaskID() {
+        return this.taskID;
+    }
+    public String getTaskStringID() {
+        return this.taskID.toString();
+    }
+    public WalkTask getTask() {
+        return this;
+    }
+    public static WalkTask getTaskByID(String taskID) {
+        return task;
+    }
     @Documentate(
             desc = "Returns entity's controller"
     )

@@ -5,17 +5,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 import org.thesalutyt.storyverse.common.specific.networking.Networking;
-import org.mozilla.javascript.ScriptableObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,15 +39,39 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's experience levels"
     )
+    public static Integer getXPLevels() {
+        return player.experienceLevel;
+    }
+    @Documentate(
+            desc = "Gives player's experience levels"
+    )
     public static void giveXPLevels(Integer levels) {
         player.giveExperienceLevels(levels);
+    }
+    @Documentate(
+            desc = "Sets player's experience levels"
+    )
+    public static void setXPLevels(Integer levels) {
+        player.setExperienceLevels(levels);
     }
 
     @Documentate(
             desc = "Returns player's experience points"
     )
+    public static Integer getXPPoints() {
+        return player.totalExperience;
+    }
+    @Documentate(
+            desc = "Gives player's experience levels"
+    )
     public static void giveXPPoints(Integer points) {
         player.giveExperiencePoints(points);
+    }
+    @Documentate(
+            desc = "Sets player's experience levels"
+    )
+    public static void setXPPoints(Integer points) {
+        player.setExperiencePoints(points);
     }
 
     @Documentate(
@@ -63,19 +87,34 @@ public class Player extends ScriptableObject implements EnvResource{
     public static void setInvisible(Boolean is) {
         player.setInvisible(is);
     }
+    @Documentate(
+            desc = "Sets player name visible"
+    )
+    public static void setNameVisible(Boolean is) {player.setCustomNameVisible(is);}
+    @Documentate(
+            desc = "Applies custom name to a player"
+    )
+    public static void setCustomName(String name) {player.setCustomName(new StringTextComponent(name));}
 
     @Documentate(
             desc = "Sends player a message"
     )
     public void sendMessage(String text) {
-        Chat.sendMessage(player, text);
+        Chat.sendMessage(text);
     }
 
     @Documentate(
             desc = "Sends player some message with sender name and text"
     )
     public static void sendNamed(String name, String text) {
-        Chat.sendNamed(player, name, text);
+        Chat.sendNamed(name, text);
+    }
+    @Documentate(
+            desc = "Sends message as player"
+    )
+    public static void sendAsPlayer(String message) {
+        String final_message = String.format("<%s> %s", getPlayerName(), message);
+        Chat.sendMessage(final_message);
     }
 
     @Documentate(
@@ -85,11 +124,6 @@ public class Player extends ScriptableObject implements EnvResource{
         player.yHeadRot = yaw.floatValue();
         player.xRot = pitch.floatValue();
     }
-    public static void setHeadRotation(Double[] rotation) {
-        player.yHeadRot = rotation[0].floatValue();
-        player.xRot = rotation[1].floatValue();
-    }
-
     @Documentate(
             desc = "Returns player's X position"
     )
@@ -140,15 +174,18 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's entity"
     )
-    public static Object getEntity() {
+    public static Entity getEntity() {
         return player.getEntity();
+    }
+    public static PlayerEntity getPlayerEntity() {
+        return (PlayerEntity) player.getEntity();
     }
 
     @Documentate(
             desc = "Makes player ride some entity"
     )
-    public static void startRiding(Entity entity) {
-        player.getEntity().startRiding(entity);
+    public static void startRiding(Object entity) {
+        player.getEntity().startRiding((Entity) entity);
     }
 
     @Documentate(
@@ -306,16 +343,26 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(sendMessage);
             Method sendNamed = Player.class.getMethod("sendNamed", String.class, String.class);
             methodsToAdd.add(sendNamed);
+            Method sendAsPlayer = Player.class.getMethod("sendAsPlayer", String.class);
+            methodsToAdd.add(sendAsPlayer);
+            Method setCustomNameVisible = Player.class.getMethod("setNameVisible", Boolean.class);
+            methodsToAdd.add(setCustomNameVisible);
+            Method setCustomName = Player.class.getMethod("setCustomName", String.class);
+            methodsToAdd.add(setCustomName);
             Method giveXPP = Player.class.getMethod("giveXPPoints", Integer.class);
             methodsToAdd.add(giveXPP);
+            Method getXPP = Player.class.getMethod("getXPPoints");
+            methodsToAdd.add(getXPP);
+            Method setXPP = Player.class.getMethod("setXPPoints", Integer.class);
+            methodsToAdd.add(setXPP);
             Method giveXPL = Player.class.getMethod("giveXPLevels", Integer.class);
             methodsToAdd.add(giveXPL);
+            Method getXPL = Player.class.getMethod("getXPLevels");
+            methodsToAdd.add(getXPL);
+            Method setXPL = Player.class.getMethod("setXPLevels", Integer.class);
+            methodsToAdd.add(setXPL);
             Method setHeadRot = Player.class.getMethod("setHeadRotation", Double.class, Double.class);
             methodsToAdd.add(setHeadRot);
-            Method setHeadRot0 = Player.class.getMethod("setHeadRotation", Double[].class);
-            methodsToAdd.add(setHeadRot0);
-            Method setPosition = Player.class.getMethod("setPosition", Double[].class);
-            methodsToAdd.add(setPosition);
             Method setPosD = Player.class.getMethod("setPosition", Double.class, Double.class, Double.class);
             methodsToAdd.add(setPosD);
             Method setX = Player.class.getMethod("setX", Double.class);
@@ -362,14 +409,18 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setFlySpeed);
             Method setWalkSpeed = Player.class.getMethod("setWalkSpeed", Double.class);
             methodsToAdd.add(setWalkSpeed);
-            Method startRiding = Player.class.getMethod("startRiding", Entity.class);
-            methodsToAdd.add(startRiding);
             Method stopRiding = Player.class.getMethod("stopRiding");
             methodsToAdd.add(stopRiding);
             Method setInvisible = Player.class.getMethod("setInvisible", Boolean.class);
             methodsToAdd.add(setInvisible);
             Method setInvulnerable = Player.class.getMethod("setInvulnerable", Boolean.class);
             methodsToAdd.add(setInvulnerable);
+            Method getPlayerEntity = Player.class.getMethod("getPlayerEntity");
+            methodsToAdd.add(getPlayerEntity);
+            Method getEntity = Player.class.getMethod("getEntity");
+            methodsToAdd.add(getEntity);
+            Method instantBuild = Player.class.getMethod("instantBuild", Boolean.class);
+            methodsToAdd.add(instantBuild);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

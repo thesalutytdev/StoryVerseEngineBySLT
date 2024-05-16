@@ -119,8 +119,6 @@ public class Server extends ScriptableObject implements EnvResource {
         ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
-            Method execute = Server.class.getMethod("execute", PlayerEntity.class, String.class);
-            methodsToAdd.add(execute);
             Method executeNP = Server.class.getMethod("execute", String.class);
             methodsToAdd.add(executeNP);
             Method getWorld = Server.class.getMethod("getWorld");

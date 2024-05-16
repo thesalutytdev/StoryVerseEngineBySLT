@@ -63,7 +63,7 @@ public class LegacyEventManager {
         } catch (NullPointerException e) {
             System.out.println("Could not execute actions after interact with this error:");
             System.out.println(e.getMessage());
-            Chat.sendMessage(player, "error_code.storyverse.scriptFailed");
+            Chat.sendMessage("error_code.storyverse.scriptFailed");
         }
 
     }

@@ -74,7 +74,7 @@ public class MainCommand {
     }
 
     private static int message(CommandSource source) throws CommandSyntaxException {
-        Chat.sendMessage(source.getPlayerOrException(), "test");
+        Chat.sendMessage("test");
         return 1;
     }
     private static int goUp(CommandSource source) throws CommandSyntaxException {
@@ -89,7 +89,7 @@ public class MainCommand {
     }
     private static int testFeatures(CommandSource source) throws CommandSyntaxException {
         String playerName = Player.getPlayerName();
-        Chat.sendNamed(source.getPlayerOrException(), "§bStory§aVerse", "Привет, " + playerName);
+        Chat.sendNamed("§bStory§aVerse", "Привет, " + playerName);
         return 1;
     }
 
@@ -258,7 +258,7 @@ public class MainCommand {
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
 
-        Chat.sendAsEngine(player, String.valueOf(player.pick(100, 0.0f, true).getLocation()));
+        Chat.sendAsEngine(String.valueOf(player.pick(100, 0.0f, true).getLocation()));
 
         return 1;
     }

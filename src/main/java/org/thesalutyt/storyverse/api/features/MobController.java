@@ -21,6 +21,7 @@ import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MobController implements EnvResource {
@@ -392,9 +393,9 @@ public class MobController implements EnvResource {
     )
     public MobController send(String text) {
         try {
-            Chat.sendNamed(Server.getPlayer(), this.entity.getCustomName().getContents(), text);
+            Chat.sendNamed(Objects.requireNonNull(this.entity.getCustomName()).getContents(), text);
         } catch (NullPointerException ex) {
-            Chat.sendNamed(Server.getPlayer(), "NPC", text);
+            Chat.sendNamed("NPC", text);
         }
         return this;
     }

@@ -38,6 +38,8 @@ public class SVEngine {
     public static final String GUI_CONTAINER_NAME = "gui_container";
     public static final Integer KEY_CONTINUE_CODE = 72;
     public static final Integer KEY_START_CODE = 71;
+    public static SVColors CHARACTER_COLOR = SVColors.AQUA;
+    public static String CHARACTER_COLOR_STR = "§3";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
     public SVEngine(){}
@@ -55,6 +57,38 @@ public class SVEngine {
         }
         public String createErrorMessage(SVError type, String msg) {
             return String.format("[%s] %s", type.errorName, msg);
+        }
+    }
+    public static enum SVColors {
+        RED("§4"),
+        LIGHT_RED("§c"),
+        YELLOW("§e"),
+        AQUA("§b"),
+        DARK_AQUA("§3"),
+        WHITE("§f"),
+        BLACK("§0"),
+        BLUE("§1"),
+        LIGHT_BLUE("§9"),
+        GREEN("§2"),
+        LIME("§a"),
+        ORANGE("§6"),
+        PINK("§d"),
+        PURPLE("§5"),
+        GRAY("§7"),
+        DARK_GRAY("§8"),
+        BOLD("§l"),
+        UNDERLINE("§n"),
+        ITALIC("§o"),
+        STRIKE("§m"),
+        MAGIC("§k"),
+        RESET("§r");
+        private final java.lang.String color;
+        private SVColors(String color) {this.color = color;}
+        public String createColoredMessage(SVColors type, String msg) {
+            return java.lang.String.format("%s%s", type.color, msg);
+        }
+        public SVColors getColors() {
+            return this;
         }
     }
     public static void sendInfoMessage(){

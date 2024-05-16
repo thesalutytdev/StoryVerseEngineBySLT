@@ -5,6 +5,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -76,6 +77,13 @@ public class ModEvents {
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
             SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
             System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
+        }
+    }
+    @SubscribeEvent
+    public static void onWorldLeave(EntityLeaveWorldEvent event) {
+        if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
+            SVEngine.interpreter.close();
+            System.out.println("[ModEvents::onWorldLeave] Interpreter closed");
         }
     }
 }

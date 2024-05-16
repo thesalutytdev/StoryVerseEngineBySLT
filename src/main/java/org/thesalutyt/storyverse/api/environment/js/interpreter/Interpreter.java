@@ -1,10 +1,10 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
+import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-import org.thesalutyt.storyverse.api.features.Player;
-import org.thesalutyt.storyverse.api.features.Server;
+import org.thesalutyt.storyverse.api.features.*;
 
 import javax.swing.text.PlainDocument;
 
@@ -19,9 +19,13 @@ public class Interpreter {
             Context ctx = Context.enter();
             scope = ctx.initStandardObjects();
             ExternalFunctions.putIntoScope(scope, rootDir);
-            // Asynchronous.putIntoScope(scope, loop);
             Player.putIntoScope(scope);
+            AsyncJS.putIntoScope(scope, rootDir);
+            Script.putIntoScope(scope);
             Server.putIntoScope(scope, rootDir);
+            Chat.putIntoScope(scope);
+            Sounds.putIntoScope(scope);
+            WorldWrapper.putIntoScope(scope);
         });
     }
 
