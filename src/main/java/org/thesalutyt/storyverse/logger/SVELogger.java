@@ -12,7 +12,7 @@ public class SVELogger {
     )
     private static void create_file(String file_name) {
         try {
-            final String full_file_path = "../story/output/" + file_name + SVEngine.LOG_FILE_FORMAT;
+            final String full_file_path = SVEngine.LOGS_PATH + file_name + SVEngine.LOG_FILE_FORMAT;
             File file = new File(full_file_path);
             if (file.createNewFile()) {
                 SVEngine.LOG_FILE_PATH = full_file_path;
@@ -24,9 +24,10 @@ public class SVELogger {
         }
     };
 
-    public static void init (String story_name) {
+    public static String init (String story_name) {
         create_file(story_name);
         System.out.println(SVEngine.prefix + " Created log file");
+        return SVEngine.LOGS_PATH + story_name;
     };
     public static void write (String file_path, String text) {
         try{

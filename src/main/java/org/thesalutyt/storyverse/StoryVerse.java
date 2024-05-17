@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.thesalutyt.storyverse.common.config.SVConfig;
 import org.thesalutyt.storyverse.common.entities.Entities;
 
 
@@ -20,6 +21,7 @@ public class StoryVerse {
     public StoryVerse() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
+        new SVConfig();
         Entities.register(bus);
         SVEngine.createEngineDirectory();
         SVEngine.sendInfoMessage();

@@ -14,9 +14,12 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import static org.thesalutyt.storyverse.SVEngine.interpreter;
 
 public class Script extends ScriptableObject implements EnvResource {
         public final Logger LOGGER = LogManager.getLogger("StoryVerse::Script");
@@ -104,6 +107,11 @@ public class Script extends ScriptableObject implements EnvResource {
             ef.put(m.getName(), ef, methodInstance);
         }
         scope.put("script", scope, ef);
+    }
+    public static void runScript(String scriptName) {
+        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
+        String logs_path = SVELogger.init(scriptName);
+        SVELogger.write(logs_path, "Ran script successfully");
     }
 
     @Override

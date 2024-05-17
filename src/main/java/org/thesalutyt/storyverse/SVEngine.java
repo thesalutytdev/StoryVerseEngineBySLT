@@ -2,11 +2,8 @@ package org.thesalutyt.storyverse;
 
 import com.mojang.serialization.Codec;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.lwjgl.system.CallbackI;
-import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.common.config.SVConfig;
-import org.thesalutyt.storyverse.fs_environment.Environment;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.File;
@@ -25,7 +22,7 @@ public class SVEngine {
     public static final String GAME_DIR = GAME_DIR_PATH.toString();
     public static final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
-    public static final String LOGS_PATH = SCRIPTS_PATH + "logs";
+    public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
     public static final String MOB_CONTROLLER_PREFIX = "prefix.storyverse.mob_controller";
     public static final String WORLD_WRAPPER_PREFIX = "prefix.storyverse.world_actions";
     public static final String SOUNDS_ENGINE_PREFIX = "prefix.storyverse.sound";

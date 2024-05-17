@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
