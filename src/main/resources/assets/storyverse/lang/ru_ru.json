@@ -7,5 +7,6 @@
   "key.storyverse.next_act": "Следующее действие",
   "damage.storyverse.script": "Скриптовый урон",
   "error_code.storyverse.scriptFalied": "Скрипт не может быть исполнен",
-  "text.storyverse.fade_screen": "Продолжение следует"
+  "text.storyverse.fade_screen": "Продолжение следует",
+  "prefix.storyverse.default.npc": "НПС"
 }

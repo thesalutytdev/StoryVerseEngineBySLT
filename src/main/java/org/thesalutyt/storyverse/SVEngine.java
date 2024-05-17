@@ -40,6 +40,7 @@ public class SVEngine {
     public static final Integer KEY_START_CODE = 71;
     public static SVColors CHARACTER_COLOR = SVColors.AQUA;
     public static String CHARACTER_COLOR_STR = "§3";
+    public static String DEFAULT_CHARACTER_NAME = "prefix.storyverse.default.npc";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
     public SVEngine(){}

@@ -30,7 +30,7 @@ public class Cutscene implements EnvResource {
     )
     public Cutscene enterCutscene(PlayerEntity player, EntityType cameraEntity, BlockPos pos, CameraType type) {
         this.beforeCutscenePosition = player.blockPosition();
-        this.cameraEntityController = new MobController(
+        this.cameraEntityController = new MobController().newController(
                 world.spawnEntity(pos,
                         cameraEntity)
         );
@@ -93,13 +93,13 @@ public class Cutscene implements EnvResource {
     @Documentate(
             desc = "Sets camera entity head rotation"
     )
-    public CameraResult setHeadRotation(float x, float y) {
+    public CameraResult setHeadRotation(Double x, Double y) {
         this.cameraEntityController.setHeadRotation(x, y);
 
         return CameraResult.CAMERA_SUCCESS;
     }
 
-    public CameraResult setHeadRotation(float[] rotation) {
+    public CameraResult setHeadRotation(Double[] rotation) {
         this.cameraEntityController.setHeadRotation(rotation);
 
         return CameraResult.CAMERA_SUCCESS;

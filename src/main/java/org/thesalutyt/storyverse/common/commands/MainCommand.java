@@ -36,7 +36,6 @@ public class MainCommand {
                                         .executes((command) -> {
                                             return getBlockPos(command.getSource());
                                         }))
-                .then(Commands.literal("message").executes((command) -> { return message(command.getSource());}))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
                         .then(Commands.literal("action_packet")
@@ -72,11 +71,6 @@ public class MainCommand {
                         .executes((command) -> {return engineTest(command.getSource());}))
         );
     }
-
-    private static int message(CommandSource source) throws CommandSyntaxException {
-        Chat.sendMessage("test");
-        return 1;
-    }
     private static int goUp(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         BlockPos position = player.blockPosition();
@@ -84,22 +78,18 @@ public class MainCommand {
 
         world.setBlock(player.blockPosition().above(2), Blocks.DIAMOND_BLOCK);
         player.setPos(player.getX(), player.getY() + 2, player.getZ());
+        Player.teleportTo(player.getX(), player.getY() + 2, player.getZ());
         source.sendSuccess(new StringTextComponent("Whoosh!"), true);
         return 1;
     }
-    private static int testFeatures(CommandSource source) throws CommandSyntaxException {
-        String playerName = Player.getPlayerName();
-        Chat.sendNamed("§bStory§aVerse", "Привет, " + playerName);
-        return 1;
-    }
-
     public static int controllerTest(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         new Thread(() -> {
             WorldWrapper world = new WorldWrapper();
             Script script = new Script();
             LegacyEventManager eventManager = new LegacyEventManager();
-            MobController mob0 = new MobController(world.spawnEntity(player.blockPosition(),
+            MobController controller = new MobController();
+            MobController mob0 = new MobController().newController(world.spawnEntity(player.blockPosition(),
                     EntityType.WITHER_SKELETON));
             mob0.canPickUpLoot(true);
             WalkTask walkTask = new WalkTask(player.blockPosition().north(2),
@@ -116,7 +106,7 @@ public class MainCommand {
         new Thread(() -> {
             WorldWrapper world = new WorldWrapper();
             Script script = new Script();
-            MobController mob = new MobController(world.spawnEntity(player.blockPosition().east(2),
+            MobController mob = new MobController().newController(world.spawnEntity(player.blockPosition().east(2),
                     EntityType.BEE));
             mob.setNoAI(true);
         }).start();
@@ -130,12 +120,10 @@ public class MainCommand {
             Camera camera = new Camera();
             WorldWrapper world = new WorldWrapper();
 
-            MobController cameraMob = new MobController(
-                    world.spawnEntity(
-                            player.blockPosition(),
-                            EntityType.PHANTOM
-                    )
-            );
+            MobController cameraMob = new MobController().newController(world.spawnEntity(
+                    player.blockPosition(),
+                    EntityType.PHANTOM
+            ));
             cameraMob.setInvisible(true);
             cameraMob.addEffect(Effects.INVISIBILITY,999999,99);
             cameraMob.setNoAI(false);
@@ -154,7 +142,7 @@ public class MainCommand {
             Camera camera = new Camera();
             WorldWrapper world = new WorldWrapper();
 
-            MobController cameraMob = new MobController(
+            MobController cameraMob = new MobController().newController(
                     world.spawnEntity(
                             player.blockPosition(),
                             EntityType.BAT
@@ -183,7 +171,7 @@ public class MainCommand {
             script.waitTime(5000);
             cutscene.move(player.blockPosition().above(2).north(4), 1);
             script.waitTime(5000);
-            cutscene.setHeadRotation(new float[] {10f, 10f});
+            cutscene.setHeadRotation(new Double[] {10.00, 10.00});
             script.waitTime(5000);
             cutscene.exitCutscene();
         }).start();
@@ -219,7 +207,7 @@ public class MainCommand {
         ServerPlayerEntity player = source.getPlayerOrException();
         Server server = new Server();
 
-        Server.execute(player, "tp TheSALUTYT ~1 ~5 ~1");
+        Server.execute(player, "Command executor works fine :D");
         Server.execute(player, "/tp TheSALUTYT ~1 ~5 ~1");
 
         return 1;
@@ -251,7 +239,7 @@ public class MainCommand {
     public int actionPacketTest(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         WorldWrapper world = new WorldWrapper();
-        MobController mob = new MobController(world.spawnEntity(player.blockPosition(), EntityType.WITHER_SKELETON));
+        MobController mob = new MobController().newController(world.spawnEntity(player.blockPosition(), EntityType.WITHER_SKELETON));
 
         return 1;
     }

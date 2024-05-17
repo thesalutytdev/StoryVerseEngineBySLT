@@ -3,9 +3,13 @@ package org.thesalutyt.storyverse.api.features;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.fonts.TexturedGlyph;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.potion.Effect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -128,6 +132,23 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
     public EntityType<?> toEntityType(String entityType) {
         return EntityType.byString(entityType).get();
     }
+    public Effect toEffect(Integer id) {
+        return Effect.byId(id);
+    }
+    public Hand selectHand(Integer hand) {
+        switch (hand){
+            case 0: {
+                return Hand.MAIN_HAND;
+            }
+            case 1: {
+                return Hand.OFF_HAND;
+            }
+        }
+        return Hand.MAIN_HAND;
+    }
+    public Item item(Integer id) {
+        return Item.byId(id);
+    }
 
     public static void putIntoScope (Scriptable scope) {
         WorldWrapper ef = new WorldWrapper();
@@ -139,8 +160,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getWorld);
             Method getWorldByStr = WorldWrapper.class.getMethod("getWorld", String.class);
             methodsToAdd.add(getWorldByStr);
-            // Method setBlock = WorldWrapper.class.getMethod("setBlock", Double.class, Double.class, Double.class, Block.class);
-            // methodsToAdd.add(setBlock);
+            Method item = WorldWrapper.class.getMethod("item", Integer.class);
+            methodsToAdd.add(item);
             Method setState = WorldWrapper.class.getMethod("getState", Double.class, Double.class, Double.class);
             methodsToAdd.add(setState);
             Method pos = WorldWrapper.class.getMethod("pos", Double.class, Double.class, Double.class);
@@ -153,8 +174,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(checkBlock);
             Method spawnEntity = WorldWrapper.class.getMethod("spawnEntity", Double.class, Double.class, Double.class, String.class);
             methodsToAdd.add(spawnEntity);
-//            Method useBlock = WorldWrapper.class.getMethod("useBlock", Double.class, Double.class, Double.class, PlayerEntity.class);
-//            methodsToAdd.add(useBlock);
+            Method selectHand = WorldWrapper.class.getMethod("selectHand", Integer.class);
+            methodsToAdd.add(selectHand);
             Method getMCWorld = WorldWrapper.class.getMethod("getMCWorld");
             methodsToAdd.add(getMCWorld);
         } catch (NoSuchMethodException e) {

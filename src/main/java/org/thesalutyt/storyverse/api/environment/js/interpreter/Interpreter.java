@@ -26,6 +26,7 @@ public class Interpreter {
             Chat.putIntoScope(scope);
             Sounds.putIntoScope(scope);
             WorldWrapper.putIntoScope(scope);
+            MobController.putIntoScope(scope);
         });
     }
 

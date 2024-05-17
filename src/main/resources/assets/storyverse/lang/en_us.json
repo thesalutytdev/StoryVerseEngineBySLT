@@ -7,5 +7,6 @@
   "key.storyverse.next_act": "Next action",
   "damage.storyverse.script": "Scripted damage",
   "error_code.storyverse.scriptFailed": "Script can't be executed",
-  "text.storyverse.fade_screen": "To Be Continued"
+  "text.storyverse.fade_screen": "To Be Continued",
+  "prefix.storyverse.default.npc": "NPC"
 }
