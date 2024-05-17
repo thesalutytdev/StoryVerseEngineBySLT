@@ -494,7 +494,7 @@ public class MobController extends ScriptableObject implements EnvResource {
         try {
             Method create = MobController.class.getMethod("newController", Object.class);
             methodsToAdd.add(create);
-            Method moveTo = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class, Float.class);
+            Method moveTo = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class, Double.class);
             methodsToAdd.add(moveTo);
             Method lookAtPlayer = MobController.class.getMethod("lookPlayer", Object.class, Double.class, Double.class);
             methodsToAdd.add(lookAtPlayer);
