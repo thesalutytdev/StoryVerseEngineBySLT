@@ -57,9 +57,9 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.goalSelector.addGoal(0, this.moveGoal);
         return new WalkTask(pos, this.entity, this);
     }
-    public WalkTask moveTo(Double x, Double y, Double z, Float speed){
+    public WalkTask moveTo(Double x, Double y, Double z, Double speed){
         BlockPos pos = new BlockPos(x, y, z);
-        this.moveGoal = new MoveGoal(entity, pos, speed);
+        this.moveGoal = new MoveGoal(entity, pos, speed.floatValue());
         this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
             this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
         });
