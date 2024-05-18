@@ -130,7 +130,19 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return new BlockPos(x, y, z);
     }
     public EntityType<?> toEntityType(String entityType) {
-        return EntityType.byString(entityType).get();
+        if (entityType == "BAT") {
+            return EntityType.BAT;
+        } else if (entityType == "SHEEP") {
+            return EntityType.SHEEP;
+        } else if (entityType == "WITHER_SKELETON") {
+            return EntityType.WITHER_SKELETON;
+        } else if (entityType == "PIG") {
+            return EntityType.PIG;
+        } else if (entityType == "FOX") {
+            return EntityType.FOX;
+        } else {
+            return EntityType.COW;
+        }
     }
     public Effect toEffect(Integer id) {
         return Effect.byId(id);

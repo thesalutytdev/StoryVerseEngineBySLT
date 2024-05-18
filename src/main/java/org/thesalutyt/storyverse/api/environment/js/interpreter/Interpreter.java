@@ -22,6 +22,7 @@ public class Interpreter {
             Player.putIntoScope(scope);
             AsyncJS.putIntoScope(scope, rootDir);
             Script.putIntoScope(scope);
+            Asynchronous.putIntoScope(scope, loop);
             Server.putIntoScope(scope, rootDir);
             Chat.putIntoScope(scope);
             Sounds.putIntoScope(scope);

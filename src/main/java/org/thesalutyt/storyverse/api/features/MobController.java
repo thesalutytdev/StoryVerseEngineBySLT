@@ -46,6 +46,16 @@ public class MobController extends ScriptableObject implements EnvResource {
 
     }
     public MobController newController(Object entity) {this.entity = (MobEntity) entity; return this;}
+    public MobController newController(Double x, Double y, Double z, String type) {
+        WorldWrapper worldWrapper = new WorldWrapper();
+        this.entity = (MobEntity) worldWrapper.spawnEntity(new BlockPos(x, y, z), worldWrapper.toEntityType(type));
+        return this;
+    }
+    public MobController newController(BlockPos pos, String type) {
+        WorldWrapper worldWrapper = new WorldWrapper();
+        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, worldWrapper.toEntityType(type));
+        return this;
+    }
     @Documentate(
             desc = "Makes mob walk to position with set speed"
     )
@@ -494,6 +504,8 @@ public class MobController extends ScriptableObject implements EnvResource {
         try {
             Method create = MobController.class.getMethod("newController", Object.class);
             methodsToAdd.add(create);
+            Method newC = MobController.class.getMethod("newController", Double.class, Double.class, Double.class, String.class);
+            methodsToAdd.add(newC);
             Method moveTo = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class, Double.class);
             methodsToAdd.add(moveTo);
             Method lookAtPlayer = MobController.class.getMethod("lookPlayer", Object.class, Double.class, Double.class);
@@ -564,6 +576,10 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setRot);
             Method setGlow = MobController.class.getMethod("setGlow", Boolean.class);
             methodsToAdd.add(setGlow);
+            Method hurt = MobController.class.getMethod("hurt", Double.class);
+            methodsToAdd.add(hurt);
+            Method hurtWithDamageType = MobController.class.getMethod("hurt", String.class, Double.class);
+            methodsToAdd.add(hurtWithDamageType);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
