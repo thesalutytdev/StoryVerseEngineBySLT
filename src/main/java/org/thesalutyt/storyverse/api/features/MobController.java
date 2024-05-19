@@ -49,7 +49,7 @@ public class MobController extends ScriptableObject implements EnvResource {
     public MobController newController(Double x, Double y, Double z, String type) {
         WorldWrapper worldWrapper = new WorldWrapper();
         this.entity = (MobEntity) worldWrapper.spawnEntity(new BlockPos(x, y, z), worldWrapper.toEntityType(type));
-        return this;
+        return this.getController();
     }
     public MobController newController(BlockPos pos, String type) {
         WorldWrapper worldWrapper = new WorldWrapper();

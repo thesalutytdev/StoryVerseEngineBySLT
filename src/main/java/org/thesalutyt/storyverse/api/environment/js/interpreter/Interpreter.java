@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
+import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -28,6 +29,7 @@ public class Interpreter {
             Sounds.putIntoScope(scope);
             WorldWrapper.putIntoScope(scope);
             MobController.putIntoScope(scope);
+            EventManagerJS.putIntoScope(scope);
         });
     }
 

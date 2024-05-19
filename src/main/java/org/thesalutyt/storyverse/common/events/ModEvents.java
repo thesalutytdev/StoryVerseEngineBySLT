@@ -16,6 +16,7 @@ import net.minecraftforge.server.command.ConfigCommand;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
+import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.common.commands.CrashMyGame;
 import org.thesalutyt.storyverse.common.commands.MainCommand;
@@ -33,6 +34,7 @@ public class ModEvents {
 
     public static ServerPlayerEntity player;
     EventManager eventManager = new EventManager();
+    private static EventManagerJS eventManagerJS = new EventManagerJS();
     public static HashMap<UUID, Integer> fadeScreenTimers = new HashMap<>();
     public static HashMap<UUID, Integer> fadeScreenColors = new HashMap<>();
 

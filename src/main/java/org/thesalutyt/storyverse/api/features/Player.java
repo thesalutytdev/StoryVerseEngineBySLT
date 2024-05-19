@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.MoveThroughVillageAtNightGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.stats.Stat;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -38,7 +39,6 @@ public class Player extends ScriptableObject implements EnvResource{
     public static String getPlayerName() {
         return player.getName().getContents();
     }
-
     @Documentate(
             desc = "Returns player's experience levels"
     )

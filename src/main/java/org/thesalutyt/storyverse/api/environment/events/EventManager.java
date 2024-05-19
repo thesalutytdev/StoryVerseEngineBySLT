@@ -1,12 +1,17 @@
 package org.thesalutyt.storyverse.api.environment.events;
 
 import net.minecraft.client.settings.KeyBinding;
+import org.mozilla.javascript.BaseFunction;
+import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.ActResult;
+import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.api.environment.resource.JSResource;
+import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class EventManager {
+public class EventManager extends ScriptableObject implements EnvResource, JSResource {
     public static HashMap<UUID, Runnable> onInteract = new HashMap<>();
     public static HashMap<UUID, Runnable> onPlayerSleep = new HashMap<>();
     public static HashMap<KeyBinding, Runnable> onButtonPress = new HashMap<>();
@@ -50,5 +55,27 @@ public class EventManager {
             System.out.println("Player slept but events didn't happened");
             return ActResult.NULL_POINTER_EXCEPTION;
         }
+    }
+    public static void setOnMessage(String message, BaseFunction function) {
+        onMessage.put(message, (Runnable) function);
+    }
+    public static void setOnPlayerSleep(String playerUUID, BaseFunction function) {
+        onPlayerSleep.put(UUID.fromString(playerUUID), (Runnable) function);
+    }
+    public static void setOnInteract(String mobID, BaseFunction function) {
+        onInteract.put(UUID.fromString(mobID), (Runnable) function);
+    }
+    public static void setOnButtonPress(BaseFunction function) {
+        onButtonPress.put(ClientModEvents.keyStory, (Runnable) function);
+    }
+
+    @Override
+    public String getClassName() {
+        return "EventManager";
+    }
+
+    @Override
+    public String getResourceId() {
+        return "EventManager";
     }
 }

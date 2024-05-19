@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse;
 import com.mojang.serialization.Codec;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.common.config.SVConfig;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
@@ -35,7 +36,7 @@ public class SVEngine {
     public static final String GUI_CONTAINER_NAME = "gui_container";
     public static final Integer KEY_CONTINUE_CODE = 72;
     public static final Integer KEY_START_CODE = 71;
-    public static SVColors CHARACTER_COLOR = SVColors.AQUA;
+    public static SVColors CHARACTER_COLOR = SVColors.GREEN;
     public static String CHARACTER_COLOR_STR = "§3";
     public static String DEFAULT_CHARACTER_NAME = "prefix.storyverse.default.npc";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
@@ -53,8 +54,11 @@ public class SVEngine {
         private SVError(String error) {
             this.errorName = error;
         }
-        public String createErrorMessage(SVError type, String msg) {
-            return String.format("[%s] %s", type.errorName, msg);
+        public static String createErrorMessage(SVError type, String msg) {
+            String message = String.format("§4[ERROR] §e%s:§r\n %s", type, msg);
+            Chat.sendMessage(message);
+            SVELogger.write(SVEngine.LOG_FILE_PATH, message);
+            return message;
         }
     }
     public static enum SVColors {

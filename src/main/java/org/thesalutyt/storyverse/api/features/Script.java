@@ -84,6 +84,15 @@ public class Script extends ScriptableObject implements EnvResource {
                 Chat.sendMessage(message);
             }
         }
+    public static void runScript(String scriptName) {
+        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
+        String logs_path = SVELogger.init(scriptName);
+        SVELogger.write(logs_path, "Ran script successfully");
+    }
+    public static void waitUntilMessage(String message) {
+        Integer waitTimeAmount = 1;
+
+    }
     public static void putIntoScope (Scriptable scope) {
         Script ef = new Script();
         ef.setParentScope(scope);
@@ -107,11 +116,6 @@ public class Script extends ScriptableObject implements EnvResource {
             ef.put(m.getName(), ef, methodInstance);
         }
         scope.put("script", scope, ef);
-    }
-    public static void runScript(String scriptName) {
-        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
-        String logs_path = SVELogger.init(scriptName);
-        SVELogger.write(logs_path, "Ran script successfully");
     }
 
     @Override
