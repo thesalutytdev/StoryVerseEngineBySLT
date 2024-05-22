@@ -16,8 +16,11 @@ public class MobJS extends ScriptableObject implements EnvResource {
     WorldWrapper worldWrapper = new WorldWrapper();
     public static HashMap<String, MobController> controllers = new HashMap<>();
     public MobController create(String id, Double x, Double y, Double z, String type) {
+        System.out.println("Started creating");
         MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType(type));
+        System.out.println("Mob = " + mob);
         controllers.put(id, mob);
+        System.out.println("Putting mob in base");
         return mob;
     }
     public MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {

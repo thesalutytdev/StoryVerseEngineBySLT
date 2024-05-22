@@ -61,17 +61,17 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onInteract(PlayerInteractEvent.EntityInteract event) {
-        eventManager.runInteract(event.getTarget().getUUID());
+        // eventManager.runInteract(event.getTarget().getUUID());
     }
 
     @SubscribeEvent
     public static void onMessageSent(ClientChatReceivedEvent event) {
-        eventManager.runMessage(event.getMessage().getContents());
+        // eventManager.runMessage(event.getMessage().getContents());
     }
 
     @SubscribeEvent
     public static void onPlayerSleepInBed(PlayerSleepInBedEvent event) {
-        eventManager.runOnPlayerSleep(event.getPlayer().getUUID());
+        // eventManager.runOnPlayerSleep(event.getPlayer().getUUID());
     }
 
     @SubscribeEvent

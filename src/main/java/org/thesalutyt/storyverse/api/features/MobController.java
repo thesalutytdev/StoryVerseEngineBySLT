@@ -34,10 +34,12 @@ import java.util.UUID;
 
 public class MobController extends ScriptableObject implements EnvResource {
     private MobEntity entity;
+    private WorldWrapper worldWrapper = new WorldWrapper();
     public HashMap<String, Runnable> handlers = new HashMap<>();
     public static HashMap<UUID, MobController> mobControllers = new HashMap<>();
     private boolean hasCustomUUID = false;
     private UUID customUUID = null;
+    private Float mobSpeed;
     public static ArrayList<String> interactActionsID = new ArrayList<>();
     private Goal moveGoal;
 
@@ -45,34 +47,28 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Setups MobController entity"
     )
     public MobController(Double x, Double y, Double z, String type){
-        WorldWrapper worldWrapper = new WorldWrapper();
+        registerFunctions();
         BlockPos pos = worldWrapper.pos(x, y, z);
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, worldWrapper.toEntityType(type));
+        mobSpeed = this.entity.getSpeed();
     }
     public MobController(Double x, Double y, Double z, EntityType type){
-        WorldWrapper worldWrapper = new WorldWrapper();
+        registerFunctions();
         BlockPos pos = worldWrapper.pos(x, y, z);
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
+        mobSpeed = this.entity.getSpeed();
     }
     public MobController(BlockPos pos, EntityType type){
-        WorldWrapper worldWrapper = new WorldWrapper();
+        System.out.println("Registering functions");
+        registerFunctions();
+        System.out.println("Creating entity");
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
+        System.out.println("Setting mob's speed");
+        mobSpeed = this.entity.getSpeed();
     }
 
     public MobController() {
-
-    }
-
-    public MobController newController(Object entity) {this.entity = (MobEntity) entity; return this;}
-    public MobController newController(Double x, Double y, Double z, String type) {
-        WorldWrapper worldWrapper = new WorldWrapper();
-        this.entity = (MobEntity) worldWrapper.spawnEntity(new BlockPos(x, y, z), worldWrapper.toEntityType(type));
-        return this.getController();
-    }
-    public MobController newController(BlockPos pos, String type) {
-        WorldWrapper worldWrapper = new WorldWrapper();
-        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, worldWrapper.toEntityType(type));
-        return this;
+        registerFunctions();
     }
     @Documentate(
             desc = "Makes mob walk to position with set speed"
@@ -525,9 +521,7 @@ public class MobController extends ScriptableObject implements EnvResource {
         mobControllers.put(controller.getUUID(), controller);
     }
 
-    public static void putIntoScope (Scriptable scope) {
-        MobController ef = new MobController();
-        ef.setParentScope(scope);
+    private void registerFunctions() {
         ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
@@ -547,7 +541,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setPlAggressive);
             Method send = MobController.class.getMethod("send", String.class);
             methodsToAdd.add(send);
-            Method stopMove = MobController.class.getMethod("stopMove"); 
+            Method stopMove = MobController.class.getMethod("stopMove");
             methodsToAdd.add(stopMove);
             Method setHeadRot = MobController.class.getMethod("setHeadRotation", Double.class, Double.class);
             methodsToAdd.add(setHeadRot);
@@ -618,9 +612,15 @@ public class MobController extends ScriptableObject implements EnvResource {
         }
         for (Method m : methodsToAdd) {
             FunctionObject methodInstance = new FunctionObject(m.getName(),
-                    m, ef);
-            ef.put(m.getName(), ef, methodInstance);
+                    m, this);
+            this.put(m.getName(), this, methodInstance);
         }
+    }
+
+    public static void putIntoScope (Scriptable scope) {
+        MobController ef = new MobController();
+        ef.setParentScope(scope);
+
         scope.put("entity", scope, ef);
     }
 

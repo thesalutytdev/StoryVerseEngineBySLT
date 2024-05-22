@@ -309,7 +309,12 @@ public class Player extends ScriptableObject implements EnvResource{
     public static void kill() {
         player.kill();
     }
-
+    public static void setPlayerByName(String playerName) {
+        player = Server.getPlayerByName(playerName);
+    }
+    public static void setPlayer(ServerPlayerEntity newPlayer) {
+        player = newPlayer;
+    }
     @Documentate(
             desc = "Returns player's UUID"
     )
@@ -424,6 +429,10 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(getEntity);
             Method instantBuild = Player.class.getMethod("instantBuild", Boolean.class);
             methodsToAdd.add(instantBuild);
+            Method setByName = Player.class.getMethod("setPlayerByName", String.class);
+            methodsToAdd.add(setByName);
+            Method setPl = Player.class.getMethod("setPlayer", ServerPlayerEntity.class);
+            methodsToAdd.add(setPl);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

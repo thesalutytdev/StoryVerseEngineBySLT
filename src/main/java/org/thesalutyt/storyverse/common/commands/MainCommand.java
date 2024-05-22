@@ -9,6 +9,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import org.mozilla.javascript.Scriptable;
@@ -173,8 +175,8 @@ public class MainCommand {
     }
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
-
-        Chat.sendAsEngine(String.valueOf(player.pick(100, 0.0f, true).getLocation()));
+        Vector3d result = player.pick(100, 0.0f, true).getLocation();
+        Chat.sendAsEngine(String.format("%.2f, %.2f, %.2f", result.x, result.y, result.z));
 
         return 1;
     }
