@@ -130,19 +130,34 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return new BlockPos(x, y, z);
     }
     public EntityType<?> toEntityType(String entityType) {
-        if (entityType == "BAT") {
-            return EntityType.BAT;
-        } else if (entityType == "SHEEP") {
-            return EntityType.SHEEP;
-        } else if (entityType == "WITHER_SKELETON") {
-            return EntityType.WITHER_SKELETON;
-        } else if (entityType == "PIG") {
-            return EntityType.PIG;
-        } else if (entityType == "FOX") {
-            return EntityType.FOX;
-        } else {
-            return EntityType.COW;
+        switch (entityType) {
+            case "BAT": {
+                return EntityType.BAT;
+            }
+            case "SHEEP": {
+                return EntityType.SHEEP;
+            }
+            case "WITHER_SKELETON": {
+                return EntityType.WITHER_SKELETON;
+            }
+            case "PIG": {
+                return EntityType.PIG;
+            }
+            case "FOX": {
+                return EntityType.FOX;
+            }
+            case "COW": {
+                return EntityType.COW;
+            }
+            case "ARMOR_STAND":
+            case "NPC": {
+                return EntityType.ARMOR_STAND;
+            }
+            case "SQUID": {
+                return EntityType.SQUID;
+            }
         }
+        return EntityType.COW;
     }
     public Effect toEffect(Integer id) {
         return Effect.byId(id);

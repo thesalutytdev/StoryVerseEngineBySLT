@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.features;
 
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -42,9 +44,25 @@ public class MobController extends ScriptableObject implements EnvResource {
     @Documentate(
             desc = "Setups MobController entity"
     )
-    public MobController(){
+    public MobController(Double x, Double y, Double z, String type){
+        WorldWrapper worldWrapper = new WorldWrapper();
+        BlockPos pos = worldWrapper.pos(x, y, z);
+        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, worldWrapper.toEntityType(type));
+    }
+    public MobController(Double x, Double y, Double z, EntityType type){
+        WorldWrapper worldWrapper = new WorldWrapper();
+        BlockPos pos = worldWrapper.pos(x, y, z);
+        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
+    }
+    public MobController(BlockPos pos, EntityType type){
+        WorldWrapper worldWrapper = new WorldWrapper();
+        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
+    }
+
+    public MobController() {
 
     }
+
     public MobController newController(Object entity) {this.entity = (MobEntity) entity; return this;}
     public MobController newController(Double x, Double y, Double z, String type) {
         WorldWrapper worldWrapper = new WorldWrapper();
@@ -440,6 +458,17 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.setAggressive(method);
         return this;
     }
+    public Boolean isAlive() {
+        return this.entity.isAlive();
+    }
+    public MobController attackPlayer() {
+        this.entity.setTarget((LivingEntity) Player.getPlayerEntity().getEntity());
+        return this;
+    }
+    public MobController attackPlayer(PlayerEntity player) {
+        this.entity.setTarget((LivingEntity) player.getEntity());
+        return this;
+    }
 
     @Documentate(
             desc = "Sets mob invisible"
@@ -502,10 +531,14 @@ public class MobController extends ScriptableObject implements EnvResource {
         ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
-            Method create = MobController.class.getMethod("newController", Object.class);
-            methodsToAdd.add(create);
-            Method newC = MobController.class.getMethod("newController", Double.class, Double.class, Double.class, String.class);
-            methodsToAdd.add(newC);
+            Method setTarget = MobController.class.getMethod("setTarget", Object.class);
+            methodsToAdd.add(setTarget);
+            Method isAlive = MobController.class.getMethod("isAlive");
+            methodsToAdd.add(isAlive);
+            Method attackPlayer = MobController.class.getMethod("attackPlayer");
+            methodsToAdd.add(attackPlayer);
+            Method setAggressive = MobController.class.getMethod("setAggressive", Boolean.class);
+            methodsToAdd.add(setAggressive);
             Method moveTo = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class, Double.class);
             methodsToAdd.add(moveTo);
             Method lookAtPlayer = MobController.class.getMethod("lookPlayer", Object.class, Double.class, Double.class);
@@ -514,7 +547,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setPlAggressive);
             Method send = MobController.class.getMethod("send", String.class);
             methodsToAdd.add(send);
-            Method stopMove = MobController.class.getMethod("stopMove");
+            Method stopMove = MobController.class.getMethod("stopMove"); 
             methodsToAdd.add(stopMove);
             Method setHeadRot = MobController.class.getMethod("setHeadRotation", Double.class, Double.class);
             methodsToAdd.add(setHeadRot);

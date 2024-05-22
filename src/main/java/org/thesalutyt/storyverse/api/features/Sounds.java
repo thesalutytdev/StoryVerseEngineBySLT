@@ -48,7 +48,7 @@ public class Sounds extends ScriptableObject implements EnvResource {
                     m, ef);
             ef.put(m.getName(), ef, methodInstance);
         }
-        scope.put("chat", scope, ef);
+        scope.put("sound", scope, ef);
     }
 
 

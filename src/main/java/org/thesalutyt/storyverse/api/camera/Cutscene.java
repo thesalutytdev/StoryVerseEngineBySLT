@@ -30,10 +30,7 @@ public class Cutscene implements EnvResource {
     )
     public Cutscene enterCutscene(PlayerEntity player, EntityType cameraEntity, BlockPos pos, CameraType type) {
         this.beforeCutscenePosition = player.blockPosition();
-        this.cameraEntityController = new MobController().newController(
-                world.spawnEntity(pos,
-                        cameraEntity)
-        );
+        this.cameraEntityController = new MobController(pos, cameraEntity);
         mc.setCameraEntity(cameraEntityController.getEntity());
         new Thread(() -> {cameraEntityController.setInvisible(true);
             cameraEntityController.addEffect(Effects.INVISIBILITY, 999999, 99);

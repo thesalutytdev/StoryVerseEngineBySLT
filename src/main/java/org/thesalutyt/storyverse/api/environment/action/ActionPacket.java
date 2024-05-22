@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ActionPacket implements EnvResource {
     private ServerPlayerEntity player;
-    private EventManager eventManager;
+    private EventManager eventManager = new EventManager();
     public HashMap<UUID, String> actions = new HashMap<>();
     public String onWorldStart;
     private String messageWaiting;
@@ -28,7 +28,6 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket registerOnWorldStart(String code) {
         onWorldStart += code;
-
         return this;
     }
     public ActionPacket registerWithEvent(EventType eventType, Runnable code, Object eventArgument) {
@@ -56,7 +55,7 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket MESSAGE(){
         try {
-            EventManager.runMessage(messageWaiting);
+            eventManager.runMessage(messageWaiting);
         } catch (NullPointerException ex) {
             return this;
         }
@@ -65,7 +64,7 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket MESSAGE(String messageWaiting){
         try {
-            EventManager.runMessage(messageWaiting);
+            eventManager.runMessage(messageWaiting);
         } catch (NullPointerException ex) {
             return this;
         }
@@ -74,7 +73,7 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket PLAYER_SLEEP() {
         try {
-            EventManager.runOnPlayerSleep(this.player.getUUID());
+            eventManager.runOnPlayerSleep(this.player.getUUID());
         } catch (NullPointerException ex) {
             return this;
         }
@@ -83,7 +82,7 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket KEY() {
         try {
-            EventManager.runOnButtonPress(ClientModEvents.keyStory);
+            eventManager.runOnButtonPress(ClientModEvents.keyStory);
         } catch (NullPointerException ex) {
             return this;
         }

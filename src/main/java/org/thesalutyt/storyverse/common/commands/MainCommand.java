@@ -54,9 +54,6 @@ public class MainCommand {
                                         .executes((command) -> {
                                     return moveCamera(command.getSource());
                                 }))
-                                .then(Commands.literal("reset").executes((command) -> {{
-                                return resetCamera(command.getSource());}
-                                }))
                                 .executes((command) -> {return cameraTest(command.getSource());}))
                         .then(Commands.literal("controller")
                                 .then(Commands.literal("noAI")
@@ -83,81 +80,21 @@ public class MainCommand {
         return 1;
     }
     public static int controllerTest(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-        new Thread(() -> {
-            WorldWrapper world = new WorldWrapper();
-            Script script = new Script();
-            LegacyEventManager eventManager = new LegacyEventManager();
-            MobController controller = new MobController();
-            MobController mob0 = new MobController().newController(world.spawnEntity(player.blockPosition(),
-                    EntityType.WITHER_SKELETON));
-            mob0.canPickUpLoot(true);
-            WalkTask walkTask = new WalkTask(player.blockPosition().north(2),
-                    mob0.getMobEntity(),
-                    mob0.getController());
-            script.waitWalkEnd(walkTask);
-        }).start();
 
         return 1; // ❄
     }
     public static int controllerTestNoAI(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
 
-        new Thread(() -> {
-            WorldWrapper world = new WorldWrapper();
-            Script script = new Script();
-            MobController mob = new MobController().newController(world.spawnEntity(player.blockPosition().east(2),
-                    EntityType.BEE));
-            mob.setNoAI(true);
-        }).start();
-
-
         return 1;
     }
     public int moveCamera(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
-        new Thread(() -> {
-            Camera camera = new Camera();
-            WorldWrapper world = new WorldWrapper();
-
-            MobController cameraMob = new MobController().newController(world.spawnEntity(
-                    player.blockPosition(),
-                    EntityType.PHANTOM
-            ));
-            cameraMob.setInvisible(true);
-            cameraMob.addEffect(Effects.INVISIBILITY,999999,99);
-            cameraMob.setNoAI(false);
-
-            player.setGameMode(GameType.SPECTATOR);
-            camera.setCameraEntity(cameraMob.getEntity());
-            cameraMob.moveTo(new BlockPos(player.getX() + 2,
-                    player.getY() + 2,
-                    player.getZ() + 2), 1f);
-        }).start();
         return 1;
     }
     public int moveCameraNoAI(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
-        new Thread(() -> {
-            Camera camera = new Camera();
-            WorldWrapper world = new WorldWrapper();
 
-            MobController cameraMob = new MobController().newController(
-                    world.spawnEntity(
-                            player.blockPosition(),
-                            EntityType.BAT
-                    )
-            );
-            cameraMob.setInvisible(true);
-            cameraMob.addEffect(Effects.INVISIBILITY,999999,99);
-            cameraMob.setNoAI(true);
-
-            player.setGameMode(GameType.SPECTATOR);
-            camera.setCameraEntity(cameraMob.getEntity());
-            cameraMob.moveTo(new BlockPos(player.getX() + 2,
-                    player.getY() + 2,
-                    player.getZ() + 2), 1f);
-        }).start();
         return 1;
     }
 
@@ -175,15 +112,6 @@ public class MainCommand {
             script.waitTime(5000);
             cutscene.exitCutscene();
         }).start();
-
-        return 1;
-    }
-
-    public int resetCamera(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-        Cutscene cutscene = new Cutscene();
-
-        cutscene.exitCutscene();
 
         return 1;
     }
@@ -239,7 +167,7 @@ public class MainCommand {
     public int actionPacketTest(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         WorldWrapper world = new WorldWrapper();
-        MobController mob = new MobController().newController(world.spawnEntity(player.blockPosition(), EntityType.WITHER_SKELETON));
+        MobController mob = new MobController(player.blockPosition(), EntityType.WITHER_SKELETON);
 
         return 1;
     }

@@ -33,7 +33,7 @@ import java.util.UUID;
 public class ModEvents {
 
     public static ServerPlayerEntity player;
-    EventManager eventManager = new EventManager();
+    public static EventManager eventManager = new EventManager();
     private static EventManagerJS eventManagerJS = new EventManagerJS();
     public static HashMap<UUID, Integer> fadeScreenTimers = new HashMap<>();
     public static HashMap<UUID, Integer> fadeScreenColors = new HashMap<>();
@@ -61,17 +61,17 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onInteract(PlayerInteractEvent.EntityInteract event) {
-        EventManager.runInteract(event.getTarget().getUUID());
+        eventManager.runInteract(event.getTarget().getUUID());
     }
 
     @SubscribeEvent
     public static void onMessageSent(ClientChatReceivedEvent event) {
-        EventManager.runMessage(event.getMessage().getContents());
+        eventManager.runMessage(event.getMessage().getContents());
     }
 
     @SubscribeEvent
     public static void onPlayerSleepInBed(PlayerSleepInBedEvent event) {
-        EventManager.runOnPlayerSleep(event.getPlayer().getUUID());
+        eventManager.runOnPlayerSleep(event.getPlayer().getUUID());
     }
 
     @SubscribeEvent

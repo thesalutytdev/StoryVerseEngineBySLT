@@ -66,8 +66,7 @@ configurations {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:3.0.106")
-    shade "org.mozilla:rhino:1.7R4"
-    //shade group: 'software.bernie.geckolib', name: 'geckolib-forge-1.16.5', version: '3.0.106'
+    shade "org.mozilla:rhino:1.7.15"
 }
 
 tasks.named('processResources', ProcessResources).configure {
