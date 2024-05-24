@@ -91,7 +91,6 @@ public class Script extends ScriptableObject implements EnvResource {
     }
     public static void waitUntilMessage(String message) {
         Integer waitTimeAmount = 1;
-
     }
     public static void putIntoScope (Scriptable scope) {
         Script ef = new Script();

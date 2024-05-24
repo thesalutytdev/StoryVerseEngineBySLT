@@ -27,8 +27,6 @@ import java.util.UUID;
 
 public class Player extends ScriptableObject implements EnvResource{
     private static ServerPlayerEntity player;
-    public LegacyEventManager eventManager;
-
     public Player(ServerPlayerEntity player) {
         Player.player = player;
     }
@@ -312,8 +310,8 @@ public class Player extends ScriptableObject implements EnvResource{
     public static void setPlayerByName(String playerName) {
         player = Server.getPlayerByName(playerName);
     }
-    public static void setPlayer(ServerPlayerEntity newPlayer) {
-        player = newPlayer;
+    public static void setPlayer(Object newPlayer) {
+        player = (ServerPlayerEntity) newPlayer;
     }
     @Documentate(
             desc = "Returns player's UUID"
@@ -330,6 +328,9 @@ public class Player extends ScriptableObject implements EnvResource{
     }
     public static void hurt(Double damage) {
         hurt(damage, "storyverse:script");
+    }
+    public static ServerPlayerEntity getPlayer() {
+        return player;
     }
 
     public static Object getNative() {
@@ -431,8 +432,10 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(instantBuild);
             Method setByName = Player.class.getMethod("setPlayerByName", String.class);
             methodsToAdd.add(setByName);
-            Method setPl = Player.class.getMethod("setPlayer", ServerPlayerEntity.class);
+            Method setPl = Player.class.getMethod("setPlayer", Object.class);
             methodsToAdd.add(setPl);
+            Method getPlayer = Player.class.getMethod("getPlayer");
+            methodsToAdd.add(getPlayer);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

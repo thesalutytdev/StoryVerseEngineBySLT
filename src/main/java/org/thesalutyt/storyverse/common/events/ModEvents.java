@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.command.ConfigCommand;
 
+import org.mozilla.javascript.NativeArray;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
@@ -31,10 +32,8 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class ModEvents {
-
     public static ServerPlayerEntity player;
     public static EventManager eventManager = new EventManager();
-    private static EventManagerJS eventManagerJS = new EventManagerJS();
     public static HashMap<UUID, Integer> fadeScreenTimers = new HashMap<>();
     public static HashMap<UUID, Integer> fadeScreenColors = new HashMap<>();
 
@@ -61,17 +60,20 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onInteract(PlayerInteractEvent.EntityInteract event) {
-        // eventManager.runInteract(event.getTarget().getUUID());
+        // eventManagerJS.runEvent("interact",
+                // new NativeArray(new Object[]{event.getTarget().getUUID()}));
     }
 
     @SubscribeEvent
     public static void onMessageSent(ClientChatReceivedEvent event) {
-        // eventManager.runMessage(event.getMessage().getContents());
+        // eventManagerJS.runEvent("message",
+                // new NativeArray(new Object[]{event.getMessage().getContents()}));
     }
 
     @SubscribeEvent
     public static void onPlayerSleepInBed(PlayerSleepInBedEvent event) {
-        // eventManager.runOnPlayerSleep(event.getPlayer().getUUID());
+        // eventManagerJS.runEvent("playerSleep",
+                // new NativeArray(new Object[] {event.getPlayer().getUUID()}));
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
+import net.minecraft.entity.Entity;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
@@ -23,6 +24,16 @@ public class MobJS extends ScriptableObject implements EnvResource {
         System.out.println("Putting mob in base");
         return mob;
     }
+    public MobController create(String id, Double x, Double y, Double z, String type, String name, Boolean visible) {
+        System.out.println("Started creating");
+        MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType(type));
+        System.out.println("Mob = " + mob);
+        controllers.put(id, mob);
+        System.out.println("Putting mob in base");
+        mob.setName(name);
+        mob.setNameVisible(visible);
+        return mob;
+    }
     public MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {
         Object[] args = npcArgs.toArray(new Object[0]);
         MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType("NPC"));
@@ -31,6 +42,9 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     public MobController getMob(String id) {
         return controllers.get(id);
+    }
+    public Entity mob(String id) {
+        return controllers.get(id).getEntity();
     }
 
     public static void putIntoScope(Scriptable scope) {
@@ -43,6 +57,17 @@ public class MobJS extends ScriptableObject implements EnvResource {
             methodsToAdd.add(create);
             Method getMob = MobJS.class.getMethod("getMob", String.class);
             methodsToAdd.add(getMob);
+            Method mob = MobJS.class.getMethod("mob", String.class);
+            methodsToAdd.add(mob);
+            Method createWP = MobJS.class.getMethod("create",
+                    String.class,
+                    Double.class,
+                    Double.class,
+                    Double.class,
+                    String.class,
+                    String.class,
+                    Boolean.class);
+            methodsToAdd.add(createWP);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

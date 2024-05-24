@@ -14,12 +14,10 @@ import org.thesalutyt.storyverse.common.entities.Entities;
 public class StoryVerse {
     public static final String MOD_ID = "storyverse";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final String HEROID = "#7f3bc";
 
     public StoryVerse() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
-        new SVConfig();
         Entities.register(bus);
         SVEngine.createEngineDirectory();
         SVEngine.sendInfoMessage();

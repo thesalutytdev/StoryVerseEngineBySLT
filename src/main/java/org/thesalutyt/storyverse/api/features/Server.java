@@ -48,7 +48,6 @@ public class Server extends ScriptableObject implements EnvResource {
             desc = "Returns players list"
     )
     public static List<ServerPlayerEntity> getPlayers() {
-
         return server.getPlayerList().getPlayers();
     }
     public static ServerPlayerEntity getDevPlayer() {
@@ -144,6 +143,8 @@ public class Server extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setFlightAllowed);
             Method getPlayerByName = Server.class.getMethod("getPlayerByName", String.class);
             methodsToAdd.add(getPlayerByName);
+            Method getFirstPlayer = Server.class.getMethod("getFirstPlayer");
+            methodsToAdd.add(getFirstPlayer);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -164,6 +165,9 @@ public class Server extends ScriptableObject implements EnvResource {
     )
     public static PlayerEntity getPlayer() {
         return mc.player;
+    }
+    public static ServerPlayerEntity getFirstPlayer() {
+        return server.getPlayerList().getPlayers().get(0);
     }
 
     @Override

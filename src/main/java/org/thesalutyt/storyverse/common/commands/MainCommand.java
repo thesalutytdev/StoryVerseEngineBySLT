@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityType;

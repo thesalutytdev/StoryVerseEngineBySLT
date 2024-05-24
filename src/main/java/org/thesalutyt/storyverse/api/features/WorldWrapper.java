@@ -23,6 +23,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.common.events.EventType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -175,6 +176,27 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
     }
     public Item item(Integer id) {
         return Item.byId(id);
+    }
+    public String key(String key) {
+        switch (key) {
+            case "DEFAULT": {
+                return "DEFAULT";
+            }
+        }
+        return "null";
+    }
+    public EventType toEventType(String type) {
+        switch (type) {
+            case "message":
+                return EventType.MESSAGE;
+            case "interact":
+                return EventType.INTERACT;
+            case "button":
+                return EventType.ON_NEXT_BUTTON_PRESS;
+            case "sleep":
+                return EventType.ON_PLAYER_SLEEP;
+        }
+        return null;
     }
 
     public static void putIntoScope (Scriptable scope) {

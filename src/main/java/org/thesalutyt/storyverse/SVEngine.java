@@ -15,7 +15,7 @@ public class SVEngine {
     public static String docLink = "404:NoDocsAtMoment";
     public static String prefix = "[StoryVerseEngine]";
     public static String chatPrefix = "§7[§b§lStory§a§lVerse§7]§r ";
-    public static String modVersion = "0.1.8-Alpha";
+    public static String modVersion = "2.5-Beta";
     public static String border = " =========================== ";
     public static String onLineBorder = " || ";
     public static String description = "Mod what allows and helps you create story-based maps and series!";
@@ -24,6 +24,7 @@ public class SVEngine {
     public static final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
+    public static final String CONFIG_PATH = GAME_DIR + "/config/";
     public static final String MOB_CONTROLLER_PREFIX = "prefix.storyverse.mob_controller";
     public static final String WORLD_WRAPPER_PREFIX = "prefix.storyverse.world_actions";
     public static final String SOUNDS_ENGINE_PREFIX = "prefix.storyverse.sound";
@@ -39,6 +40,7 @@ public class SVEngine {
     public static SVColors CHARACTER_COLOR = SVColors.GREEN;
     public static String CHARACTER_COLOR_STR = "§3";
     public static String DEFAULT_CHARACTER_NAME = "prefix.storyverse.default.npc";
+    public static final String HERO_ID = "#7f3bc";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
     public SVEngine(){}

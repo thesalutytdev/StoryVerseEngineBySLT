@@ -31,7 +31,7 @@ public class Interpreter {
             Sounds.putIntoScope(scope);
             WorldWrapper.putIntoScope(scope);
             MobController.putIntoScope(scope);
-            EventManager.putIntoScope(scope);
+            EventManagerJS.putIntoScope(scope, loop);
             MobJS.putIntoScope(scope);
         });
     }
@@ -39,7 +39,9 @@ public class Interpreter {
     public void close () {
         loop.close();
     }
-
+    public EventLoop getLoop() {
+        return this.loop;
+    }
     public void executeString (String str) {
         loop.runImmediate(() -> Context.getCurrentContext().evaluateString(
                 scope,
