@@ -2,10 +2,10 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.functions.CopyName;
+import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
@@ -60,6 +60,22 @@ public class Chat extends ScriptableObject implements EnvResource {
         message.append(String.format("%s[Движок]§r %s", SVEngine.CHARACTER_COLOR_STR, text));
         sendEveryone(message);
     }
+    public static void sendError(String text) {
+        IFormattableTextComponent message = new StringTextComponent("");
+        message.append(String.format("§4[ERROR] §r%s", text));
+        sendEveryone(message);
+    }
+    public static void sendTranslatable(String text) {
+        TranslationTextComponent message = new TranslationTextComponent(text);
+        sendEveryone(message);
+    }
+    public static void sendCopyable(String text) {
+        Server.execute(String.format(
+                "/tellraw @a {\"text\":\"%s\",\"clickEvent\":{\"action\":\"copy_to_clipboard\",\"value\":\"%s\"}}",
+                text,
+                text
+        ));
+    }
     public static void setCharacterColor(String color) {
         SVEngine.CHARACTER_COLOR_STR = color;
     }
@@ -83,6 +99,12 @@ public class Chat extends ScriptableObject implements EnvResource {
             methodsToAdd.add(sendAsEngine);
             Method setCharacterColor = Chat.class.getMethod("setCharacterColor", String.class);
             methodsToAdd.add(setCharacterColor);
+            Method sendError = Chat.class.getMethod("sendError", String.class);
+            methodsToAdd.add(sendError);
+            Method sendTranslatable = Chat.class.getMethod("sendTranslatable", String.class);
+            methodsToAdd.add(sendTranslatable);
+            Method sendCopyable = Chat.class.getMethod("sendCopyable", String.class);
+            methodsToAdd.add(sendCopyable);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

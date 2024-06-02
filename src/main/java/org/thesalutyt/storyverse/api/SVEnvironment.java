@@ -1,5 +1,7 @@
 package org.thesalutyt.storyverse.api;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.thesalutyt.storyverse.api.camera.Camera;
@@ -44,6 +46,12 @@ public class SVEnvironment extends Environment {
         }
         public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
 
+        }
+        public static void playerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
+            SVEnvironment.Root.resetTick();
+        }
+        public static Entity getCameraEntity() {
+            return Minecraft.getInstance().cameraEntity;
         }
     }
 }

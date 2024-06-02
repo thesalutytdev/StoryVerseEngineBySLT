@@ -32,5 +32,4 @@ public class CommonEvents {
     public static void serverStarted(FMLServerStartedEvent event) {
         SVEngine.sendInfoMessage();
     }
-
 }

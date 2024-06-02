@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputMappings;
@@ -16,6 +17,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
@@ -39,8 +41,16 @@ public class MainCommand {
                                         .executes((command) -> {
                                             return getBlockPos(command.getSource());
                                         }))
+                        .then(Commands.literal("run")
+                                .then(Commands.argument("script_name", StringArgumentType.string())).executes(
+                                        ((command) -> { return runScript(command.getSource(), StringArgumentType.getString(
+                                                command, "script_name"
+                                        )); })
+                                ))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
+                        .then(Commands.literal("camera_entity")
+                                .executes((command) -> {return getCameraEntity(command.getSource());}))
                         .then(Commands.literal("action_packet")
                                 .executes((command) -> {
                                     return actionPacketTest(command.getSource());
@@ -178,7 +188,19 @@ public class MainCommand {
         ServerPlayerEntity player = source.getPlayerOrException();
         Vector3d result = player.pick(100, 0.0f, true).getLocation();
         Chat.sendAsEngine(String.format("%.2f, %.2f, %.2f", result.x, result.y, result.z));
+        Chat.sendCopyable(String.format("%.2f, %.2f, %.2f", result.x, result.y, result.z));
 
+        return 1;
+    }
+    public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {
+        Interpreter interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
+        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", script_name));
+
+        return 1;
+    }
+    public static int getCameraEntity(CommandSource source) throws CommandSyntaxException {
+        System.out.println("Camera entity: " + SVEnvironment.Root.getCameraEntity());
+        Chat.sendAsEngine("Camera entity: " + SVEnvironment.Root.getCameraEntity());
         return 1;
     }
 }

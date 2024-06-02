@@ -8,6 +8,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
@@ -36,7 +37,7 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
         this.armorInventory = NonNullList.withSize(4, ItemStack.EMPTY);
         this.inventory = NonNullList.withSize(16, ItemStack.EMPTY);
         this.ticks = 0;
-    }
+    } // Пугачёва 18
     private <E extends IAnimatable> PlayState predicateDef(AnimationEvent<E> event) {
         event.getController().transitionLengthTicks = 15.0;
         String idleAnim = String.valueOf(this.getPersistentData().get("idleAnim"));

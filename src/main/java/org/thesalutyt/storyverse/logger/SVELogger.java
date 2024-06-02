@@ -22,7 +22,25 @@ public class SVELogger {
         } catch (IOException e) {
             System.out.println(SVEngine.prefix + " Can not create log file with this exception:\n" + e.getMessage());
         }
-    };
+    }
+    public static void create_file(String file_path, String file_name) {
+        try {
+            String full_path;
+            if (file_path.endsWith("/") || file_name.startsWith("/")) {
+                full_path = file_path + file_name;
+            } else if (file_path.endsWith("/") && file_name.startsWith("/")) {
+                return;
+            } else {
+                full_path = file_path + "/" + file_name;
+            }
+            File file = new File(full_path);
+            if (file.createNewFile()) {
+                System.out.println("Created new file " + full_path);
+            }
+        } catch (IOException e) {
+            System.out.println("Caught unexpected error while creating file:\n | " + e.getMessage());
+        }
+    }
 
     public static String init (String story_name) {
         create_file(story_name);

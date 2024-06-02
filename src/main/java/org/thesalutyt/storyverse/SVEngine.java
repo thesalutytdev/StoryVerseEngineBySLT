@@ -1,6 +1,9 @@
 package org.thesalutyt.storyverse;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.Chat;
@@ -15,7 +18,7 @@ public class SVEngine {
     public static String docLink = "404:NoDocsAtMoment";
     public static String prefix = "[StoryVerseEngine]";
     public static String chatPrefix = "§7[§b§lStory§a§lVerse§7]§r ";
-    public static String modVersion = "2.5-Beta";
+    public static String modVersion = "2.7-Beta";
     public static String border = " =========================== ";
     public static String onLineBorder = " || ";
     public static String description = "Mod what allows and helps you create story-based maps and series!";
@@ -24,6 +27,7 @@ public class SVEngine {
     public static final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
+    public static final String DOCS_PATH = SCRIPTS_PATH + "docs/";
     public static final String CONFIG_PATH = GAME_DIR + "/config/";
     public static final String MOB_CONTROLLER_PREFIX = "prefix.storyverse.mob_controller";
     public static final String WORLD_WRAPPER_PREFIX = "prefix.storyverse.world_actions";
@@ -41,6 +45,7 @@ public class SVEngine {
     public static String CHARACTER_COLOR_STR = "§3";
     public static String DEFAULT_CHARACTER_NAME = "prefix.storyverse.default.npc";
     public static final String HERO_ID = "#7f3bc";
+    public static final String OP_PLAYER = "TheSALUTYT";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
     public SVEngine(){}
@@ -112,5 +117,15 @@ public class SVEngine {
         System.out.println("[SVEngine::DirectoryCreating] Created main directory");
         SVELogger.create_dir(LOGS_PATH);
         System.out.println("[SVEngine::DirectoryCreating] Created logs directory");
+    }
+    public static void specialDocumentation() {
+        System.out.println(Item.getId(new ItemStack(
+                Items.DIAMOND_SWORD
+        ).getItem()));
+        SVELogger.create_dir(DOCS_PATH);
+        SVELogger.create_file(DOCS_PATH, "item_id.txt");
+        SVELogger.write(DOCS_PATH + "item_id.txt", "ITEM INTENSIFICATION:\n" + Item.getId(new ItemStack(
+                Items.DIAMOND_SWORD
+        ).getItem()));
     }
 }

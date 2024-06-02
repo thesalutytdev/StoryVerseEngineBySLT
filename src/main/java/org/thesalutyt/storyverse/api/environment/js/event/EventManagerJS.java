@@ -16,6 +16,7 @@ import java.util.HashMap;
 public class EventManagerJS extends ScriptableObject implements EnvResource, JSResource {
     private final EventLoop loop;
     private final HashMap<String, ArrayList<BaseFunction>> handlers = new HashMap<>();
+    public static String last_message;
     public EventManagerJS(EventLoop eventLoop) {
         this.loop = eventLoop;
     }
@@ -31,6 +32,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(removeEventListener);
             Method runEvent = EventManagerJS.class.getMethod("runEvent", String.class, NativeArray.class);
             methodsToAdd.add(runEvent);
+            Method getMessage = EventManagerJS.class.getMethod("getLastMessage");
+            methodsToAdd.add(getMessage);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -95,6 +98,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
                 }
             }
         });
+    }
+
+    public static String getLastMessage() {
+        return last_message;
     }
 
     @Override

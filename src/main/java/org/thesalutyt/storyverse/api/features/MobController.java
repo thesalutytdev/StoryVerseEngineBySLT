@@ -1,13 +1,11 @@
 package org.thesalutyt.storyverse.api.features;
 
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -21,8 +19,8 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 
@@ -39,6 +37,9 @@ public class MobController extends ScriptableObject implements EnvResource {
     public static HashMap<UUID, MobController> mobControllers = new HashMap<>();
     private boolean hasCustomUUID = false;
     private UUID customUUID = null;
+    private Boolean nameVisible = false;
+    private UUID uuid;
+    private String customName;
     private Float mobSpeed;
     public static ArrayList<String> interactActionsID = new ArrayList<>();
     private Goal moveGoal;
@@ -65,6 +66,7 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
         System.out.println("Setting mob's speed");
         mobSpeed = this.entity.getSpeed();
+        uuid = this.entity.getUUID();
     }
 
     public MobController() {
@@ -111,12 +113,14 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Sets custom name for a mob"
     )
     public MobController setName(String newName) {
-        ITextComponent name = new StringTextComponent(newName);
+        this.customName = newName;
+        ITextComponent name = new StringTextComponent(customName);
         this.entity.setCustomName(name);
         return this;
     }
     public MobController setNameVisible(Boolean method) {
-        this.entity.setCustomNameVisible(method);
+        this.nameVisible = method;
+        this.entity.setCustomNameVisible(nameVisible);
         return this;
     }
 
@@ -124,7 +128,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Returns mob's custom name"
     )
     public String getName() {
-        return this.entity.getName().getContents();
+        return this.customName;
     }
 
     @Documentate(
@@ -244,16 +248,16 @@ public class MobController extends ScriptableObject implements EnvResource {
     @Documentate(
             desc = "Gives mob item in hand"
     )
-    public MobController setItemMainHand(Object item) {
-        this.entity.setItemInHand(Hand.MAIN_HAND, new ItemStack((Item) item));
+    public MobController setItemMainHand(Integer item) {
+        this.entity.setItemInHand(Hand.MAIN_HAND, new ItemStack(worldWrapper.item(item)));
         return this;
     }
-    public MobController setItemOffHand(Object item) {
-        this.entity.setItemInHand(Hand.OFF_HAND, new ItemStack((Item) item));
+    public MobController setItemOffHand(Integer item) {
+        this.entity.setItemInHand(Hand.OFF_HAND, new ItemStack(worldWrapper.item(item)));
         return this;
     }
-    public MobController holdItem(Object hand, Object item) {
-        this.entity.setItemInHand((Hand) hand, new ItemStack((Item) item));
+    public MobController holdItem(Integer hand, Integer item) {
+        this.entity.setItemInHand(worldWrapper.selectHand(hand), new ItemStack(worldWrapper.item(item)));
         return this;
     }
     @Documentate(
@@ -355,6 +359,10 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.swing((Hand) hand);
         return this;
     }
+    public MobController swing(Integer hand) {
+        this.entity.swing(worldWrapper.selectHand(hand));
+        return this;
+    }
 
     @Documentate(
             desc = "Sets mob's head rotation"
@@ -389,6 +397,10 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.setTarget((LivingEntity) target);
         return this;
     }
+    public MobController setTarget(String mobId) {
+        this.entity.setTarget(MobJS.controllers.get(mobId).getMobEntity());
+        return this;
+    }
     public void setPlayerAggressive(Boolean method) {
         if (method) {
             this.entity.setTarget((LivingEntity) Server.getPlayer().getEntity());
@@ -411,6 +423,10 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.lookAt((Entity) target, pitch.floatValue(), yaw.floatValue());
         return this;
     }
+    public MobController setEntityFocused(String mobId, Double pitch, Double yaw) {
+        this.entity.lookAt(MobJS.controllers.get(mobId).getEntity(), pitch.floatValue(), yaw.floatValue());
+        return this;
+    }
 
     @Documentate(
             desc = "Sets mob focus on player"
@@ -421,6 +437,15 @@ public class MobController extends ScriptableObject implements EnvResource {
     }
     public MobController lookPlayer(Object player, Double pitch, Double yaw) {
         this.entity.lookAt((PlayerEntity) player, pitch.floatValue(), yaw.floatValue());
+        return this;
+    }
+    public MobController lookPlayer(Double pitch, Double yaw) {
+        this.entity.lookAt(Player.getPlayer(), pitch.floatValue(), yaw.floatValue());
+        return this;
+    }
+
+    public MobController lookPlayer() {
+        this.entity.lookAt(Player.getPlayer(), Player.getPlayer().xRot, Player.getPlayer().yRot);
         return this;
     }
 
@@ -547,7 +572,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setHeadRot);
             Method setEntityFocused = MobController.class.getMethod("setEntityFocused", Object.class, Double.class, Double.class);
             methodsToAdd.add(setEntityFocused);
-            Method giveItem = MobController.class.getMethod("holdItem", Object.class, Object.class);
+            Method giveItem = MobController.class.getMethod("holdItem", Integer.class, Integer.class);
             methodsToAdd.add(giveItem);
             Method setName = MobController.class.getMethod("setName", String.class);
             methodsToAdd.add(setName);
@@ -567,6 +592,8 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(pickItem);
             Method swing = MobController.class.getMethod("swing", Object.class);
             methodsToAdd.add(swing);
+            Method swingHand = MobController.class.getMethod("swing", Integer.class);
+            methodsToAdd.add(swingHand);
             Method bodyRot = MobController.class.getMethod("setBodyRot", Double.class);
             methodsToAdd.add(bodyRot);
             Method setX = MobController.class.getMethod("setX", Double.class);
@@ -581,9 +608,9 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setPhysics);
             Method setNoAI = MobController.class.getMethod("setNoAI", Boolean.class);
             methodsToAdd.add(setNoAI);
-            Method setItemMainH = MobController.class.getMethod("setItemMainHand", Object.class);
+            Method setItemMainH = MobController.class.getMethod("setItemMainHand", Integer.class);
             methodsToAdd.add(setItemMainH);
-            Method setItemOffH = MobController.class.getMethod("setItemOffHand", Object.class);
+            Method setItemOffH = MobController.class.getMethod("setItemOffHand", Integer.class);
             methodsToAdd.add(setItemOffH);
             Method setXRot = MobController.class.getMethod("setXRotation", Double.class);
             methodsToAdd.add(setXRot);

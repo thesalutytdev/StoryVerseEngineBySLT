@@ -9,7 +9,6 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 public class NPCRenderer extends GeoEntityRenderer<NPCEntity> {
     public NPCRenderer(EntityRendererManager renderManager) {
         super(renderManager, new NPCModel());
-        this.shadowRadius = 0.5F;
     }
 
     public ResourceLocation getTextureLocation(NPCEntity instance) {

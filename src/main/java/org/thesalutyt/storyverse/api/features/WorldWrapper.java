@@ -22,6 +22,7 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.events.EventType;
 
@@ -157,8 +158,44 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             case "SQUID": {
                 return EntityType.SQUID;
             }
+            case "SKELETON": {
+                return EntityType.SKELETON;
+            }
+            case "ZOMBIE": {
+                return EntityType.ZOMBIE;
+            }
+            case "BLAZE": {
+                return EntityType.BLAZE;
+            }
+            case "VILLAGER": {
+                return EntityType.VILLAGER;
+            }
+            case "ENDERMAN": {
+                return EntityType.ENDERMAN;
+            }
+            default: {
+                return EntityType.SHEEP;
+            }
         }
-        return EntityType.COW;
+    }
+    public CameraType toCameraType(String type) {
+        switch (type) {
+            case "MOVE":
+            case "MOVING": {
+                return CameraType.MOVING;
+            }
+            case "ROTATION_ONLY": {
+                return CameraType.ROT_ONLY;
+            }
+            case "POSITION_ONLY": {
+                return CameraType.POS_ONLY;
+            }
+            case "FULL":
+            case "STATIC":
+            default: {
+                return CameraType.FULL;
+            }
+        }
     }
     public Effect toEffect(Integer id) {
         return Effect.byId(id);

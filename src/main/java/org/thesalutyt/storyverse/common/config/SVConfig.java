@@ -8,8 +8,8 @@ public class SVConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_MODE;
 
     static {
-        BUILDER.push("StoryVerse Configuration");
-        DEBUG_MODE = BUILDER.define("Debug Mode", false);
+        BUILDER.push("StoryVerse Engine Configuration");
+        DEBUG_MODE = BUILDER.comment("Is engine into debug mode. Default is true").define("is debug", true);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

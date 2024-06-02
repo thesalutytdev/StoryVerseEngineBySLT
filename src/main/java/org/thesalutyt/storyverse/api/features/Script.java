@@ -13,6 +13,7 @@ import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
@@ -89,6 +90,12 @@ public class Script extends ScriptableObject implements EnvResource {
         String logs_path = SVELogger.init(scriptName);
         SVELogger.write(logs_path, "Ran script successfully");
     }
+    public static void log(String message) {
+        String logs_path = SVELogger.init("ScriptLogs");
+        SVELogger.write(logs_path, message);
+        ExternalFunctions ef = new ExternalFunctions(SVEngine.SCRIPTS_PATH);
+        ef.log(message);
+    }
     public static void waitUntilMessage(String message) {
         Integer waitTimeAmount = 1;
     }
@@ -106,6 +113,10 @@ public class Script extends ScriptableObject implements EnvResource {
             methodsToAdd.add(waitWalkTaskEnd);
             Method waitZero = Script.class.getMethod("waitZero");
             methodsToAdd.add(waitZero);
+            Method runScript = Script.class.getMethod("runScript", String.class);
+            methodsToAdd.add(runScript);
+            Method log = Script.class.getMethod("log", String.class);
+            methodsToAdd.add(log);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

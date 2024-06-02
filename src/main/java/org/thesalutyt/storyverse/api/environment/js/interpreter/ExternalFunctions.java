@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.FileNotFoundException;
@@ -117,10 +118,13 @@ public class ExternalFunctions extends ScriptableObject {
                 );
             } catch (final FileNotFoundException e) {
                 System.out.println("Invalid path (" + path_to_file + "): file not found");
+                Chat.sendError("Invalid path (" + path_to_file + "): file not found");
             } catch (final IOException e) {
                 System.out.println("Invalid path (" + path_to_file + "): IOException " + e);
+                Chat.sendError("Invalid path (" + path_to_file + "): IOException " + e);
             } catch (final RhinoException e) {
                 System.out.println("Script error: " + e);
+                Chat.sendError("Script error: " + e);
             }
         } else {
             System.out.println("Invalid path (" + path_to_file + "): path ends outside root script directory");

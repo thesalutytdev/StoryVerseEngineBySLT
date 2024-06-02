@@ -3,6 +3,8 @@ package org.thesalutyt.storyverse.api.environment.js.interpreter;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.event.EventListener;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.mozilla.javascript.Context;
@@ -33,6 +35,8 @@ public class Interpreter {
             MobController.putIntoScope(scope);
             EventManagerJS.putIntoScope(scope, loop);
             MobJS.putIntoScope(scope);
+            EventListener.putIntoScope(scope, loop);
+            CutsceneJS.putIntoScope(scope);
         });
     }
 

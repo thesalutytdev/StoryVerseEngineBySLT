@@ -1,12 +1,14 @@
 package org.thesalutyt.storyverse.api.camera;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
+import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.*;
@@ -21,6 +23,7 @@ public class Cutscene implements EnvResource {
     private Script script = new Script();
     private CameraType cameraType;
     private PlayerEntity player;
+    private GameType beforeGameMode;
     public Cutscene() {
 
     }
@@ -32,14 +35,13 @@ public class Cutscene implements EnvResource {
         this.beforeCutscenePosition = player.blockPosition();
         this.cameraEntityController = new MobController(pos, cameraEntity);
         mc.setCameraEntity(cameraEntityController.getEntity());
-        new Thread(() -> {cameraEntityController.setInvisible(true);
-            cameraEntityController.addEffect(Effects.INVISIBILITY, 999999, 99);
-            cameraEntityController.setNoAI(true);
-        }).start();
+        cameraEntityController.addEffect(Effects.INVISIBILITY, 999999999, 99);
+        cameraEntityController.setNoAI(true);
         this.cameraType = type;
         this.player = player;
+        this.beforeGameMode = GameType.SURVIVAL;
         player.setGameMode(GameType.SPECTATOR);
-        Server.execute(player, "/gamemode @s spectator");
+        Server.execute(player, "/gamemode spectator @s");
 
         return this;
     }
@@ -78,11 +80,13 @@ public class Cutscene implements EnvResource {
             desc = "Makes player exit cutscene"
     )
     public CameraResult exitCutscene() {
-        this.mc.cameraEntity = player;
+        this.mc.cameraEntity = (ClientPlayerEntity) Server.getPlayer();
         this.cameraEntityController.kill();
         this.player.setPos(this.beforeCutscenePosition.getX(),
                 this.beforeCutscenePosition.getY(),
                 this.beforeCutscenePosition.getZ());
+        this.player.setGameMode(beforeGameMode);
+        Server.execute("/gamemode survival @s");
 
         return CameraResult.CAMERA_SUCCESS;
     }
@@ -101,7 +105,12 @@ public class Cutscene implements EnvResource {
 
         return CameraResult.CAMERA_SUCCESS;
     }
-
+    public CameraType getCameraType() {
+        return this.cameraType;
+    }
+    public static void putIntoScope(Scriptable scope) {
+        scope.put("cutscene", scope, new Cutscene());
+    }
     @Documentate(
             desc = "Returns camera entity controller"
     )

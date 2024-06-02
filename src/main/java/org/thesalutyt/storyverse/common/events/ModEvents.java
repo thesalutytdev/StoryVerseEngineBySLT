@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.common.events;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -13,11 +14,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.command.ConfigCommand;
 
-import org.mozilla.javascript.NativeArray;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
-import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.common.commands.CrashMyGame;
 import org.thesalutyt.storyverse.common.commands.MainCommand;
@@ -81,6 +80,7 @@ public class ModEvents {
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
             SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
             System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
+            System.out.println(Minecraft.getInstance().cameraEntity);
         }
     }
     @SubscribeEvent
