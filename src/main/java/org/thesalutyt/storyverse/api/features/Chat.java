@@ -17,6 +17,7 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Chat extends ScriptableObject implements EnvResource {
     private static final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
@@ -77,6 +78,10 @@ public class Chat extends ScriptableObject implements EnvResource {
         ));
     }
     public static void setCharacterColor(String color) {
+        if (Objects.equals(color, "reset")) {
+            SVEngine.CHARACTER_COLOR_STR = "§3";
+            return;
+        }
         SVEngine.CHARACTER_COLOR_STR = color;
     }
     @Documentate(

@@ -1,10 +1,13 @@
 package org.thesalutyt.storyverse.api.environment.js.cutscene;
 
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
@@ -14,6 +17,7 @@ import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
+import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,13 +25,26 @@ import java.util.Objects;
 
 public class CutsceneJS extends ScriptableObject implements JSResource, EnvResource {
     private static final WorldWrapper worldWrapper = new WorldWrapper();
+    private static MobJS mobJS = new MobJS();
+    private static MobController cameraMob;
     private static Cutscene cutscene;
-    public static void enter(String playerName, String mobId, Double x, Double y, Double z, String cameraType) {
+    private static BlockPos firstCutscenePosition;
+    private static Entity cameraEntity;
+    public static void setCameraMob(String mobId) {
+        MobController mob = mobJS.getMob(mobId);
+        cameraMob = mob;
+        Camera camera = new Camera().setCameraEntity(mob.getEntity());
+    }
+    public static void enter(String playerName, String mobId, Double x, Double y, Double z, Double xHeadRot, Double yHeadRot, String cameraType) {
         CameraType camType = worldWrapper.toCameraType(cameraType);
         BlockPos pos = worldWrapper.pos(x, y, z);
-        MobController mob = MobJS.controllers.get(mobId);
+        MobController mob = mobJS.create(mobId + "_CSMOB", x, y, z, "SHEEP");
+        cameraMob = mob;
         ServerPlayerEntity player = Server.getPlayerByName(playerName);
         cutscene = new Cutscene().enterCutscene(player, mob.getEntity().getType(), pos, camType);
+        cutscene.getCameraController().getEntity().xRot = xHeadRot.floatValue();
+        cutscene.getCameraController().getEntity().setYHeadRot(yHeadRot.floatValue());
+        cutscene.getCameraController().getEntity().yRot = yHeadRot.floatValue();
     }
     public static void move(Double x, Double y, Double z, Integer speed) {
         if (cutscene == null) {
@@ -36,8 +53,12 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
             return;
         } else {
             Objects.requireNonNull(getController()).setNoAI(false);
-            cutscene.move(worldWrapper.pos(x, y, z), speed);
-            getController().setNoAI(true);
+            CreatureEntity creatureEntity = (CreatureEntity) cameraEntity;
+            MoveGoal moveGoal = new MoveGoal(creatureEntity, new BlockPos(x, y, z), speed);
+            creatureEntity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
+                creatureEntity.goalSelector.removeGoal(prioritizedGoal.getGoal());
+            });
+            creatureEntity.goalSelector.addGoal(0, moveGoal);
         }
     }
     public static void stopMove() {
@@ -73,6 +94,13 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
             return;
         } else {
             cutscene.exitCutscene();
+            cutscene = null;
+            try {
+                cameraMob.remove();
+            } catch (Exception e) {
+                Chat.sendError(e.getMessage());
+                System.out.println(e.getMessage());
+            }
         }
     }
     public static void putIntoScope(Scriptable scope) {
@@ -81,7 +109,7 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
         ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
-            Method enter = CutsceneJS.class.getMethod("enter", String.class, String.class, Double.class, Double.class, Double.class, String.class);
+            Method enter = CutsceneJS.class.getMethod("enter", String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, String.class);
             methodsToAdd.add(enter);
             Method move = CutsceneJS.class.getMethod("move", Double.class, Double.class, Double.class, Integer.class);
             methodsToAdd.add(move);
@@ -95,6 +123,8 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
             methodsToAdd.add(getCameraType);
             Method exit = CutsceneJS.class.getMethod("exit");
             methodsToAdd.add(exit);
+            Method setCameraMob = CutsceneJS.class.getMethod("setCameraMob", String.class);
+            methodsToAdd.add(setCameraMob);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

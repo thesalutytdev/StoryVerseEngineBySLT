@@ -30,6 +30,8 @@ import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 
 import org.mozilla.javascript.Context;
+import org.thesalutyt.storyverse.common.screen.gui.myfirstgui.MyFirstGui;
+
 import java.io.FileNotFoundException;
 
 public class MainCommand {
@@ -49,6 +51,8 @@ public class MainCommand {
                                 ))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
+                        .then(Commands.literal("gui")
+                                .executes((command) -> {return guiTest(command.getSource());}))
                         .then(Commands.literal("camera_entity")
                                 .executes((command) -> {return getCameraEntity(command.getSource());}))
                         .then(Commands.literal("action_packet")
@@ -187,8 +191,14 @@ public class MainCommand {
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         Vector3d result = player.pick(100, 0.0f, true).getLocation();
-        Chat.sendAsEngine(String.format("%.2f, %.2f, %.2f", result.x, result.y, result.z));
-        Chat.sendCopyable(String.format("%.2f, %.2f, %.2f", result.x, result.y, result.z));
+        Double x = result.x;
+        Double y = result.y;
+        Double z = result.z;
+        String rX = String.format("%.2f", x).replace(",", ".");
+        String rY = String.format("%.2f", y).replace(",", ".");
+        String rZ = String.format("%.2f", z).replace(",", ".");
+        Chat.sendAsEngine(String.format("%s, %s, %s", rX, rY, rZ));
+        Chat.sendCopyable(String.format("%s, %s, %s", rX, rY, rZ));
 
         return 1;
     }
@@ -201,6 +211,15 @@ public class MainCommand {
     public static int getCameraEntity(CommandSource source) throws CommandSyntaxException {
         System.out.println("Camera entity: " + SVEnvironment.Root.getCameraEntity());
         Chat.sendAsEngine("Camera entity: " + SVEnvironment.Root.getCameraEntity());
+        return 1;
+    }
+    public static int guiTest(CommandSource source) throws CommandSyntaxException {
+        Chat.sendAsEngine("GUI test");
+        try {
+            MyFirstGui.open();
+        } catch (Exception e) {
+            Chat.sendError(e.getMessage());
+        }
         return 1;
     }
 }

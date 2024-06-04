@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
+import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
@@ -37,6 +38,7 @@ public class Interpreter {
             MobJS.putIntoScope(scope);
             EventListener.putIntoScope(scope, loop);
             CutsceneJS.putIntoScope(scope);
+            LocationCreator.putIntoScope(scope);
         });
     }
 

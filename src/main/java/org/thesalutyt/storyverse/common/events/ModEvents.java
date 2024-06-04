@@ -74,15 +74,6 @@ public class ModEvents {
         // eventManagerJS.runEvent("playerSleep",
                 // new NativeArray(new Object[] {event.getPlayer().getUUID()}));
     }
-
-    @SubscribeEvent
-    public static void onWorldJoin(EntityJoinWorldEvent event) {
-        if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
-            SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
-            System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
-            System.out.println(Minecraft.getInstance().cameraEntity);
-        }
-    }
     @SubscribeEvent
     public static void onWorldLeave(EntityLeaveWorldEvent event) {
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {

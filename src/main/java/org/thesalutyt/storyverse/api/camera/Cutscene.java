@@ -12,6 +12,7 @@ import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 
 public class Cutscene implements EnvResource {
     private Camera camera;
@@ -36,7 +37,8 @@ public class Cutscene implements EnvResource {
         this.cameraEntityController = new MobController(pos, cameraEntity);
         mc.setCameraEntity(cameraEntityController.getEntity());
         cameraEntityController.addEffect(Effects.INVISIBILITY, 999999999, 99);
-        cameraEntityController.setNoAI(true);
+        // cameraEntityController.setNoAI(true);
+        cameraEntityController.moveTo(pos, 1);
         this.cameraType = type;
         this.player = player;
         this.beforeGameMode = GameType.SURVIVAL;
@@ -53,15 +55,8 @@ public class Cutscene implements EnvResource {
         if (this.cameraType == CameraType.FULL || this.cameraType == CameraType.POS_ONLY || this.cameraType == CameraType.ROT_ONLY) {
             return CameraResult.CAMERA_FAILED;
         } else {
-            new Thread(() -> {
-                this.cameraEntityController.setNoAI(false);
-
-                WalkTask walkTask = new WalkTask(pos,
-                        this.cameraEntityController.getMobEntity(),
-                        this.cameraEntityController.getController());
-                script.waitWalkEnd(walkTask);
-                this.cameraEntityController.setNoAI(true);
-            }).start();
+            this.cameraEntityController.setNoAI(false);
+            WalkTask walkTask = cameraEntityController.moveTo(pos, speed);
 
             return CameraResult.CAMERA_SUCCESS;
         }
@@ -81,7 +76,7 @@ public class Cutscene implements EnvResource {
     )
     public CameraResult exitCutscene() {
         this.mc.cameraEntity = (ClientPlayerEntity) Server.getPlayer();
-        this.cameraEntityController.kill();
+        this.cameraEntityController.remove();
         this.player.setPos(this.beforeCutscenePosition.getX(),
                 this.beforeCutscenePosition.getY(),
                 this.beforeCutscenePosition.getZ());

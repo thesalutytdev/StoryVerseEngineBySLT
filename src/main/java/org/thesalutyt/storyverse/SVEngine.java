@@ -28,6 +28,9 @@ public class SVEngine {
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
     public static final String DOCS_PATH = SCRIPTS_PATH + "docs/";
+    public static final String ASSETS_DIR = SCRIPTS_PATH + "assets/storyverse/";
+    public static final String MODELS_PATH = ASSETS_DIR + "/models/";
+    public static final String TEXTURES_PATH = ASSETS_DIR + "/textures/";
     public static final String CONFIG_PATH = GAME_DIR + "/config/";
     public static final String MOB_CONTROLLER_PREFIX = "prefix.storyverse.mob_controller";
     public static final String WORLD_WRAPPER_PREFIX = "prefix.storyverse.world_actions";
@@ -117,6 +120,12 @@ public class SVEngine {
         System.out.println("[SVEngine::DirectoryCreating] Created main directory");
         SVELogger.create_dir(LOGS_PATH);
         System.out.println("[SVEngine::DirectoryCreating] Created logs directory");
+        SVELogger.create_dir(ASSETS_DIR);
+        System.out.println("[SVEngine::DirectoryCreating] Created assets directory");
+        SVELogger.create_dir(MODELS_PATH);
+        System.out.println("[SVEngine::DirectoryCreating] Created models directory");
+        SVELogger.create_dir(TEXTURES_PATH);
+        System.out.println("[SVEngine::DirectoryCreating] Created textures directory");
     }
     public static void specialDocumentation() {
         System.out.println(Item.getId(new ItemStack(

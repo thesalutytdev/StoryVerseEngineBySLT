@@ -125,6 +125,9 @@ public class ExternalFunctions extends ScriptableObject {
             } catch (final RhinoException e) {
                 System.out.println("Script error: " + e);
                 Chat.sendError("Script error: " + e);
+            } catch (final Exception e) {
+                System.out.println("Java exception: " + e.getMessage());
+                Chat.sendError("Java exception: " + e.getMessage());
             }
         } else {
             System.out.println("Invalid path (" + path_to_file + "): path ends outside root script directory");
