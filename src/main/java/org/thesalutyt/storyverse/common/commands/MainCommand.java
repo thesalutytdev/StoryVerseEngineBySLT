@@ -32,6 +32,9 @@ import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.common.screen.gui.myfirstgui.MyFirstGui;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 
 public class MainCommand {
@@ -199,7 +202,10 @@ public class MainCommand {
         String rZ = String.format("%.2f", z).replace(",", ".");
         Chat.sendAsEngine(String.format("%s, %s, %s", rX, rY, rZ));
         Chat.sendCopyable(String.format("%s, %s, %s", rX, rY, rZ));
-
+        // String myString = String.format("%s, %s, %s", rX, rY, rZ);
+        // StringSelection stringSelection = new StringSelection(myString);
+        // Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        // clipboard.setContents(stringSelection, null);
         return 1;
     }
     public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {

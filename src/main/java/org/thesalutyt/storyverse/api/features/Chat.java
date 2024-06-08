@@ -6,22 +6,30 @@ import net.minecraft.loot.functions.CopyName;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.*;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+@Mod.EventBusSubscriber(
+        modid = StoryVerse.MOD_ID
+)
 public class Chat extends ScriptableObject implements EnvResource {
     private static final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-
+    public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
+    public static String last_message;
     @Documentate(
             desc = "Sends chat message"
     )
@@ -90,6 +98,49 @@ public class Chat extends ScriptableObject implements EnvResource {
     public static List<ServerPlayerEntity> getPlayers() {
         return server.getPlayerList().getPlayers();
     }
+
+    @SubscribeEvent
+    public static void onMessageSent(ClientChatReceivedEvent event) {
+        runEvent(event.getMessage().getContents());
+        last_message = event.getMessage().getContents();
+    }
+    public static void addEventListener(String type, String arg, BaseFunction function) {
+        ArrayList<BaseFunction> functions = new ArrayList<>();
+        functions.add(function);
+        switch (type) {
+            case "msg":
+            case "message":
+                EventLoop.getLoopInstance().runImmediate(() -> {
+                    if (!events.containsKey(arg)) {
+                        events.put(arg, functions);
+                    }
+                });
+            default:
+                return;
+        }
+    }
+    public static void runEvent(String arg) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            if (events.containsKey(arg)) {
+                ArrayList<BaseFunction> arr = events.get(arg);
+                Context ctx = Context.getCurrentContext();
+                for (int i = 0; i < arr.size(); i++) {
+                    arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                            SVEngine.interpreter.getScope(), new Object[]{arg});
+                }
+            }
+        });
+    }
+    public static void removeEventListener(String name, String id) {
+        if (!Objects.equals(id, "msg") && !Objects.equals(id, "message")) {
+            return;
+        } else {
+            events.remove(name);
+        }
+    }
+    public static String getLastMessage() {
+        return last_message;
+    }
     public static void putIntoScope (Scriptable scope) {
         Chat ef = new Chat();
         ef.setParentScope(scope);
@@ -110,6 +161,14 @@ public class Chat extends ScriptableObject implements EnvResource {
             methodsToAdd.add(sendTranslatable);
             Method sendCopyable = Chat.class.getMethod("sendCopyable", String.class);
             methodsToAdd.add(sendCopyable);
+            Method addListener = Chat.class.getMethod("addEventListener", String.class, String.class, BaseFunction.class);
+            methodsToAdd.add(addListener);
+            Method runEvent = Chat.class.getMethod("runEvent", String.class);
+            methodsToAdd.add(runEvent);
+            Method getLastMessage = Chat.class.getMethod("getLastMessage");
+            methodsToAdd.add(getLastMessage);
+            Method removeEventListener = Chat.class.getMethod("removeEventListener", String.class, String.class);
+            methodsToAdd.add(removeEventListener);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

@@ -29,7 +29,7 @@ public class EventListener extends ScriptableObject implements EnvResource {
     public static HashMap<String, BaseFunction> interactEvent = new HashMap<>();
     public static HashMap<String, BaseFunction> playerSleep = new HashMap<>();
     public static HashMap<KeyBinding, BaseFunction> buttonPressEvent = new HashMap<>();
-    private static EventLoop loop;
+    private static EventLoop loop = EventLoop.getLoopInstance();
     public EventListener(EventLoop eventLoop) {
         loop = eventLoop;
     }
@@ -85,11 +85,11 @@ public class EventListener extends ScriptableObject implements EnvResource {
         EventManagerJS.last_message = event.getMessage().getContents();
         System.out.println("Got message: " + event.getMessage().getContents());
     }
-    @SubscribeEvent
-    public void onInteract(PlayerInteractEvent.EntityInteract event) {
-        this.runEvent(EventType.INTERACT, event.getTarget().getUUID().toString());
-        System.out.println("Player interacted: " + event.getTarget() + "\n" + event.getTarget().getUUID());
-    }
+    // @SubscribeEvent
+    // public void onInteract(PlayerInteractEvent.EntityInteract event) {
+    //     this.runEvent(EventType.INTERACT, event.getTarget().getUUID().toString());
+    //     System.out.println("Player interacted: " + event.getTarget() + "\n" + event.getTarget().getUUID());
+    // }
     @SubscribeEvent
     public void playerSleep(PlayerSleepInBedEvent event) {
         this.runEvent(EventType.ON_PLAYER_SLEEP, event.getPlayer().getUUID().toString());
@@ -160,9 +160,9 @@ public class EventListener extends ScriptableObject implements EnvResource {
             }
         });
     }
-    public static void putIntoScope(Scriptable scope, EventLoop loop) {
+    public static void putIntoScope(Scriptable scope) {
         EventListener eventListener = new EventListener(loop);
-
+        eventListener.setParentScope(scope);
         ArrayList<Method> methodsToAdd = new ArrayList<>();
         try {
             Method addEventListener = EventListener.class.getMethod("newListener", String.class, BaseFunction.class, String.class);

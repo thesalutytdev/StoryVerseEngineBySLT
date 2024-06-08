@@ -1,13 +1,11 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.*;
-import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.api.features.Chat;
-import org.thesalutyt.storyverse.logger.SVELogger;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import org.thesalutyt.storyverse.api.features.Chat;
+
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,7 +105,7 @@ public class ExternalFunctions extends ScriptableObject {
         Path fullPath = Paths.get(this.rootDir + "/" + path_to_file).toAbsolutePath();
         if (fullPath.startsWith(this.rootDir)) {
             try {
-                FileReader reader = new FileReader(fullPath.toString());
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(fullPath.toString()), StandardCharsets.UTF_8);
                 Context ctx = Context.getCurrentContext();
                 ctx.evaluateReader(
                         this.getParentScope(),

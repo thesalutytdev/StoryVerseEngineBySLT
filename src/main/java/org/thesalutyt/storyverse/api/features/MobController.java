@@ -83,14 +83,15 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.goalSelector.addGoal(0, this.moveGoal);
         return new WalkTask(pos, this.entity, this);
     }
-    public WalkTask moveTo(Double x, Double y, Double z, Double speed){
+    public Object[] moveTo(Double x, Double y, Double z, Double speed){
         BlockPos pos = new BlockPos(x, y, z);
         this.moveGoal = new MoveGoal(entity, pos, speed.floatValue());
         this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
             this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
         });
         this.entity.goalSelector.addGoal(0, this.moveGoal);
-        return new WalkTask(pos, this.entity, this);
+        WalkTask task = new WalkTask(pos, this.entity, this);
+        return new Object[] {task, task.getTaskStringID()};
     }
 
     @Documentate(
@@ -106,6 +107,10 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController lookAt(Object entity, Double pitch, Double yaw) {
         this.entity.lookAt((Entity) entity, pitch.floatValue(), yaw.floatValue());
+        return this;
+    }
+    public MobController lookAt(String mobId) {
+        this.entity.lookAt(MobJS.controllers.get(mobId).getEntity(), 0, 0);
         return this;
     }
 

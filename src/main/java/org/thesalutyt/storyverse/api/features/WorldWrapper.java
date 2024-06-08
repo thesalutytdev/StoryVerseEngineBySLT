@@ -128,10 +128,10 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         this.world.addFreshEntity(entity);
         return entity;
     }
-    public BlockPos pos(Double x, Double y, Double z) {
+    public static BlockPos pos(Double x, Double y, Double z) {
         return new BlockPos(x, y, z);
     }
-    public EntityType<?> toEntityType(String entityType) {
+    public static EntityType<?> toEntityType(String entityType) {
         switch (entityType) {
             case "BAT": {
                 return EntityType.BAT;
@@ -178,7 +178,7 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             }
         }
     }
-    public CameraType toCameraType(String type) {
+    public static CameraType toCameraType(String type) {
         switch (type) {
             case "MOVE":
             case "MOVING": {
@@ -197,10 +197,10 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             }
         }
     }
-    public Effect toEffect(Integer id) {
+    public static Effect toEffect(Integer id) {
         return Effect.byId(id);
     }
-    public Hand selectHand(Integer hand) {
+    public static Hand selectHand(Integer hand) {
         switch (hand){
             case 0: {
                 return Hand.MAIN_HAND;
@@ -211,10 +211,10 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         }
         return Hand.MAIN_HAND;
     }
-    public Item item(Integer id) {
+    public static Item item(Integer id) {
         return Item.byId(id);
     }
-    public String key(String key) {
+    public static String key(String key) {
         switch (key) {
             case "DEFAULT": {
                 return "DEFAULT";
@@ -222,7 +222,7 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         }
         return "null";
     }
-    public EventType toEventType(String type) {
+    public static EventType toEventType(String type) {
         switch (type) {
             case "message":
                 return EventType.MESSAGE;

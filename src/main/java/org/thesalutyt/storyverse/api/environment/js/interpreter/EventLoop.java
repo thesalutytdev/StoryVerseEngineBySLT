@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-
 public class EventLoop {
     private final LoopExecutor executor;
 
@@ -202,5 +201,19 @@ public class EventLoop {
 
             loopLock.unlock();
         }
+    }
+
+    /* Я просто внезапно осознал, что очень часто нужно получить ссылку на eventLoop.
+       И решил сделать ее singleton'ом. Тебе в приложении не нужны две eventLoop.
+     */
+
+    private static EventLoop loopInstance;
+
+    public static EventLoop getLoopInstance () {
+        if (loopInstance == null) {
+            loopInstance = new EventLoop();
+        }
+
+        return loopInstance;
     }
 }

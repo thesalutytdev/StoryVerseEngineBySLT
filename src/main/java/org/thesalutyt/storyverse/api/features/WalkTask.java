@@ -2,12 +2,16 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.math.BlockPos;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.UUID;
 
-public class WalkTask implements EnvResource {
+public class WalkTask extends ScriptableObject implements EnvResource {
     private final BlockPos pos;
     private final MobEntity entity;
     private final MobController controller;
@@ -56,9 +60,22 @@ public class WalkTask implements EnvResource {
     public MobController getController() {
         return controller;
     }
-
+    public static void putIntoScope(Scriptable scope) {
+        ArrayList<Method> methodsToAdd = new ArrayList<>();
+        try {
+            Method getTaskId = WalkTask.class.getMethod("getTaskStringID");
+            methodsToAdd.add(getTaskId);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Override
     public String getResourceId() {
+        return "WalkTask";
+    }
+
+    @Override
+    public String getClassName() {
         return "WalkTask";
     }
 }

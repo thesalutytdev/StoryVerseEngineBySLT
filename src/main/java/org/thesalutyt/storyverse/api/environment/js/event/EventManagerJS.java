@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventManagerJS extends ScriptableObject implements EnvResource, JSResource {
+public class  EventManagerJS extends ScriptableObject implements EnvResource, JSResource {
     private final EventLoop loop;
     private final HashMap<String, ArrayList<BaseFunction>> handlers = new HashMap<>();
     public static String last_message;

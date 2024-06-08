@@ -10,11 +10,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
 import org.thesalutyt.storyverse.common.dimension.mover.Mover;
@@ -23,10 +27,16 @@ import org.thesalutyt.storyverse.common.specific.networking.Networking;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(
+        modid = StoryVerse.MOD_ID
+)
 public class Player extends ScriptableObject implements EnvResource{
     private static ServerPlayerEntity player;
+    public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
     public Player(ServerPlayerEntity player) {
         Player.player = player;
     }
@@ -234,14 +244,17 @@ public class Player extends ScriptableObject implements EnvResource{
     }
 
     public static void setGameMode(String mode) {
-        if (mode == "survival") {
-            setGameMode(0);
-        } else if (mode == "creative") {
-            setGameMode(1);
-        } else if (mode == "adventure") {
-            setGameMode(2);
-        } else if (mode == "spectator") {
-            setGameMode(3);
+        switch (mode) {
+            case "survival":
+                setGameMode(0);
+            case "creative":
+                setGameMode(1);
+            case "adventure":
+                setGameMode(2);
+            case "spectator":
+                setGameMode(3);
+            default:
+                return;
         }
     }
 
@@ -328,6 +341,45 @@ public class Player extends ScriptableObject implements EnvResource{
     }
     public static void hurt(Double damage) {
         hurt(damage, "storyverse:script");
+    }
+    public static void remove(Boolean keepData) {player.remove(keepData);}
+    @SubscribeEvent
+    public static void onPlayerSleep(PlayerSleepInBedEvent event) {
+        runEvent(event.getPlayer().getName().getContents());
+    }
+    public static void addEventListener(String type, String arg, BaseFunction function) {
+        ArrayList<BaseFunction> functions = new ArrayList<>();
+        functions.add(function);
+        switch (type) {
+            case "sleep":
+            case "sleep_in_bed":
+                EventLoop.getLoopInstance().runImmediate(() -> {
+                    if (!events.containsKey(arg)) {
+                        events.put(arg, functions);
+                    }
+                });
+            default:
+                return;
+        }
+    }
+    public static void runEvent(String arg) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            if (events.containsKey(arg)) {
+                ArrayList<BaseFunction> arr = events.get(arg);
+                Context ctx = Context.getCurrentContext();
+                for (int i = 0; i < arr.size(); i++) {
+                    arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                            SVEngine.interpreter.getScope(), new Object[]{arg});
+                }
+            }
+        });
+    }
+    public static void removeEventListener(String name, String id) {
+        if (!Objects.equals(id, "sleep") && !Objects.equals(id, "sleep_in_bed")) {
+            return;
+        } else {
+            events.remove(name);
+        }
     }
     public static ServerPlayerEntity getPlayer() {
         return player;
@@ -436,6 +488,14 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setPl);
             Method getPlayer = Player.class.getMethod("getPlayer");
             methodsToAdd.add(getPlayer);
+            Method addListener = Player.class.getMethod("addEventListener", String.class, String.class, BaseFunction.class);
+            methodsToAdd.add(addListener);
+            Method runEvent = Player.class.getMethod("runEvent", String.class);
+            methodsToAdd.add(runEvent);
+            Method removeListener = Player.class.getMethod("removeEventListener", String.class, String.class);
+            methodsToAdd.add(removeListener);
+            Method remove = Player.class.getMethod("remove", Boolean.class);
+            methodsToAdd.add(remove);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

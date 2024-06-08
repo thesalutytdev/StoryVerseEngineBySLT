@@ -57,23 +57,11 @@ public class ModEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onInteract(PlayerInteractEvent.EntityInteract event) {
-        // eventManagerJS.runEvent("interact",
-                // new NativeArray(new Object[]{event.getTarget().getUUID()}));
-    }
-
-    @SubscribeEvent
-    public static void onMessageSent(ClientChatReceivedEvent event) {
-        // eventManagerJS.runEvent("message",
-                // new NativeArray(new Object[]{event.getMessage().getContents()}));
-    }
-
-    @SubscribeEvent
-    public static void onPlayerSleepInBed(PlayerSleepInBedEvent event) {
-        // eventManagerJS.runEvent("playerSleep",
-                // new NativeArray(new Object[] {event.getPlayer().getUUID()}));
-    }
+    // @SubscribeEvent
+    // public static void onInteract(PlayerInteractEvent.EntityInteract event) {
+    //     // eventManagerJS.runEvent("interact",
+    //             // new NativeArray(new Object[]{event.getTarget().getUUID()}));
+    // }
     @SubscribeEvent
     public static void onWorldLeave(EntityLeaveWorldEvent event) {
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {

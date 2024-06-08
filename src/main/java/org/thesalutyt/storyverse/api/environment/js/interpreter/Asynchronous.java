@@ -1,31 +1,19 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Asynchronous extends ScriptableObject {
-    private final Scriptable scope;
-    private final EventLoop loop;
-    private int timeoutCounter = 0;
-    private final HashMap<Integer, Integer> timeoutOnLoop = new HashMap<>();
-    private int intervalCounter = 0;
-    private final HashMap<Integer, Integer> intervalOnLoop = new HashMap<>();
-
-    public Asynchronous (Scriptable scope, EventLoop loop) {
-        this.scope = scope;
-        this.loop = loop;
-    }
-
     @Override
     public String getClassName() {
         return getClass().getName();
     }
 
-    public static void putIntoScope(Scriptable scope, EventLoop loop) {
-        Asynchronous as = new Asynchronous(scope, loop);
+    public static void putIntoScope(Scriptable scope) {
+        Asynchronous as = new Asynchronous();
         as.setParentScope(scope);
 
         ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -49,77 +37,32 @@ public class Asynchronous extends ScriptableObject {
             as.put(m.getName(), as, methodInstance);
         }
 
-        as.put("__timeouts__", as, Context.getCurrentContext().newObject(as));
-        as.put("__intervals__", as, Context.getCurrentContext().newObject(as));
-
         scope.put("Async", scope, as);
     }
 
     public Integer setTimeout(BaseFunction fn, Integer delay) {
-        Integer localId = this.timeoutCounter;
-        this.timeoutCounter++;
-        if (this.timeoutCounter == Integer.MAX_VALUE) {
-            this.timeoutCounter = 0;
-        }
-        Scriptable tObj = (Scriptable) this.get("__timeouts__");
-        tObj.put(localId, tObj, fn);
-        Integer loopId = loop.runTimeout(() -> {
+        Runnable callback = () -> {
             Context ctx = Context.getCurrentContext();
-            ctx.evaluateString(
-                    scope,
-                    "Async.__timeouts__[" + localId + "]();",
-                    "Async_timeout_" + localId,
-                    1,
-                    null
-            );
-            timeoutOnLoop.remove(localId);
-            tObj.delete(localId);
-        }, delay);
-        timeoutOnLoop.put(localId, loopId);
+            fn.call(ctx, this, this, new Object[0]);
+        };
 
-        return localId;
+        return EventLoop.getLoopInstance().runTimeout(callback, delay);
     }
 
-    public Void clearTimeout(Integer id) {
-        Integer loopId = timeoutOnLoop.get(id);
-        if (loopId != null) {
-            loop.resetTimeout(loopId);
-            Scriptable tObj = (Scriptable) this.get("__timeouts__");
-            tObj.delete(id);
-        }
-        return null;
+    public void clearTimeout(Integer id) {
+        EventLoop.getLoopInstance().resetTimeout(id);
     }
 
     public Integer setInterval(BaseFunction fn, Integer delay) {
-        Integer localId = this.intervalCounter;
-        this.intervalCounter++;
-        if (this.intervalCounter == Integer.MAX_VALUE) {
-            this.intervalCounter = 0;
-        }
-        Scriptable tObj = (Scriptable) this.get("__intervals__");
-        tObj.put(localId, tObj, fn);
-        Integer loopId = loop.runInterval(() -> {
+        Runnable callback = () -> {
             Context ctx = Context.getCurrentContext();
-            ctx.evaluateString(
-                    scope,
-                    "Async.__intervals__[" + localId + "]();",
-                    "Async_interval_"+localId,
-                    1,
-                    null
-            );
-        }, delay);
-        intervalOnLoop.put(localId, loopId);
+            fn.call(ctx, this, this, new Object[0]);
+        };
 
-        return localId;
+        return EventLoop.getLoopInstance().runInterval(callback, delay);
     }
 
-    public Void clearInterval(Integer id) {
-        Integer loopId = intervalOnLoop.get(id);
-        if (loopId != null) {
-            loop.resetInterval(loopId);
-            Scriptable tObj = (Scriptable) this.get("__timeouts__");
-            tObj.delete(id);
-        }
-        return null;
+    public void clearInterval(Integer id) {
+        EventLoop.getLoopInstance().resetInterval(id);
     }
 }

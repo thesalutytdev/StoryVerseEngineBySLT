@@ -1,54 +1,152 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
 import net.minecraft.entity.Entity;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.StoryVerse;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.MobController;
+import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.UUID;
 
+@Mod.EventBusSubscriber(
+        modid = StoryVerse.MOD_ID
+)
 public class MobJS extends ScriptableObject implements EnvResource {
-    WorldWrapper worldWrapper = new WorldWrapper();
+    private static EventLoop eventLoop;
+    public MobJS(EventLoop eventLoop) {
+        MobJS.eventLoop = eventLoop;
+    }
     public static HashMap<String, MobController> controllers = new HashMap<>();
-    public MobController create(String id, Double x, Double y, Double z, String type) {
+    public static HashMap<UUID, String> mobNames = new HashMap<>();
+    public static HashMap<MobController, HashMap<String, ArrayList<BaseFunction>>> events = new HashMap<>();
+    public MobController addEventListener(String id, String mobId, BaseFunction function) {
+        ArrayList<BaseFunction> functions = new ArrayList<>();
+        functions.add(function);
+        MobController mob = controllers.get(mobId);
+        switch (id) {
+            case "interact":
+            case "kill":
+                eventLoop.runImmediate(() -> {
+                    if (!events.containsKey(mob)) {
+                        HashMap<String, ArrayList<BaseFunction>> interactEvent = new HashMap<>();
+                        interactEvent.put(id, functions);
+                        events.put(mob, interactEvent);
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+        return controllers.get(mobId);
+    }
+    @SubscribeEvent
+    public static void onMobInteract(PlayerInteractEvent.EntityInteract event) {
+        System.out.println("Interacted with " + event.getTarget().getUUID() + " (" + event.getTarget().getType() + ")");
+        runEvent(getMob(event.getTarget().getUUID()), "interact");
+    }
+    @SubscribeEvent
+    public static void onKilled(LivingDeathEvent event) {
+        if (!Objects.equals(event.getSource(), DamageSource.playerAttack(Player.getPlayer()))) {
+            System.out.printf("%s(%s, %s) killed %s with this damage source: %s%n",
+                    event.getEntityLiving().getType(), event.getEntityLiving().getUUID(),
+                    event.getEntityLiving(), event.getSource().getEntity(),
+                    event.getSource());
+            return;
+        }
+        LivingEntity entity = event.getEntityLiving();
+        if (entity instanceof LivingEntity) {
+            System.out.println("Player killed " + entity.getUUID() + " (" + event.getEntityLiving().getType() + ")");
+            runEvent(getMob(entity.getUUID()), "kill");
+        }
+    }
+    public static void runEvent(MobController mob, String id) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+           if (events.containsKey(mob)) {
+               if (events.get(mob).containsKey(id)) {
+                   ArrayList<BaseFunction> arr = events.get(mob).get(id);
+                   Context ctx = Context.getCurrentContext();
+                   for (int i=0;i<arr.size(); i++) {
+                       arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                               SVEngine.interpreter.getScope(), new Object[]{mob});
+                   }
+               }
+           }
+        });
+    }
+    public static void runEvent(String mobId, String id) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            if (events.containsKey(getMob(mobId))) {
+                if (events.get(getMob(mobId)).containsKey(id)) {
+                    ArrayList<BaseFunction> arr = events.get(getMob(mobId)).get(id);
+                    Context ctx = Context.getCurrentContext();
+                    for (int i=0;i<arr.size(); i++) {
+                        arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                                SVEngine.interpreter.getScope(), new Object[]{getMob(mobId)});
+                    }
+                }
+            }
+        });
+    }
+    public static void removeEventListener(String id, String mobId) {
+        if (!Objects.equals(id, "interact") && !Objects.equals(id, "kill")) {
+            return;
+        } else {
+            events.remove(getMob(mobId));
+        }
+    }
+    public static MobController create(String id, Double x, Double y, Double z, String type) {
         System.out.println("Started creating");
-        MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType(type));
+        MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType(type));
         System.out.println("Mob = " + mob);
         controllers.put(id, mob);
+        mobNames.put(mob.getUUID(), id);
         System.out.println("Putting mob in base");
         return mob;
     }
-    public MobController create(String id, Double x, Double y, Double z, String type, String name, Boolean visible) {
+    public static MobController create(String id, Double x, Double y, Double z, String type, String name, Boolean visible) {
         System.out.println("Started creating");
-        MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType(type));
+        MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType(type));
         System.out.println("Mob = " + mob);
         controllers.put(id, mob);
+        mobNames.put(mob.getUUID(), id);
         System.out.println("Putting mob in base");
         mob.setName(name);
         mob.setNameVisible(visible);
         return mob;
     }
-    public MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {
+    public static MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {
         Object[] args = npcArgs.toArray(new Object[0]);
-        MobController mob = new MobController(worldWrapper.pos(x, y, z), worldWrapper.toEntityType("NPC"));
+        MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType("NPC"));
         controllers.put(id, mob);
+        mobNames.put(mob.getUUID(), id);
         return mob;
     }
-    public MobController getMob(String id) {
+    public static MobController getMob(String id) {
         return controllers.get(id);
     }
-    public Entity mob(String id) {
+    public static MobController getMob(UUID id) {
+        return controllers.get(mobNames.get(id));
+    }
+    public static Entity mob(String id) {
         return controllers.get(id).getEntity();
     }
 
     public static void putIntoScope(Scriptable scope) {
-        MobJS ef = new MobJS();
+        MobJS ef = new MobJS(EventLoop.getLoopInstance());
         ef.setParentScope(scope);
         ArrayList<Method> methodsToAdd = new ArrayList<>();
 
@@ -68,6 +166,13 @@ public class MobJS extends ScriptableObject implements EnvResource {
                     String.class,
                     Boolean.class);
             methodsToAdd.add(createWP);
+            Method addEventListener = MobJS.class.getMethod("addEventListener",
+                    String.class, String.class, BaseFunction.class);
+            methodsToAdd.add(addEventListener);
+            Method runEvent = MobJS.class.getMethod("runEvent", String.class, String.class);
+            methodsToAdd.add(runEvent);
+            Method removeEventListener = MobJS.class.getMethod("removeEventListener", String.class, String.class);
+            methodsToAdd.add(removeEventListener);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
