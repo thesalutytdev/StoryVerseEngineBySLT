@@ -1,4 +1,4 @@
-package org.thesalutyt.storyverse.common.entities.npc;
+package org.thesalutyt.storyverse.common.entities.npcNOTWORK;
 
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;

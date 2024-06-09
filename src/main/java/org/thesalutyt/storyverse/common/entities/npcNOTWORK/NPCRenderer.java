@@ -1,7 +1,5 @@
-package org.thesalutyt.storyverse.common.entities.npc;
+package org.thesalutyt.storyverse.common.entities.npcNOTWORK;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
