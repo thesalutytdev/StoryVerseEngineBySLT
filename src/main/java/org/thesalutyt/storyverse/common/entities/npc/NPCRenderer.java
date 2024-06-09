@@ -27,14 +27,14 @@ public class NPCRenderer extends GeoEntityRenderer<NPCEntity> {
         return new ResourceLocation(modId, name + (name.endsWith(".png") ? "" : ".png"));
     }
 
-    public void render(NPCEntity entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        try {
-            stack.clear();
-            super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-            stack.pushPose();
-        } catch (Exception var8) {
-            var8.printStackTrace();
-        }
-
-    }
+//    public void render(NPCEntity entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+//        try {
+//            stack.clear();
+//            super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+//            stack.pushPose();
+//        } catch (Exception var8) {
+//            var8.printStackTrace();
+//        }
+//
+//    }
 }

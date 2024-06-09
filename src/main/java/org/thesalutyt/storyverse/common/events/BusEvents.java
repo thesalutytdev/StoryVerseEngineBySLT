@@ -14,6 +14,6 @@ import static org.thesalutyt.storyverse.common.entities.Entities.*;
 public class BusEvents {
     @SubscribeEvent
     public static void addEntityAttributes(EntityAttributeCreationEvent event) {
-        event.put(NPC.get(), NPCEntity.generateAttributes().build());
+            event.put(NPC.get(), NPCEntity.generateAttributes().build());
     }
 }

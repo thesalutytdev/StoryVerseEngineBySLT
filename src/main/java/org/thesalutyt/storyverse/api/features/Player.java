@@ -31,9 +31,6 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(
-        modid = StoryVerse.MOD_ID
-)
 public class Player extends ScriptableObject implements EnvResource{
     private static ServerPlayerEntity player;
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
@@ -343,44 +340,6 @@ public class Player extends ScriptableObject implements EnvResource{
         hurt(damage, "storyverse:script");
     }
     public static void remove(Boolean keepData) {player.remove(keepData);}
-    @SubscribeEvent
-    public static void onPlayerSleep(PlayerSleepInBedEvent event) {
-        runEvent(event.getPlayer().getName().getContents());
-    }
-    public static void addEventListener(String type, String arg, BaseFunction function) {
-        ArrayList<BaseFunction> functions = new ArrayList<>();
-        functions.add(function);
-        switch (type) {
-            case "sleep":
-            case "sleep_in_bed":
-                EventLoop.getLoopInstance().runImmediate(() -> {
-                    if (!events.containsKey(arg)) {
-                        events.put(arg, functions);
-                    }
-                });
-            default:
-                return;
-        }
-    }
-    public static void runEvent(String arg) {
-        EventLoop.getLoopInstance().runImmediate(() -> {
-            if (events.containsKey(arg)) {
-                ArrayList<BaseFunction> arr = events.get(arg);
-                Context ctx = Context.getCurrentContext();
-                for (int i = 0; i < arr.size(); i++) {
-                    arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
-                            SVEngine.interpreter.getScope(), new Object[]{arg});
-                }
-            }
-        });
-    }
-    public static void removeEventListener(String name, String id) {
-        if (!Objects.equals(id, "sleep") && !Objects.equals(id, "sleep_in_bed")) {
-            return;
-        } else {
-            events.remove(name);
-        }
-    }
     public static ServerPlayerEntity getPlayer() {
         return player;
     }
@@ -488,12 +447,6 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setPl);
             Method getPlayer = Player.class.getMethod("getPlayer");
             methodsToAdd.add(getPlayer);
-            Method addListener = Player.class.getMethod("addEventListener", String.class, String.class, BaseFunction.class);
-            methodsToAdd.add(addListener);
-            Method runEvent = Player.class.getMethod("runEvent", String.class);
-            methodsToAdd.add(runEvent);
-            Method removeListener = Player.class.getMethod("removeEventListener", String.class, String.class);
-            methodsToAdd.add(removeListener);
             Method remove = Player.class.getMethod("remove", Boolean.class);
             methodsToAdd.add(remove);
         } catch (NoSuchMethodException e) {

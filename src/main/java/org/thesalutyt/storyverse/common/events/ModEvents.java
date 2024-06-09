@@ -11,7 +11,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.server.command.ConfigCommand;
 
 import org.thesalutyt.storyverse.SVEngine;
@@ -25,9 +27,12 @@ import org.thesalutyt.storyverse.common.commands.home.GetHomePos;
 import org.thesalutyt.storyverse.common.commands.home.ReturnHome;
 import org.thesalutyt.storyverse.common.commands.home.SetHome;
 import org.thesalutyt.storyverse.common.commands.scripts.PlayerFuncsDebug;
+import org.thesalutyt.storyverse.common.entities.npc.NPCRenderer;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+import static org.thesalutyt.storyverse.common.entities.Entities.NPC;
 
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class ModEvents {
@@ -56,17 +61,15 @@ public class ModEvents {
                     event.getOriginal().getPersistentData().getIntArray(StoryVerse.MOD_ID + "homepos"));
         }
     }
-
-    // @SubscribeEvent
-    // public static void onInteract(PlayerInteractEvent.EntityInteract event) {
-    //     // eventManagerJS.runEvent("interact",
-    //             // new NativeArray(new Object[]{event.getTarget().getUUID()}));
-    // }
     @SubscribeEvent
     public static void onWorldLeave(EntityLeaveWorldEvent event) {
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
             SVEngine.interpreter.close();
             System.out.println("[ModEvents::onWorldLeave] Interpreter closed");
         }
+    }
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(NPC.get(), NPCRenderer::new);
     }
 }
