@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -26,6 +27,7 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunction
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.api.gui.Gui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 
@@ -222,7 +224,8 @@ public class MainCommand {
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
         Chat.sendAsEngine("GUI test");
         try {
-            MyFirstGui.open();
+            Gui gui = new Gui("label");
+            gui.init(Minecraft.getInstance(), 100, 100);
         } catch (Exception e) {
             Chat.sendError(e.getMessage());
         }

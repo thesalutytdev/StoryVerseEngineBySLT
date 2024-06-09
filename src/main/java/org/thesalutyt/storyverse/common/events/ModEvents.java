@@ -26,8 +26,6 @@ import org.thesalutyt.storyverse.common.entities.npcNOTWORK.NPCRenderer;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.thesalutyt.storyverse.common.entities.Entities.NPC;
-
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class ModEvents {
     public static ServerPlayerEntity player;
@@ -61,9 +59,5 @@ public class ModEvents {
             SVEngine.interpreter.close();
             System.out.println("[ModEvents::onWorldLeave] Interpreter closed");
         }
-    }
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(NPC.get(), NPCRenderer::new);
     }
 }

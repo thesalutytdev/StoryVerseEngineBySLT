@@ -30,9 +30,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-
-import static org.thesalutyt.storyverse.common.entities.Entities.NPC;
-
 public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable {
     private int ticks = 0;
 
