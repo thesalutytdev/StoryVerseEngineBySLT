@@ -1,7 +1,15 @@
 package org.thesalutyt.storyverse.api.environment.js.event;
 
+import com.google.common.base.Ascii;
+import net.minecraft.client.util.SearchTreeManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.model.b3d.B3DModel;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,7 +23,10 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
+import org.thesalutyt.storyverse.common.events.ModEvents;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +39,17 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     private static String msg = "";
     private static String player_slept = "";
     private static String block_broken = "";
+    private static String block_interacted = "";
+    private static String block_interacted_name = "";
+    private static String block_placed = "";
+    private static String block_placed_name = "";
+    private static String dimension_new = "";
+    private static String dimension_old = "";
+    private static String item_dropped = "";
+    private static String player_respawned = "";
+    private static Integer key_pressed = 0;
     private static BlockPos blockPos = new BlockPos(0, 0, 0);
-    private static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
+    public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
     @SubscribeEvent
     public static void onMessage(ClientChatReceivedEvent event) {
         msg = event.getMessage().getContents();
@@ -42,14 +62,56 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     }
     @SubscribeEvent
     public static void onBreak(BlockEvent.BreakEvent event) {
-        block_broken = event.getWorld().getBlockState(event.getPos()).getBlock().toString();
+        block_broken = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
         blockPos = event.getPos();
         runEvent("block_break");
     }
+    @SubscribeEvent
+    public static void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {
+        block_interacted = event.getUseBlock().toString();
+        block_interacted_name = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
+        runEvent("block_interact");
+    }
+    @SubscribeEvent
+    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        dimension_new = event.getTo().getRegistryName().toString();
+        dimension_old = event.getFrom().getRegistryName().toString();
+        runEvent("dimension_change");
+    }
+    @SubscribeEvent
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        block_placed = event.getPlacedBlock().toString();
+        block_placed_name = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
+        runEvent("block_placed");
+    }
+    @SubscribeEvent
+    public static void onItemToss(ItemTossEvent event) {
+        item_dropped = event.getEntityItem().getItem().getDisplayName().getContents();
+        runEvent("item_dropped");
+    }
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        player_respawned = event.getPlayer().getName().getContents();
+        runEvent("player_respawned");
+    }
+    @SubscribeEvent
+    public static void onKey(InputEvent.KeyInputEvent event) {
+        key_pressed = event.getKey();
+        runEvent("key_pressed");
+    }
     public static void addEventListener(String event_name, BaseFunction function) {
+        if (!ModEvents.inWorld) {
+            return;
+        }
         if (!events.containsKey(event_name) && !Objects.equals(event_name, "sleep")
                 || !Objects.equals(event_name, "message")
-                || !Objects.equals(event_name, "block_break")) {
+                || !Objects.equals(event_name, "block_break")
+                || !Objects.equals(event_name, "block_interact")
+                || !Objects.equals(event_name, "dimension_change")
+                || !Objects.equals(event_name, "block_placed")
+                || !Objects.equals(event_name, "item_dropped")
+                || !Objects.equals(event_name, "player_respawned")
+                || !Objects.equals(event_name, "key_pressed")) {
             EventLoop.getLoopInstance().runImmediate(() -> {
                 ArrayList<BaseFunction> functions = new ArrayList<>();
                 functions.add(function);
@@ -60,30 +122,37 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         }
     }
     public static void runEvent(String event_name) {
+        if (!ModEvents.inWorld) {
+            return;
+        }
         EventLoop.getLoopInstance().runImmediate(() -> {
             if (events.containsKey(event_name)) {
                 ArrayList<BaseFunction> arr = events.get(event_name);
                 Context ctx = Context.getCurrentContext();
-                Object[] args = new Object[]{};
+                Object[] args;
                 switch (event_name) {
-                    case "sleep":
-                        args[0] = player_slept;
-                        break;
-                    case "message":
-                        args[0] = msg;
-                        break;
-                    case "block_break":
-                        args[0] = block_broken;
-                        args[1] = blockPos.getX();
-                        args[2] = blockPos.getY();
-                        args[3] = blockPos.getZ();
-                        break;
-                    default:
-                        break;
-                }
+                        case "sleep":
+                                args = new Object[1];
+                                args[0] = player_slept;
+                                break;
+                        case "message":
+                                args = new Object[1];
+                                args[0] = msg;
+                                break;
+                        case "block_break":
+                                args = new Object[4];
+                                args[0] = block_broken;
+                                args[1] = new Double((double) blockPos.getX());
+                                args[2] = new Double((double) blockPos.getY());
+                                args[3] = new Double((double) blockPos.getZ());
+                                break;
+                        default:
+                                args = new Object[0];
+                                return;
+                    }
                 for (int i=0;i<arr.size(); i++) {
                     arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
-                            SVEngine.interpreter.getScope(), args);
+                            SVEngine.interpreter.getScope(), new Object[]{});
                 }
             } else {
                 return;
@@ -91,6 +160,9 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         });
     }
     public static void removeEventListener(String event_name) {
+        if (!ModEvents.inWorld) {
+            return;
+        }
         if (!Objects.equals(event_name, "sleep") && !Objects.equals(event_name, "message")) {
             return;
         } else {
@@ -105,6 +177,58 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     }
     public static String getLastBlockBroken() {
         return block_broken;
+    }
+    public static String getLastBlockInteracted() {
+        return block_interacted;
+    }
+    public static String getLastBlockInteractedName() {
+        return block_interacted_name;
+    }
+    public static String getLastBlockPos() {
+        return blockPos.toString();
+    }
+    public static String getLastBlockPlaced() {
+        return block_placed;
+    }
+    public static String getLastBlockPlacedName() {
+        return block_placed_name;
+    }
+    public static String getLastDimensionNew() {
+        return dimension_new;
+    }
+    public static String getLastDimensionOld() {
+        return dimension_old;
+    }
+    public static String getLastItemDropped() {
+        return item_dropped;
+    }
+    public static String getLastPlayerRespawned() {
+        return player_respawned;
+    }
+    public static Integer getLastKeyPressed() {
+        return key_pressed;
+    }
+    public static NativeArray getArgs() {
+        if (!ModEvents.inWorld) {
+            return null;
+        }
+        Object[] args = new Object[]{};
+        args[0] = new Double((double) blockPos.getX());
+        args[1] = new Double((double) blockPos.getY());
+        args[2] = new Double((double) blockPos.getZ());
+        args[3] = block_interacted;
+        args[4] = block_broken;
+        args[5] = player_slept;
+        args[6] = msg;
+        args[7] = block_interacted_name;
+        args[8] = block_placed;
+        args[9] = block_placed_name;
+        args[10] = dimension_new;
+        args[11] = dimension_old;
+        args[12] = item_dropped;
+        args[13] = player_respawned;
+        args[14] = key_pressed;
+        return new NativeArray(args);
     }
     public static void putIntoScope(Scriptable scope) {
         EventManagerJS ef = new EventManagerJS();
@@ -123,6 +247,28 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(removeEventListener);
             Method runEvent = EventManagerJS.class.getMethod("runEvent", String.class);
             methodsToAdd.add(runEvent);
+            Method getArgs = EventManagerJS.class.getMethod("getArgs");
+            methodsToAdd.add(getArgs);
+            Method blockPos = EventManagerJS.class.getMethod("getLastBlockPos");
+            methodsToAdd.add(blockPos);
+            Method block_interacted = EventManagerJS.class.getMethod("getLastBlockInteracted");
+            methodsToAdd.add(block_interacted);
+            Method block_interacted_name = EventManagerJS.class.getMethod("getLastBlockInteractedName");
+            methodsToAdd.add(block_interacted_name);
+            Method block_placed = EventManagerJS.class.getMethod("getLastBlockPlaced");
+            methodsToAdd.add(block_placed);
+            Method block_placed_name = EventManagerJS.class.getMethod("getLastBlockPlacedName");
+            methodsToAdd.add(block_placed_name);
+            Method dimension_new = EventManagerJS.class.getMethod("getLastDimensionNew");
+            methodsToAdd.add(dimension_new);
+            Method dimension_old = EventManagerJS.class.getMethod("getLastDimensionOld");
+            methodsToAdd.add(dimension_old);
+            Method item_dropped = EventManagerJS.class.getMethod("getLastItemDropped");
+            methodsToAdd.add(item_dropped);
+            Method player_respawned = EventManagerJS.class.getMethod("getLastPlayerRespawned");
+            methodsToAdd.add(player_respawned);
+            Method key_pressed = EventManagerJS.class.getMethod("getLastKeyPressed");
+            methodsToAdd.add(key_pressed);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

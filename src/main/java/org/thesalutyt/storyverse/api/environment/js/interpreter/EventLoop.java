@@ -216,4 +216,11 @@ public class EventLoop {
 
         return loopInstance;
     }
+
+    public static void closeLoopInstance () {
+        if (loopInstance != null) {
+            loopInstance.close();
+            loopInstance = null;
+        }
+    }
 }

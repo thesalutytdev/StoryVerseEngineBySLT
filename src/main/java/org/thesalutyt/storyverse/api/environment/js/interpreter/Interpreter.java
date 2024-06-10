@@ -13,7 +13,8 @@ import org.thesalutyt.storyverse.api.features.*;
 
 public class Interpreter {
     private Scriptable scope;
-    public Interpreter (String rootDir) {
+
+    public Interpreter(String rootDir) {
         EventLoop.getLoopInstance().runImmediate(() -> {
             Context ctx = Context.enter();
             scope = ctx.initStandardObjects();
@@ -37,16 +38,32 @@ public class Interpreter {
     public Scriptable getScope() {
         return scope;
     }
-    public void close () {
-        EventLoop.getLoopInstance().close();
+
+    public void close() {
+        EventLoop.closeLoopInstance();
     }
-    public void executeString (String str) {
-        EventLoop.getLoopInstance().runImmediate(() -> Context.getCurrentContext().evaluateString(
-                scope,
-                str,
-                "<cmd>",
-                1,
-                null
-        ));
+
+    public void executeString(String str) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            Context.getCurrentContext().evaluateString(
+                    scope,
+                    str,
+                    "<cmd>",
+                    1,
+                    null
+            );
+        });
+    }
+
+    public void executeString(String str, String sourceName) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            Context.getCurrentContext().evaluateString(
+                    scope,
+                    str,
+                    sourceName,
+                    1,
+                    null
+            );
+        });
     }
 }

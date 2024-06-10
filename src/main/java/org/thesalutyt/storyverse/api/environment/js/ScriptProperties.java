@@ -16,6 +16,7 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Script;
+import org.thesalutyt.storyverse.common.events.ModEvents;
 
 import javax.swing.text.html.parser.Entity;
 import java.lang.reflect.Method;
@@ -41,7 +42,7 @@ public class ScriptProperties extends ScriptableObject implements EnvResource, J
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
             SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
             System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
-            System.out.println(Minecraft.getInstance().cameraEntity);
+            ModEvents.inWorld = true;
             if (worldStarterScript == null) {
                 return;
             } else {
