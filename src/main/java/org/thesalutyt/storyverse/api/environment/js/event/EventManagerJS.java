@@ -18,6 +18,7 @@ import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
@@ -208,6 +209,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static Integer getLastKeyPressed() {
         return key_pressed;
     }
+    public static void clear() {
+        events.clear();
+        MobJS.events.clear();
+    }
     public static NativeArray getArgs() {
         if (!ModEvents.inWorld) {
             return null;
@@ -269,6 +274,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(player_respawned);
             Method key_pressed = EventManagerJS.class.getMethod("getLastKeyPressed");
             methodsToAdd.add(key_pressed);
+            Method clear = EventManagerJS.class.getMethod("clear");
+            methodsToAdd.add(clear);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
