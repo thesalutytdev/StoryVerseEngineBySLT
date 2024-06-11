@@ -5,6 +5,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -56,10 +57,23 @@ public class ModEvents {
     }
     @SubscribeEvent
     public static void onWorldLeave(EntityLeaveWorldEvent event) {
+        if (event.getEntity().isAddedToWorld() || event.isCanceled()) {
+            System.out.println("died, but didn't close interpreter");
+        }
         if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
             SVEngine.interpreter.close();
             System.out.println("[ModEvents::onWorldLeave] Interpreter closed");
             EventManagerJS.events.clear();
+            inWorld = false;
+        }
+    }
+    @SubscribeEvent
+    public static void worldUnloaded(WorldEvent.Unload event) {
+        if (!event.getWorld().isClientSide()) {
+            SVEngine.interpreter.close();
+            System.out.println("[ModEvents::worldUnloaded] Interpreter closed");
+            EventManagerJS.events.clear();
+            inWorld = false;
         }
     }
 }

@@ -18,7 +18,7 @@ public class SVEngine {
     public static String docLink = "404:NoDocsAtMoment";
     public static String prefix = "[StoryVerseEngine]";
     public static String chatPrefix = "§7[§b§lStory§a§lVerse§7]§r ";
-    public static String modVersion = "3.5-Beta";
+    public static String modVersion = "4.0-Beta";
     public static String border = " =========================== ";
     public static String onLineBorder = " || ";
     public static String description = "Mod what allows and helps you create story-based maps and series!";
@@ -29,6 +29,7 @@ public class SVEngine {
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
     public static final String DOCS_PATH = SCRIPTS_PATH + "docs/";
     public static final String ASSETS_DIR = SCRIPTS_PATH + "assets/storyverse/";
+    public static final String ANIMATIONS_PATH = ASSETS_DIR + "/animations/";
     public static final String MODELS_PATH = ASSETS_DIR + "/models/";
     public static final String TEXTURES_PATH = ASSETS_DIR + "/textures/";
     public static final String CONFIG_PATH = GAME_DIR + "/config/";
