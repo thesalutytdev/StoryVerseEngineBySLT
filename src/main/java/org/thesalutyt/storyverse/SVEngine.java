@@ -123,6 +123,8 @@ public class SVEngine {
         System.out.println("[SVEngine::DirectoryCreating] Created logs directory");
         SVELogger.create_dir(ASSETS_DIR);
         System.out.println("[SVEngine::DirectoryCreating] Created assets directory");
+        SVELogger.create_dir(ANIMATIONS_PATH);
+        System.out.println("[SVEngine::DirectoryCreating] Created animations directory");
         SVELogger.create_dir(MODELS_PATH);
         System.out.println("[SVEngine::DirectoryCreating] Created models directory");
         SVELogger.create_dir(TEXTURES_PATH);
