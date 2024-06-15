@@ -43,6 +43,7 @@ import java.io.FileNotFoundException;
 public class MainCommand {
     Context context = Context.enter();
     Scriptable scope = context.initStandardObjects();
+    private static final Minecraft mc = Minecraft.getInstance();
     public MainCommand(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("storyverse")
                                 .then(Commands.literal("blockpos")
@@ -223,9 +224,10 @@ public class MainCommand {
         Chat.sendAsEngine("Camera entity: " + SVEnvironment.Root.getCameraEntity());
         return 1;
     }
-    public static int guiTest(CommandSource source) throws CommandSyntaxException {
+    public int guiTest(CommandSource source) throws CommandSyntaxException {
         Chat.sendAsEngine("GUI test");
-        new Gui("123").init(Minecraft.getInstance(), 1, 1);
+        mc.setScreen(new Gui());
+        //new Gui().init(Minecraft.getInstance(), 1, 1);
         return 1;
     }
 }
