@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.RhinoException;
+import org.thesalutyt.storyverse.api.features.Chat;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -104,6 +105,7 @@ public class EventLoop {
                         task.run();
                     } catch (final Exception e) {
                         System.out.println(printLoopError(e));
+                        Chat.sendError(printLoopError(e));
                     }
                 }
                 // loop through scheduled tasks and add them into task queue

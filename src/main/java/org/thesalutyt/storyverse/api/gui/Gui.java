@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Gui extends Screen {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(StoryVerse.MOD_ID, "textures/gui/dialog_gui.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(StoryVerse.MOD_ID, "textures/npc/npc.png");
     String heroSay;
     List<Button> buttons = new ArrayList<>();
     int y = 50;
@@ -30,7 +30,8 @@ public class Gui extends Screen {
                     new Button(this.width / 2 - 75, this.height /
                             4 + y, 150, 20,
                     new StringTextComponent("test"), (p_213021_1_) -> {
-                    this.minecraft.setScreen(new Gui("label"));
+                        assert this.minecraft != null;
+                        this.minecraft.setScreen(new Gui("label"));
             }));
             button.setFGColor(0x4a04b3);
             button.setAlpha(0.0f);
@@ -42,6 +43,7 @@ public class Gui extends Screen {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);
+        assert this.minecraft != null;
         this.minecraft.getTextureManager().bind(BACKGROUND);
         this.blit(matrixStack, this.width / 2 -100, this.height / 2 - 100, 256, 256, 227, 168);
         drawCenteredString(matrixStack, this.font, heroSay, this.width / 2, 85, 16777215);

@@ -326,7 +326,7 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's UUID"
     )
-    public UUID getUUID() {
+    public static UUID getUUID() {
         return player.getUUID();
     }
 

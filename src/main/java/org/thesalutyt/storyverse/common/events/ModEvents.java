@@ -57,6 +57,9 @@ public class ModEvents {
     }
     @SubscribeEvent
     public static void onWorldLeave(EntityLeaveWorldEvent event) {
+        if (event.isCanceled()) {
+            return;
+        }
         if (event.getEntity().isAddedToWorld() || event.isCanceled()) {
             System.out.println("died, but didn't close interpreter");
         }

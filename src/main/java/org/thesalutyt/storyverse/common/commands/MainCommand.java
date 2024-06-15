@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.common.commands;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -48,12 +49,13 @@ public class MainCommand {
                                         .executes((command) -> {
                                             return getBlockPos(command.getSource());
                                         }))
-                        .then(Commands.literal("run")
-                                .then(Commands.argument("script_name", StringArgumentType.string())).executes(
-                                        ((command) -> { return runScript(command.getSource(), StringArgumentType.getString(
-                                                command, "script_name"
-                                        )); })
-                                ))
+                .then(Commands.literal("run")
+                        .then(Commands.argument("script_name", StringArgumentType.string())
+                                .executes((command) -> {
+                                    return runScript(command.getSource(), StringArgumentType.getString(command, "script_name"));
+                                })
+                        )
+                )
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
                         .then(Commands.literal("gui")
@@ -223,12 +225,7 @@ public class MainCommand {
     }
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
         Chat.sendAsEngine("GUI test");
-        try {
-            Gui gui = new Gui("label");
-            gui.init(Minecraft.getInstance(), 100, 100);
-        } catch (Exception e) {
-            Chat.sendError(e.getMessage());
-        }
+        new Gui("123").init(Minecraft.getInstance(), 1, 1);
         return 1;
     }
 }

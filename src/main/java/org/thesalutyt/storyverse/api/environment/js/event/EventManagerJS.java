@@ -25,6 +25,7 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.common.events.ModEvents;
+import org.thesalutyt.storyverse.api.features.Player;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -53,7 +54,9 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
     @SubscribeEvent
     public static void onMessage(ClientChatReceivedEvent event) {
-        msg = event.getMessage().getContents();
+        msg = event.getMessage().getString();
+        System.out.println("Message: " + msg);
+        System.out.println("Full: " + event.getMessage().toString());
         runEvent("message");
     }
     @SubscribeEvent
@@ -153,7 +156,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
                     }
                 for (int i=0;i<arr.size(); i++) {
                     arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
-                            SVEngine.interpreter.getScope(), new Object[]{});
+                            SVEngine.interpreter.getScope(), Objects.requireNonNull(getArgs()).toArray());
                 }
             } else {
                 return;
@@ -164,7 +167,9 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         if (!ModEvents.inWorld) {
             return;
         }
-        if (!Objects.equals(event_name, "sleep") && !Objects.equals(event_name, "message")) {
+        if (!Objects.equals(event_name, "sleep") && !Objects.equals(event_name, "message")
+        && !Objects.equals(event_name, "block_break") && !Objects.equals(event_name, "block_interact")
+        && Objects.equals(event_name, "dimension_change") && !Objects.equals(event_name, "block_placed")    ) {
             return;
         } else {
             events.remove(event_name);
@@ -217,7 +222,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         if (!ModEvents.inWorld) {
             return null;
         }
-        Object[] args = new Object[]{};
+        Object[] args = new Object[15];
         args[0] = new Double((double) blockPos.getX());
         args[1] = new Double((double) blockPos.getY());
         args[2] = new Double((double) blockPos.getZ());
@@ -234,6 +239,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         args[13] = player_respawned;
         args[14] = key_pressed;
         return new NativeArray(args);
+    }
+    public static String getMsg() {
+        System.out.println(msg);
+        return msg;
     }
     public static void putIntoScope(Scriptable scope) {
         EventManagerJS ef = new EventManagerJS();
@@ -276,6 +285,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(key_pressed);
             Method clear = EventManagerJS.class.getMethod("clear");
             methodsToAdd.add(clear);
+            Method getMsg = EventManagerJS.class.getMethod("getMsg");
+            methodsToAdd.add(getMsg);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

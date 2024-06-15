@@ -18,7 +18,7 @@ base {
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(8)
 }
-
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
     copyIdeResources = true
@@ -34,7 +34,15 @@ minecraft {
                 }
             }
         }
-
+        client {
+            workingDirectory project.file('run')
+            taskName 'runClient'
+            // main = 'net.minecraft.launchwrapper.Launch'
+            // args '--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker'
+            sourceSets.main.resources { srcDir 'src/generated/resources' }
+            jvmArgs = ["-Xmx4G"]
+            // classpath += configurations.forge
+        }
 
         server {
             args '--nogui'
@@ -46,7 +54,6 @@ minecraft {
         }
     }
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
