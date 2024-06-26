@@ -348,6 +348,7 @@ public class Player extends ScriptableObject implements EnvResource{
         return player;
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         // Создаем объект, к которому потом будем обращаться
         Player ef = new Player(Server.getDevPlayer());
@@ -356,7 +357,6 @@ public class Player extends ScriptableObject implements EnvResource{
 
         // Это список функций, которые потом будут добавлены в объект ExternalFunctions
         // Здесь просто повторяй, я и сам не стал сильно глубоко копаться в деталях
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method sendMessage = Player.class.getMethod("sendMessage", String.class);

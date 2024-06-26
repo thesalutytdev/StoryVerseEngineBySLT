@@ -32,10 +32,10 @@ public class Sounds extends ScriptableObject implements EnvResource {
         SoundEvent soundEvent = new SoundEvent(new ResourceLocation(sound));
         playSoundGlobal(soundEvent, volume.floatValue(), pitch.floatValue());
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         Sounds ef = new Sounds();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method playSound = Sounds.class.getMethod("playSound", String.class, Double.class, Double.class);

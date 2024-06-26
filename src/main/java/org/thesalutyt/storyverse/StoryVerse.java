@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.thesalutyt.storyverse.common.config.SVConfig;
 import org.thesalutyt.storyverse.common.entities.Entities;
 
-
 @Mod(StoryVerse.MOD_ID)
 public class StoryVerse {
     public static final String MOD_ID = "storyverse";

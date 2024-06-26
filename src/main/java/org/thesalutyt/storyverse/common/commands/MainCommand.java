@@ -1,48 +1,37 @@
 package org.thesalutyt.storyverse.common.commands;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.GameType;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
-import org.thesalutyt.storyverse.api.environment.events.EventManager;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
-import org.thesalutyt.storyverse.api.environment.resource.script.Scripts;
 import org.thesalutyt.storyverse.api.features.*;
-import org.thesalutyt.storyverse.api.gui.Gui;
+import org.thesalutyt.storyverse.api.gui.CustomGui;
+import org.thesalutyt.storyverse.api.gui.ScriptGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
-import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 
 import org.mozilla.javascript.Context;
-import org.thesalutyt.storyverse.common.screen.gui.myfirstgui.MyFirstGui;
+import org.thesalutyt.storyverse.utils.RenderUtils;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.io.FileNotFoundException;
 
 public class MainCommand {
     Context context = Context.enter();
     Scriptable scope = context.initStandardObjects();
+    private static final Minecraft mc = Minecraft.getInstance();
     public MainCommand(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("storyverse")
                                 .then(Commands.literal("blockpos")
@@ -59,9 +48,13 @@ public class MainCommand {
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
                         .then(Commands.literal("gui")
-                                .executes((command) -> {return guiTest(command.getSource());}))
+                                .executes((command) -> {
+                                    return guiTest(command.getSource());
+                                }))
                         .then(Commands.literal("camera_entity")
-                                .executes((command) -> {return getCameraEntity(command.getSource());}))
+                                .executes((command) -> {
+                                    return getCameraEntity(command.getSource());
+                                }))
                         .then(Commands.literal("action_packet")
                                 .executes((command) -> {
                                     return actionPacketTest(command.getSource());
@@ -83,13 +76,8 @@ public class MainCommand {
                                 .then(Commands.literal("noAI")
                                         .executes((command) -> {return controllerTestNoAI(command.getSource());}))
                                 .executes((command) -> {return controllerTest(command.getSource());}))
-                        .then(Commands.literal("fadeScreen").executes((command) -> {
-                            return testFade(command.getSource());
-                                })
-                                .then(Commands.literal("color").executes((command) -> {
-                                    return testFadeColor(command.getSource());
-                                })))
-                        .executes((command) -> {return engineTest(command.getSource());}))
+                        .then(Commands.literal("fadeScreen")
+                                .executes((command) -> {return testFadeColor(command.getSource());})))
         );
     }
     private static int goUp(CommandSource source) throws CommandSyntaxException {
@@ -160,7 +148,7 @@ public class MainCommand {
         Server server = new Server();
 
         Server.execute(player, "Command executor works fine :D");
-        Server.execute(player, "/tp TheSALUTYT ~1 ~5 ~1");
+        Server.execute(player, "/tp @s ~1 ~5 ~1");
 
         return 1;
     }
@@ -192,7 +180,9 @@ public class MainCommand {
         ServerPlayerEntity player = source.getPlayerOrException();
         WorldWrapper world = new WorldWrapper();
         MobController mob = new MobController(player.blockPosition(), EntityType.WITHER_SKELETON);
-
+        CustomGui testGui = CustomGui.createGui();
+        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+        mc.setScreen(new ScriptGui());
         return 1;
     }
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
@@ -225,7 +215,10 @@ public class MainCommand {
     }
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
         Chat.sendAsEngine("GUI test");
-        new Gui("123").init(Minecraft.getInstance(), 1, 1);
+        CustomGui testGui = CustomGui.createGui();
+        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+        mc.setScreen(new ScriptGui());
+        //new Gui().init(Minecraft.getInstance(), 1, 1);
         return 1;
     }
 }

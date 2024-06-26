@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.features;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -551,8 +552,8 @@ public class MobController extends ScriptableObject implements EnvResource {
         mobControllers.put(controller.getUUID(), controller);
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     private void registerFunctions() {
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method setTarget = MobController.class.getMethod("setTarget", Object.class);

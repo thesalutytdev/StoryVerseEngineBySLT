@@ -99,10 +99,10 @@ public class Script extends ScriptableObject implements EnvResource {
     public static void waitUntilMessage(String message) {
         Integer waitTimeAmount = 1;
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         Script ef = new Script();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method waitTime = Script.class.getMethod("waitTime", Integer.class);

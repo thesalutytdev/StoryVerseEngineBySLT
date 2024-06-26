@@ -33,6 +33,7 @@ public class Interpreter {
             LocationCreator.putIntoScope(scope);
             ScriptProperties.putIntoScope(scope);
             EventManagerJS.putIntoScope(scope);
+            Gui.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

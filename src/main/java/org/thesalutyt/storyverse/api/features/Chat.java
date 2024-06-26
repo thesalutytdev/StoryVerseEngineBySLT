@@ -95,10 +95,10 @@ public class Chat extends ScriptableObject implements EnvResource {
     public static List<ServerPlayerEntity> getPlayers() {
         return server.getPlayerList().getPlayers();
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         Chat ef = new Chat();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method sendMessage = Chat.class.getMethod("sendMessage", String.class);
