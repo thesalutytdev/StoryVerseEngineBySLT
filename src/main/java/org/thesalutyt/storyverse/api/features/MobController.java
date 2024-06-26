@@ -486,6 +486,7 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
     public Boolean isAlive() {
+        Minecraft.getInstance().setScreen(null);
         return this.entity.isAlive();
     }
     public MobController attackPlayer() {
