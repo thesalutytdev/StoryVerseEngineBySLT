@@ -60,14 +60,14 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     @SubscribeEvent
     public static void onKilled(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntityLiving();
         if (!Objects.equals(event.getSource(), DamageSource.playerAttack(Player.getPlayer()))) {
             System.out.printf("%s(%s, %s) killed %s with this damage source: %s%n",
                     event.getEntityLiving().getType(), event.getEntityLiving().getUUID(),
                     event.getEntityLiving(), event.getSource().getEntity(),
                     event.getSource());
-            return;
+            runEvent(getMob(entity.getUUID()), "kill");;
         }
-        LivingEntity entity = event.getEntityLiving();
         if (entity instanceof LivingEntity) {
             System.out.println("Player killed " + entity.getUUID() + " (" + event.getEntityLiving().getType() + ")");
             runEvent(getMob(entity.getUUID()), "kill");
@@ -144,11 +144,10 @@ public class MobJS extends ScriptableObject implements EnvResource {
     public static Entity mob(String id) {
         return controllers.get(id).getEntity();
     }
-
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         MobJS ef = new MobJS(EventLoop.getLoopInstance());
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method create = MobJS.class.getMethod("create", String.class, Double.class, Double.class, Double.class, String.class);

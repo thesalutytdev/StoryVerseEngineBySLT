@@ -1,5 +1,10 @@
-package org.thesalutyt.storyverse.api.gui;
+package org.thesalutyt.storyverse.api.screen.gui.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -44,5 +49,17 @@ public class RenderUtils {
         float green = (hex >> 8 & 0xFF) / 255.0F;
         float blue = (hex & 0xFF) / 255.0F;
         GL11.glColor4f(red, green, blue, alpha);
+    }
+    public static void drawImage(MatrixStack matrixStack, ResourceLocation image, int x, int y, int width, int height) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        Minecraft.getInstance().getTextureManager().bind(image);
+        AbstractGui.blit(matrixStack, x, y, 0, 0, width, height, width, height);
+
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
     }
 }

@@ -18,7 +18,7 @@ public class ScriptGui extends Screen {
     private TextAreaWidget textArea;
 
     public ScriptGui() {
-        super(new TranslationTextComponent("gui.custom_text_area.title"));
+        super(new TranslationTextComponent("gui.creator.title"));
     }
 
     @Override

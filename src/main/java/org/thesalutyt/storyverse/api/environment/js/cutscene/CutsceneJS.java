@@ -103,11 +103,10 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
             }
         }
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         CutsceneJS ef = new CutsceneJS();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
-
         try {
             Method enter = CutsceneJS.class.getMethod("enter", String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, String.class);
             methodsToAdd.add(enter);

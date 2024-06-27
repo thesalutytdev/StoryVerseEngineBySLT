@@ -236,10 +236,11 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return null;
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
+
     public static void putIntoScope (Scriptable scope) {
         WorldWrapper ef = new WorldWrapper();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method getWorld = WorldWrapper.class.getMethod("getWorld");

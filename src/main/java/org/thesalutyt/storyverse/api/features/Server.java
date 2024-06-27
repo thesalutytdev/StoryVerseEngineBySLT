@@ -108,6 +108,8 @@ public class Server extends ScriptableObject implements EnvResource {
         }
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
+
     public static void putIntoScope (Scriptable scope, String rootDir) {
         // Создаем объект, к которому потом будем обращаться
         Server ef = new Server();
@@ -116,7 +118,6 @@ public class Server extends ScriptableObject implements EnvResource {
 
         // Это список функций, которые потом будут добавлены в объект ExternalFunctions
         // Здесь просто повторяй, я и сам не стал сильно глубоко копаться в деталях
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method executeNP = Server.class.getMethod("execute", String.class);

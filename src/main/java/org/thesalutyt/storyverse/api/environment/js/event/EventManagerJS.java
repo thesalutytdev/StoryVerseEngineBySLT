@@ -68,6 +68,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static void onBreak(BlockEvent.BreakEvent event) {
         block_broken = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
         blockPos = event.getPos();
+
         runEvent("block_break");
     }
     @SubscribeEvent
@@ -244,10 +245,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         System.out.println(msg);
         return msg;
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         EventManagerJS ef = new EventManagerJS();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
         try {
             Method addEventListener = EventManagerJS.class.getMethod("addEventListener", String.class, BaseFunction.class);
             methodsToAdd.add(addEventListener);

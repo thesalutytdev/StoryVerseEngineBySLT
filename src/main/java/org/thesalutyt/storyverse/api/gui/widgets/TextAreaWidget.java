@@ -11,8 +11,16 @@ import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.opengl.GL11;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
+import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.utils.RenderUtils;
 import org.thesalutyt.storyverse.utils.TimeHelper;
 
@@ -43,7 +51,19 @@ public class TextAreaWidget extends Widget {
     private final Map<String, String> variableAssignments = new HashMap<>();
     private final List<String> entityList = new ArrayList<>();
     private final List<String> playerList = new ArrayList<>();
+    private final List<String> cutsceneList = new ArrayList<>();
     private final List<String> scriptList = new ArrayList<>();
+    private final List<String> chatList = new ArrayList<>();
+    private final List<String> soundList = new ArrayList<>();
+    private final List<String> asyncList = new ArrayList<>();
+    private final List<String> serverList = new ArrayList<>();
+    private final List<String> worldList = new ArrayList<>();
+    private final List<String> eventList = new ArrayList<>();
+    private final List<String> asynchronousList = new ArrayList<>();
+    private final List<String> externalList = new ArrayList<>();
+    private final List<String> guiList = new ArrayList<>();
+    private final List<String> locationList = new ArrayList<>();
+    private final List<String> mobList = new ArrayList<>();
     private boolean test5 = false;
     private String test6;
     private int index;
@@ -75,9 +95,81 @@ public class TextAreaWidget extends Widget {
                 scriptList.add(list3.getName());
             }
         }
+        for(Method list3 : CutsceneJS.methodsToAdd) {
+            if(!cutsceneList.contains(list3.getName())) {
+                cutsceneList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Chat.methodsToAdd) {
+            if(!chatList.contains(list3.getName())) {
+                chatList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Sounds.methodsToAdd) {
+            if(!soundList.contains(list3.getName())) {
+                soundList.add(list3.getName());
+            }
+        }
+        for(Method list3 : AsyncJS.methodsToAdd) {
+            if(!asyncList.contains(list3.getName())) {
+                asyncList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Server.methodsToAdd) {
+            if(!serverList.contains(list3.getName())) {
+                serverList.add(list3.getName());
+            }
+        }
+        for(Method list3 : WorldWrapper.methodsToAdd) {
+            if(!worldList.contains(list3.getName())) {
+                worldList.add(list3.getName());
+            }
+        }
+        for(Method list3 : EventManagerJS.methodsToAdd) {
+            if(!eventList.contains(list3.getName())) {
+                eventList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Asynchronous.methodsToAdd) {
+            if(!asynchronousList.contains(list3.getName())) {
+                asynchronousList.add(list3.getName());
+            }
+        }
+        for(Method list3 : ExternalFunctions.methodsToAdd) {
+            if(!externalList.contains(list3.getName())) {
+                externalList.add(list3.getName());
+            }
+        }
+        for(Method list3 : ScriptableGui.methodsToAdd) {
+            if(!guiList.contains(list3.getName())) {
+                guiList.add(list3.getName());
+            }
+        }
+        for(Method list3 : LocationCreator.methodsToAdd) {
+            if(!locationList.contains(list3.getName())) {
+                locationList.add(list3.getName());
+            }
+        }
+        for(Method list3 : MobJS.methodsToAdd) {
+            if(!mobList.contains(list3.getName())) {
+                mobList.add(list3.getName());
+            }
+        }
+        classes.put("Async", asynchronousList);
         classes.put("entity", entityList);
         classes.put("player", playerList);
         classes.put("script", scriptList);
+        classes.put("cutscene", cutsceneList);
+        classes.put("chat", chatList);
+        classes.put("sound", soundList);
+        classes.put("async", asyncList);
+        classes.put("server", serverList);
+        classes.put("world", worldList);
+        classes.put("event", eventList);
+        classes.put("ExternalFunctions", externalList);
+        classes.put("gui", guiList);
+        classes.put("location", locationList);
+        classes.put("entity", mobList);
 
         cursorX = this.lineX + 36 + this.fontRenderer.width(this.lines.get(this.cursorLine).substring(0, this.cursorColumn));
         cursorY = this.lineY + 2 + this.cursorLine * this.fontRenderer.lineHeight;
