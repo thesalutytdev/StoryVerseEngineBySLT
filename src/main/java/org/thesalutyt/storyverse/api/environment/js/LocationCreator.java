@@ -30,10 +30,10 @@ public class LocationCreator extends ScriptableObject implements EnvResource, JS
         return SVEngine.ASSETS_DIR;
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         LocationCreator ef = new LocationCreator();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
         try {
             Method createLocation = LocationCreator.class.getMethod("createLocation", String.class);
             methodsToAdd.add(createLocation);

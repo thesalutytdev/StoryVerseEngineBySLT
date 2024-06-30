@@ -49,6 +49,7 @@ public class ExternalFunctions extends ScriptableObject {
     В статическом методе putIntoScope, этот объект создается и укладывается в пространство имен, которое ему передают.
     Расценивай putIntoScope как экзотический конструктор объекта.
     */
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope, String rootDir) {
         // Создаем объект, к которому потом будем обращаться
         ExternalFunctions ef = new ExternalFunctions(rootDir);
@@ -57,7 +58,6 @@ public class ExternalFunctions extends ScriptableObject {
 
         // Это список функций, которые потом будут добавлены в объект ExternalFunctions
         // Здесь просто повторяй, я и сам не стал сильно глубоко копаться в деталях
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method factorial = ExternalFunctions.class.getMethod("factorial", Integer.class);

@@ -244,10 +244,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         System.out.println(msg);
         return msg;
     }
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         EventManagerJS ef = new EventManagerJS();
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
         try {
             Method addEventListener = EventManagerJS.class.getMethod("addEventListener", String.class, BaseFunction.class);
             methodsToAdd.add(addEventListener);

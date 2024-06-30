@@ -8,8 +8,14 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.system.MemoryStack;
 
 import java.awt.*;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glColor4f;
@@ -41,6 +47,18 @@ public class RenderUtils {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_CULL_FACE);
         glDisable(GL_LINE_SMOOTH);
+    }
+
+    public static Font getFontFromTTF(ResourceLocation fontLocation, float fontSize, int fontType) {
+        Font output = null;
+        try {
+            output = Font.createFont(fontType, Minecraft.getInstance().getResourceManager().getResource(fontLocation).getInputStream());
+            output = output.deriveFont(fontSize);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output;
     }
 
     private static void quickPolygonCircle(float x, float y, float xRadius, float yRadius, int start, int end, int split) {
@@ -98,6 +116,67 @@ public class RenderUtils {
         }
     }
 
+    private static final Deque<Frame> stack = new ArrayDeque<>();
+
+    public static void push(int x, int y, int width, int height) {
+        push(new Frame(x, y, x + width, y + height));
+    }
+
+    public static void push(Frame frame) {
+        stack.addLast(frame);
+        apply();
+    }
+
+    public static Frame pop() {
+        Frame frame = stack.removeLast();
+        apply();
+        return frame;
+    }
+
+    public static void suspendScissors(Runnable fn) {
+        Frame frame = pop();
+        fn.run();
+        push(frame);
+    }
+
+    private static void apply() {
+        MainWindow window = Minecraft.getInstance().getWindow();
+
+        if (stack.isEmpty()) {
+            RenderSystem.disableScissor();
+            return;
+        }
+
+        int x1 = 0;
+        int y1 = 0;
+        int x2 = window.getGuiScaledWidth();
+        int y2 = window.getGuiScaledHeight();
+
+        for (Frame frame : stack) {
+            x1 = Math.max(x1, frame.x1);
+            y1 = Math.max(y1, frame.y1);
+            x2 = Math.min(x2, frame.x2);
+            y2 = Math.min(y2, frame.y2);
+        }
+
+        double scale = window.getGuiScale();
+        RenderSystem.enableScissor(
+                (int) (x1 * scale), (int) (window.getHeight() - scale * y2),
+                (int) ((x2 - x1) * scale), (int) ((y2 - y1) * scale)
+        );
+    }
+
+    public static class Frame {
+        public final int x1, y1, x2, y2;
+
+        public Frame(int x1, int y1, int x2, int y2) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+        }
+    }
+
     private static State state = new State();
 
     public static void makeScissorBox(final int xStart, final int yStart, final int xEnd, final int yEnd) {
@@ -122,7 +201,7 @@ public class RenderUtils {
     }
 
     public static void drawImage(MatrixStack matrixStack, ResourceLocation image, int x, int y, int width, int height) {
-        RenderSystem.disableDepthTest();
+        RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -131,6 +210,6 @@ public class RenderUtils {
         AbstractGui.blit(matrixStack, x, y, 0, 0, width, height, width, height);
 
         RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
+        RenderSystem.disableDepthTest();
     }
 }

@@ -12,11 +12,10 @@ public class Asynchronous extends ScriptableObject {
         return getClass().getName();
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         Asynchronous as = new Asynchronous();
         as.setParentScope(scope);
-
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method setTimeout = Asynchronous.class.getMethod("setTimeout", BaseFunction.class, Integer.class);

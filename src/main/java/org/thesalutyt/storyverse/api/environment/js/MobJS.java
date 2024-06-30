@@ -145,10 +145,10 @@ public class MobJS extends ScriptableObject implements EnvResource {
         return controllers.get(id).getEntity();
     }
 
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         MobJS ef = new MobJS(EventLoop.getLoopInstance());
         ef.setParentScope(scope);
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
 
         try {
             Method create = MobJS.class.getMethod("create", String.class, Double.class, Double.class, Double.class, String.class);

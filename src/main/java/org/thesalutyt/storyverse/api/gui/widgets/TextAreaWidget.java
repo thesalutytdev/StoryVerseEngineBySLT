@@ -1,17 +1,19 @@
 package org.thesalutyt.storyverse.api.gui.widgets;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.opengl.GL11;
-import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
+import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.utils.RenderUtils;
 import org.thesalutyt.storyverse.utils.TimeHelper;
@@ -42,13 +44,25 @@ public class TextAreaWidget extends Widget {
     private final Map<String, List<String>> classes = new HashMap<>();
     private final Map<String, String> variableAssignments = new HashMap<>();
     private final List<String> entityList = new ArrayList<>();
+    private final List<String> entityCreate = new ArrayList<>();
     private final List<String> playerList = new ArrayList<>();
+    private final List<String> cutsceneList = new ArrayList<>();
     private final List<String> scriptList = new ArrayList<>();
+    private final List<String> chatList = new ArrayList<>();
+    private final List<String> soundList = new ArrayList<>();
+    private final List<String> asyncList = new ArrayList<>();
+    private final List<String> serverList = new ArrayList<>();
+    private final List<String> worldList = new ArrayList<>();
+    private final List<String> eventList = new ArrayList<>();
+    private final List<String> asynchronousList = new ArrayList<>();
+    private final List<String> externalList = new ArrayList<>();
+    private final List<String> locationList = new ArrayList<>();
     private boolean test5 = false;
     private String test6;
-    private int index;
+    private int index = 0;
     private List<String> matchedItems;
     int offset;
+    int moveY;
 
     public TextAreaWidget(int x, int y, int width, int height) {
         super(x, y, width, height, new StringTextComponent(""));
@@ -75,9 +89,69 @@ public class TextAreaWidget extends Widget {
                 scriptList.add(list3.getName());
             }
         }
+        for(Method list3 : CutsceneJS.methodsToAdd) {
+            if(!cutsceneList.contains(list3.getName())) {
+                cutsceneList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Chat.methodsToAdd) {
+            if(!chatList.contains(list3.getName())) {
+                chatList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Sounds.methodsToAdd) {
+            if(!soundList.contains(list3.getName())) {
+                soundList.add(list3.getName());
+            }
+        }
+        for(Method list3 : AsyncJS.methodsToAdd) {
+            if(!asyncList.contains(list3.getName())) {
+                asyncList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Server.methodsToAdd) {
+            if(!serverList.contains(list3.getName())) {
+                serverList.add(list3.getName());
+            }
+        }
+        for(Method list3 : WorldWrapper.methodsToAdd) {
+            if(!worldList.contains(list3.getName())) {
+                worldList.add(list3.getName());
+            }
+        }
+        for(Method list3 : EventManagerJS.methodsToAdd) {
+            if(!eventList.contains(list3.getName())) {
+                eventList.add(list3.getName());
+            }
+        }
+        for(Method list3 : Asynchronous.methodsToAdd) {
+            if(!asynchronousList.contains(list3.getName())) {
+                asynchronousList.add(list3.getName());
+            }
+        }
+        for(Method list3 : ExternalFunctions.methodsToAdd) {
+            if(!externalList.contains(list3.getName())) {
+                externalList.add(list3.getName());
+            }
+        }
+        for(Method list3 : LocationCreator.methodsToAdd) {
+            if(!locationList.contains(list3.getName())) {
+                locationList.add(list3.getName());
+            }
+        }
+        classes.put("Async", asynchronousList);
         classes.put("entity", entityList);
         classes.put("player", playerList);
         classes.put("script", scriptList);
+        classes.put("cutscene", cutsceneList);
+        classes.put("chat", chatList);
+        classes.put("sound", soundList);
+        classes.put("async", asyncList);
+        classes.put("server", serverList);
+        classes.put("world", worldList);
+        classes.put("event", eventList);
+        classes.put("ExternalFunctions", externalList);
+        classes.put("location", locationList);
 
         cursorX = this.lineX + 36 + this.fontRenderer.width(this.lines.get(this.cursorLine).substring(0, this.cursorColumn));
         cursorY = this.lineY + 2 + this.cursorLine * this.fontRenderer.lineHeight;
@@ -90,7 +164,7 @@ public class TextAreaWidget extends Widget {
         int yOffset = this.lineY + 2;
         lineNumberOffset = 15;
         for (String line : this.lines) {
-            RenderUtils.makeScissorBox(this.x + 255, this.y + 153, this.x + this.width, this.y + this.height + 39);
+            RenderUtils.makeScissorBox(this.x + 255, this.y + 154, this.x + this.width, this.y + this.height + 38);
             if (lineNumber > 9) lineNumberOffset = 10;
             if (lineNumber > 99) lineNumberOffset = 5;
             if (lineNumber > 999) lineNumberOffset = 0;
@@ -122,12 +196,16 @@ public class TextAreaWidget extends Widget {
         matchedItems = findMatches(prefix);
         offset = 3;
         boolean userIsTyping = !prefix.isEmpty();
-        if(index > matchedItems.size()) index = 0;
+        if(index > matchedItems.size()) {index = 0; moveY = 0;}
         if(userIsTyping) {
             test5 = !matchedItems.isEmpty();
-            if(test5) test6 = matchedItems.get(index);
-            if(test5) RenderUtils.drawCircleRect(cursorX - 3, cursorY + 12 + index * 11, cursorX + 120, cursorY + 22 + index * 11, 2, new Color(159, 159, 159, 55).getRGB());
             if(test5) {
+                if(index <= 4) {
+                    RenderUtils.drawCircleRect(cursorX - 3, cursorY + 12 + index * 11, cursorX + 120, cursorY + 22 + index * 11, 2, new Color(159, 159, 159, 55).getRGB());
+                } else {
+                    RenderUtils.drawCircleRect(cursorX - 3, cursorY + 12 + 44, cursorX + 120, cursorY + 22 + 44, 2, new Color(159, 159, 159, 55).getRGB());
+                }
+
                 if(matchedItems.size() >= 5) {
                     RenderUtils.drawCircleRect(cursorX - 5, cursorY + 10, cursorX + 122, cursorY + 69, 3, new Color(108, 108, 108, 55).getRGB());
                 } else if(matchedItems.size() == 1) {
@@ -140,19 +218,16 @@ public class TextAreaWidget extends Widget {
                     RenderUtils.drawCircleRect(cursorX - 5, cursorY + 10, cursorX + 122, cursorY + 58, 3, new Color(108, 108, 108, 55).getRGB());
                 }
             }
-            GlStateManager._enableScissorTest();
-            GL11.glScissor(cursorX - 5, -cursorY + 705, cursorX + 250, 119);
-            //GlStateManager._scissorBox(cursorX - 5, -cursorY + 705, cursorX + 250, 119);
-            //RenderSystem.enableScissor(cursorX - 5, -cursorY + 705, cursorX + 250, 119);
+            RenderUtils.push(cursorX, cursorY + 13, 85, 52);
             for (String item : matchedItems) {
-                this.fontRenderer.draw(matrixStack, item, cursorX, cursorY + 10 + offset, new Color(176, 176, 176).getRGB());
+                this.fontRenderer.draw(matrixStack, item, cursorX, cursorY + 10 + offset + moveY, new Color(176, 176, 176).getRGB());
                 offset += 11;
             }
-            GlStateManager._disableScissorTest();
-            //RenderSystem.disableScissor();
+            RenderUtils.pop();
         } else {
             test5 = false;
             index = 0;
+            moveY = 0;
         }
         /*
         if(cursorColumn > 0) {
@@ -213,7 +288,7 @@ public class TextAreaWidget extends Widget {
 
     private void updateVariableAssignments() {
         variableAssignments.clear();
-        Pattern pattern = Pattern.compile("var\\s+(\\w+)\\s*=\\s*(\\w+);");
+        Pattern pattern = Pattern.compile("var\\s+(\\w+)\\s*=\\s*(\\w+)");
         for (String line : lines) {
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
@@ -347,37 +422,42 @@ public class TextAreaWidget extends Widget {
                     }
                     return true;
                 case 265: // Up arrow key
-                    if(!test5) {
+                    if (!test5) {
                         if (this.cursorLine > 0) {
                             this.cursorLine--;
                             this.cursorColumn = Math.min(this.cursorColumn, this.lines.get(this.cursorLine).length());
                             ensureCursorInView();
                         }
                     } else {
-                        if(index <= 0) {
-                            index = matchedItems.size() -1;
+                        if (index <= 0) {
+                            index = matchedItems.size() - 1;
+                            moveY = -(matchedItems.size() - 5) * 11;
                         } else {
                             index--;
+                            if(index >= 4) moveY += 11;
                         }
                     }
                     return true;
                 case 264: // Down arrow key
-                    if(!test5) {
+                    if (!test5) {
                         if (this.cursorLine < this.lines.size() - 1) {
                             this.cursorLine++;
                             this.cursorColumn = Math.min(this.cursorColumn, this.lines.get(this.cursorLine).length());
                             ensureCursorInView();
                         }
                     } else {
-                        if(index >= matchedItems.size() - 1) {
+                        if (index >= matchedItems.size() - 1) {
                             index = 0;
+                            moveY = 0;
                         } else {
                             index++;
+                            if(index >= 5) moveY -= 11;
                         }
                     }
                     return true;
                 case 258: // Tab key
                     String currentLineTab = this.lines.get(this.cursorLine);
+                    test6 = matchedItems.get(index);
                     if(!test5) {
                         String newLineTab = currentLineTab.substring(0, this.cursorColumn) + "    " + currentLineTab.substring(this.cursorColumn);
                         this.lines.set(this.cursorLine, newLineTab);
@@ -391,11 +471,7 @@ public class TextAreaWidget extends Widget {
                     return true;
                 case 83:
                     if(Screen.hasControlDown()) {
-                        String text2 = "";
-                        for(String text : lines) {
-                            text2 += text + "\n";
-                        }
-                        save(text2);
+                        save();
                         return true;
                     }
                 default:
@@ -405,10 +481,14 @@ public class TextAreaWidget extends Widget {
         return false;
     }
 
-    public static void save(String text) {
+    public void save() {
         try {
             FileWriter file = new FileWriter(SVEngine.SCRIPTS_PATH + "script.js");
-            file.write(text);
+            StringBuilder writeText = new StringBuilder();
+            for(String text : this.lines) {
+                writeText.append(text).append("\n");
+            }
+            file.write(writeText.toString());
             file.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -436,7 +516,6 @@ public class TextAreaWidget extends Widget {
 
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         int totalTextHeight = this.lines.size() * this.fontRenderer.lineHeight + 3;
-        int visibleHeight = this.height - 4; // To consider the padding/margin
         int maxLineY = this.y;
         int minLineY = this.y + this.height - totalTextHeight;
 

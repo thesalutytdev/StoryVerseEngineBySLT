@@ -196,6 +196,10 @@ public class Player extends ScriptableObject implements EnvResource{
         player.getEntity().startRiding((Entity) entity);
     }
 
+    public static void testRidding() {
+        player.getEntity().startRiding(player.getEntity());
+    }
+
     @Documentate(
             desc = "Stops player from riding"
     )
@@ -429,8 +433,12 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setFlySpeed);
             Method setWalkSpeed = Player.class.getMethod("setWalkSpeed", Double.class);
             methodsToAdd.add(setWalkSpeed);
+            Method startRiding = Player.class.getMethod("startRiding", Object.class);
+            methodsToAdd.add(startRiding);
             Method stopRiding = Player.class.getMethod("stopRiding");
             methodsToAdd.add(stopRiding);
+            Method testRidding = Player.class.getMethod("testRidding");
+            methodsToAdd.add(testRidding);
             Method setInvisible = Player.class.getMethod("setInvisible", Boolean.class);
             methodsToAdd.add(setInvisible);
             Method setInvulnerable = Player.class.getMethod("setInvulnerable", Boolean.class);
