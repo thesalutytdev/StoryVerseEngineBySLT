@@ -1,12 +1,13 @@
 {
-  "prefix.storyverse.mob_controller": "Контроллер Мобов",
-  "prefix.storyverse.world_actions": "Управление Миром",
-  "prefix.storyverse.sound": "Звук",
-  "prefix.storyverse.player": "Игрок",
-  "keylist.storyverse": "StoryVerse Engine",
-  "key.storyverse.next_act": "Следующее действие",
   "damage.storyverse.script": "Скриптовый урон",
-  "error_code.storyverse.scriptFalied": "Скрипт не может быть исполнен",
-  "text.storyverse.fade_screen": "Продолжение следует",
-  "prefix.storyverse.default.npc": "НПС"
+  "error_code.storyverse.scriptFailed": "Скрипт не может быть исполнен",
+  "gui.creator.title": "Создание скриптов",
+  "key.storyverse.next_act": "Следующее действие",
+  "keylist.storyverse": "StoryVerse Engine",
+  "prefix.storyverse.default.npc": "НПС",
+  "prefix.storyverse.mob_controller": "Контроллер Мобов",
+  "prefix.storyverse.player": "Игрок",
+  "prefix.storyverse.sound": "Звук",
+  "prefix.storyverse.world_actions": "Управление Миром",
+  "text.storyverse.fade_screen": "Продолжение следует"
 }

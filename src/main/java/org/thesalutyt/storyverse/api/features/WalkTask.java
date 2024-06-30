@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.math.BlockPos;
+import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
@@ -59,15 +60,6 @@ public class WalkTask extends ScriptableObject implements EnvResource {
     )
     public MobController getController() {
         return controller;
-    }
-    public static void putIntoScope(Scriptable scope) {
-        ArrayList<Method> methodsToAdd = new ArrayList<>();
-        try {
-            Method getTaskId = WalkTask.class.getMethod("getTaskStringID");
-            methodsToAdd.add(getTaskId);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
     }
     @Override
     public String getResourceId() {

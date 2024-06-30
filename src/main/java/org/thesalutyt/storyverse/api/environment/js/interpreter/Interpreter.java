@@ -9,6 +9,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 
 
 public class Interpreter {
@@ -33,7 +34,7 @@ public class Interpreter {
             LocationCreator.putIntoScope(scope);
             ScriptProperties.putIntoScope(scope);
             EventManagerJS.putIntoScope(scope);
-            Gui.putIntoScope(scope);
+            ScriptableGui.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class AsyncJS extends ScriptableObject implements EnvResource {
     public static void async(String action) {new Thread(() -> {SVEngine.interpreter.executeString(action);}).start();}
     public static void async(BaseFunction function) {new Thread(() -> {SVEngine.interpreter.executeString(function.toString());});}
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope, String rootDir) {

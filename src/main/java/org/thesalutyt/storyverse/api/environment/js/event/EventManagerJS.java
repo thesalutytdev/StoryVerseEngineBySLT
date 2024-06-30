@@ -68,6 +68,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static void onBreak(BlockEvent.BreakEvent event) {
         block_broken = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
         blockPos = event.getPos();
+
         runEvent("block_break");
     }
     @SubscribeEvent

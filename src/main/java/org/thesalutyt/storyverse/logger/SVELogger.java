@@ -51,6 +51,7 @@ public class SVELogger {
         try{
             FileWriter writer = new FileWriter(file_path);
             writer.write(text);
+            writer.close();
         } catch (IOException e) {
             System.out.println(SVEngine.prefix + " Error occurred when tried to write in file || " + file_path + " ||");
             System.out.println(SVEngine.prefix + " Error: " + e.getMessage());
