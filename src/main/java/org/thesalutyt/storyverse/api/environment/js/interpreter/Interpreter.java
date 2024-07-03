@@ -10,6 +10,7 @@ import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
+import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 
 public class Interpreter {
@@ -35,6 +36,7 @@ public class Interpreter {
             ScriptProperties.putIntoScope(scope);
             EventManagerJS.putIntoScope(scope);
             ScriptableGui.putIntoScope(scope);
+            FadeScreen.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

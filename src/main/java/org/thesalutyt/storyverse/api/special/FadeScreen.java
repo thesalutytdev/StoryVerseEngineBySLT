@@ -1,30 +1,35 @@
 package org.thesalutyt.storyverse.api.special;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.IngameGui;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.common.MinecraftForge;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.api.features.Gui;
-import software.bernie.geckolib3.GeckoLib;
+import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
+import org.thesalutyt.storyverse.utils.TimeHelper;
 
+import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class FadeScreen extends ScriptableObject implements EnvResource, JSResource {
-    public static void fade(String mode, String color) {
-        // logic
-        // hide/not hide mc stuff based on mode
+
+    private static final FadeScreenGui fadeScreenGui = new FadeScreenGui();
+    private static final TimeHelper timer = new TimeHelper();
+    public static void fade(String text, Integer color, Integer time) {
+        FadeScreenGui.text = text;
+        FadeScreenGui.color = color;
+        FadeScreenGui.time = time;
+        FadeScreenGui.elapsedTicks = 0;
+        MinecraftForge.EVENT_BUS.register(FadeScreenGui.class);
     }
 
-    public static void fade(String color) {
-        // logic
-        // do not hide mc stuff
+    public static void fade(Integer color, Integer time) {
+        FadeScreenGui.color = color;
+        FadeScreenGui.time = time;
+        FadeScreenGui.elapsedTicks = 0;
+        MinecraftForge.EVENT_BUS.register(FadeScreenGui.class);
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -32,9 +37,9 @@ public class FadeScreen extends ScriptableObject implements EnvResource, JSResou
         FadeScreen ef = new FadeScreen();
         ef.setParentScope(scope);
         try {
-            Method fade = FadeScreen.class.getMethod("fade", String.class, String.class);
+            Method fade = FadeScreen.class.getMethod("fade", String.class, Integer.class, Integer.class);
             methodsToAdd.add(fade);
-            Method fade2 = FadeScreen.class.getMethod("fade", String.class);
+            Method fade2 = FadeScreen.class.getMethod("fade", Integer.class, Integer.class);
             methodsToAdd.add(fade2);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

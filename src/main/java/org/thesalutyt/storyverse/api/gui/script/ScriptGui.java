@@ -1,4 +1,4 @@
-package org.thesalutyt.storyverse.api.gui;
+package org.thesalutyt.storyverse.api.gui.script;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;

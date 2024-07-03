@@ -237,61 +237,6 @@ public class TextAreaWidget extends Widget {
             index = 0;
             moveY = 0;
         }
-        /*
-        if(cursorColumn > 0) {
-            GL11.glPushMatrix();
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            for (String test2 : currentLineTab) {
-
-                for(String feature : features) {
-                    if(feature.startsWith(test2.trim())) {
-                        this.fontRenderer.draw(matrixStack, feature, this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                        offset += 10;
-                    }
-                }
-
-                if (test2.trim().startsWith("entity.")) {
-                    for(Method methods : MobController.methodsToAdd) {
-                        if (methods.getName().startsWith(test2.replaceFirst("entity\\.", ""))) {
-                            this.fontRenderer.draw(matrixStack, methods.getName(), this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                            offset += 10;
-                        }
-                    }
-                } else if(test2.trim().startsWith("player.")) {
-                    for(Method methods : Player.methodsToAdd) {
-                        if (methods.getName().startsWith(test2.replaceFirst("player\\.", ""))) {
-                            this.fontRenderer.draw(matrixStack, methods.getName(), this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                            offset += 10;
-                        }
-                    }
-                } else if(test2.trim().startsWith("sound.")) {
-                    for(Method methods : Sounds.methodsToAdd) {
-                        if (methods.getName().startsWith(test2.replaceFirst("sound\\.", ""))) {
-                            this.fontRenderer.draw(matrixStack, methods.getName(), this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                            offset += 10;
-                        }
-                    }
-                } else if(test2.trim().startsWith("chat.")) {
-                    for(Method methods : Chat.methodsToAdd) {
-                        if (methods.getName().startsWith(test2.replaceFirst("chat\\.", ""))) {
-                            this.fontRenderer.draw(matrixStack, methods.getName(), this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                            offset += 10;
-                        }
-                    }
-                } else if(test2.trim().startsWith("script.")) {
-                    for(Method methods : Script.methodsToAdd) {
-                        if (methods.getName().startsWith(test2.replaceFirst("script\\.", ""))) {
-                            this.fontRenderer.draw(matrixStack, methods.getName(), this.x + lineNumberOffset + 10, cursorY + 8 + offset, new Color(101, 101, 101).getRGB());
-                            offset += 10;
-                        }
-                    }
-                }
-            }
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            GL11.glPopMatrix();
-        }
-
-         */
     }
 
     private void updateVariableAssignments() {

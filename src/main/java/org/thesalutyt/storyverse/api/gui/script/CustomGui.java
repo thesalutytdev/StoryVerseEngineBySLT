@@ -1,17 +1,12 @@
-package org.thesalutyt.storyverse.api.gui;
+package org.thesalutyt.storyverse.api.gui.script;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import org.thesalutyt.storyverse.StoryVerse;
-import org.thesalutyt.storyverse.utils.RenderUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
