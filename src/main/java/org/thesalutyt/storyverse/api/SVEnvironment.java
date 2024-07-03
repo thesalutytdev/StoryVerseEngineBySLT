@@ -8,13 +8,10 @@ import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
-import org.thesalutyt.storyverse.fs_environment.Environment;
-import org.thesalutyt.storyverse.fs_environment.instances.ScriptInstance;
 
-public class SVEnvironment extends Environment {
+public class SVEnvironment{
     public static String envId = "storyverse";
     public static String version = "1";
-    public Environment env = this;
     public Player player;
     public MobController mobController;
     public Script script;
@@ -22,10 +19,9 @@ public class SVEnvironment extends Environment {
     public Camera camera;
     public Cutscene cutscene;
     public WorldWrapper world;
-    public ScriptInstance scriptInstance;
     public Sounds sounds;
     public LegacyEventManager eventManager;
-    public SVEnvironment(ServerPlayerEntity player, ScriptInstance instance) {
+    public SVEnvironment(ServerPlayerEntity player) {
         this.player = new Player(player);
         this.script = new Script();
         this.eventManager = new LegacyEventManager();

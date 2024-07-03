@@ -9,11 +9,13 @@
     <b>·</b> Event manager<br>
     <b>·</b> Background scripts, and many other</h4>
 <h3>Now working at:</h3>
-    <b>·</b> Adding custom gui screens - 0%<br>
+    <b>·</b> Adding custom gui screens - 60%<br>
     <b>·</b> Cutscenes - 85%<br>
     <b>·</b> Custom NPC entity - 50%<br>
     <b>·</b> Fade screen - 25%
 
 <h2>If you want to build mod, run shadowJar task</h2>
-<button class="custom_button"><a href="https://www.t.me/StoryVerseStudioOfficial">
+<button style="border-radius: 5px; background-color: green; color: black;" class="custom_button"><a style="color: white;" href="https://www.t.me/StoryVerseStudioOfficial">
 StoryVerse</a></button>
+<button class="custom_button" style="border-radius: 5px; background-color: green; color: black;"><a style="color: white;" href="https://www.donationalerts.com/r/salutyt">
+Support Me</a></button>

@@ -15,6 +15,7 @@ import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.features.*;
+import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.utils.RenderUtils;
 import org.thesalutyt.storyverse.utils.TimeHelper;
 
@@ -57,6 +58,7 @@ public class TextAreaWidget extends Widget {
     private final List<String> asynchronousList = new ArrayList<>();
     private final List<String> externalList = new ArrayList<>();
     private final List<String> locationList = new ArrayList<>();
+    private final List<String> fadeList = new ArrayList<>();
     private boolean test5 = false;
     private String test6;
     private int index = 0;
@@ -139,6 +141,11 @@ public class TextAreaWidget extends Widget {
                 locationList.add(list3.getName());
             }
         }
+        for(Method list3 : FadeScreen.methodsToAdd) {
+            if(!fadeList.contains(list3.getName())) {
+                fadeList.add(list3.getName());
+            }
+        }
         classes.put("Async", asynchronousList);
         classes.put("entity", entityList);
         classes.put("player", playerList);
@@ -152,6 +159,7 @@ public class TextAreaWidget extends Widget {
         classes.put("event", eventList);
         classes.put("ExternalFunctions", externalList);
         classes.put("location", locationList);
+        classes.put("fade", fadeList);
 
         cursorX = this.lineX + 36 + this.fontRenderer.width(this.lines.get(this.cursorLine).substring(0, this.cursorColumn));
         cursorY = this.lineY + 2 + this.cursorLine * this.fontRenderer.lineHeight;
