@@ -77,7 +77,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         Minecraft.getInstance().setScreen(new Gui());
     }
     public static void close() {
-        Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().setScreen(null);
     }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {

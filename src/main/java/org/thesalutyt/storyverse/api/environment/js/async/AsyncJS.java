@@ -16,7 +16,6 @@ public class AsyncJS extends ScriptableObject implements EnvResource {
     public static void async(BaseFunction function) {new Thread(() -> {SVEngine.interpreter.executeString(function.toString());});}
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
-    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope, String rootDir) {
         // Создаем объект, к которому потом будем обращаться
         AsyncJS ef = new AsyncJS();
