@@ -6,5 +6,11 @@
   "refmap": "storyverse.refmap.json",
   "mixins": [
     "IngameGuiMixin"
-  ]
+  ],
+  "client": [
+    "IngameGuiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -15,10 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(IngameGui.class)
 @OnlyIn(Dist.CLIENT)
 public class IngameGuiMixin extends AbstractGui {
-    private static final Logger LOGGER = LogManager.getLogger("storyverse");
-
     @Inject(method = "render", at = @At("HEAD"))
     public void render(MatrixStack matrixStack, float partialTicks, CallbackInfo ci) {
-        LOGGER.info("IngameGuiMixin render method called");
+        System.out.println("IngameGuiMixin render method called");
     }
 }
