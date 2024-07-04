@@ -76,7 +76,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             EntityDataManager.defineId(NPCEntity.class, DataSerializers.BOOLEAN);
 
     public Entity focusedEntity;
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    public final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public NPCEntity(EntityType<? extends AnimalEntity> p_i48568_1_, World p_i48568_2_) {
         super(p_i48568_1_, p_i48568_2_);
@@ -240,13 +240,13 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(ANIMATION, "");
-        this.entityData.define(EMOTION, "");
-        this.entityData.define(TEXTURE, "");
-        this.entityData.define(MODEL, "");
-        this.entityData.define(ONCE_ANIM, "");
-        this.entityData.define(LOOP_ANIM, "");
-        this.entityData.define(ANIMATION_FILE, "");
+        this.entityData.define(ANIMATION, "none");
+        this.entityData.define(EMOTION, "none");
+        this.entityData.define(TEXTURE, "none");
+        this.entityData.define(MODEL, "none");
+        this.entityData.define(ONCE_ANIM, "none");
+        this.entityData.define(LOOP_ANIM, "none");
+        this.entityData.define(ANIMATION_FILE, "none");
         this.entityData.define(IDLE_ANIM, "animation.npc.idle");
         this.entityData.define(WALK_ANIM, "animation.npc.walk");
     }
@@ -313,7 +313,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
 
     @Override
     public AnimationFactory getFactory() {
-        return null;
+        return factory;
     }
 
     @Override

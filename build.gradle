@@ -9,11 +9,9 @@ buildscript {
     }
 }
 plugins {
-    id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -65,6 +63,12 @@ minecraft {
     }
 }
 
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+
+    config "${mod_id}.mixins.json"
+}
+
 repositories {
     maven {
         name = 'GeckoLib'
@@ -84,6 +88,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:3.0.106")
     shade "org.mozilla:rhino:1.7.15"
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 tasks.named('processResources', ProcessResources).configure {
