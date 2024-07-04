@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse;
 
+import net.minecraft.block.material.Material;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -8,8 +10,15 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.thesalutyt.storyverse.api.environment.js.mod.Analyze;
+import org.thesalutyt.storyverse.api.features.Chat;
+import org.thesalutyt.storyverse.common.block.ModBlocks;
+import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.config.SVConfig;
 import org.thesalutyt.storyverse.common.entities.Entities;
+import org.thesalutyt.storyverse.common.items.ModItems;
+import org.thesalutyt.storyverse.common.items.adder.CustomItem;
+import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 
 @Mod(StoryVerse.MOD_ID)
 public class StoryVerse {
@@ -19,9 +28,21 @@ public class StoryVerse {
     public StoryVerse() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
+
+        CustomItem ii = new CustomItem("storyverseiteem", () -> {
+            Chat.sendAsEngine("Ну и зачем ты это сделал, дуралей?");
+        }, 64, ModCreativeTabs.ENGINE_TAB);
+        ii.register();
+        CustomBlock ib = new CustomBlock("storyverseblock", Material.STONE,
+                2, true, ToolType.PICKAXE, 5.0f, 0);
+        ib.register();
+        ModItems.register(bus);
+        ModBlocks.register(bus);
         Entities.register(bus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SVConfig.SPEC, MOD_ID + ".toml");
         SVEngine.createEngineDirectory();
+        Analyze a = new Analyze();
+        a.analyze();
         SVEngine.specialDocumentation();
         SVEngine.sendInfoMessage();
     }

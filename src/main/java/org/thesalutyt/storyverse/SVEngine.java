@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.api.environment.js.mod.ModInterpreter;
 import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
 import org.thesalutyt.storyverse.common.config.SVConfig;
@@ -53,6 +54,7 @@ public class SVEngine {
     public static final String OP_PLAYER = "TheSALUTYT";
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
+    public static ModInterpreter modInterpreter = new ModInterpreter(SCRIPTS_PATH);
 
     public static FadeScreenGui fadeScreen = new FadeScreenGui();
     public SVEngine(){}

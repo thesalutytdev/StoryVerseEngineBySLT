@@ -86,9 +86,11 @@ public class Script extends ScriptableObject implements EnvResource {
             }
         }
     public static void runScript(String scriptName) {
-        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
-        String logs_path = SVELogger.init(scriptName);
-        SVELogger.write(logs_path, "Ran script successfully");
+        new Thread(() -> {
+            interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
+            String logs_path = SVELogger.init(scriptName);
+            SVELogger.write(logs_path, "Ran script successfully");
+        }).start();
     }
     public static void log(String message) {
         String logs_path = SVELogger.init("ScriptLogs");

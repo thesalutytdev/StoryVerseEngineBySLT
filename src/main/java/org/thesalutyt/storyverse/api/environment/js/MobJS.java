@@ -2,6 +2,10 @@ package org.thesalutyt.storyverse.api.environment.js;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.MerchantOffer;
+import net.minecraft.item.MerchantOffers;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -15,6 +19,8 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
+import org.thesalutyt.storyverse.common.entities.Entities;
+import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -128,6 +134,37 @@ public class MobJS extends ScriptableObject implements EnvResource {
         mob.setNameVisible(visible);
         return mob;
     }
+    public static MobController npc(String id, Double x, Double y, Double z, String name, Boolean visible,
+                                    NativeArray npcArgs) {
+        System.out.println("Started creating npc");
+        MobController mob = new MobController(WorldWrapper.pos(x, y, z), Entities.NPC.get());
+        System.out.println("npc = " + mob);
+        controllers.put(id, mob);
+        mobNames.put(mob.getUUID(), id);
+        System.out.println("Putting npc in base");
+        mob.setName(name);
+        mob.setNameVisible(visible);
+        Object[] args = npcArgs.toArray(new Object[0]);
+        NPCEntity npc = (NPCEntity) mob.getEntity();
+        if (args.length > 0) {
+            if (args[0] != null && args[0] instanceof String) {
+                npc.setTexturePath((String) args[0]);
+            }
+            if (args[1] != null && args[1] instanceof String) {
+                npc.setModelPath((String) args[1]);
+            }
+            if (args[2] != null && args[2] instanceof String) {
+                npc.setAnimationPath((String) args[2]);
+            }
+            if (args[3] != null && args[3] instanceof Integer) {
+                npc.setSpeed(((Integer) args[3]).floatValue());
+            }
+            if (args[4] != null && args[4] instanceof Boolean) {
+                npc.canPickup = (Boolean) args[4];
+            }
+        }
+        return mob;
+    }
     public static MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {
         Object[] args = npcArgs.toArray(new Object[0]);
         MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType("NPC"));
@@ -173,6 +210,10 @@ public class MobJS extends ScriptableObject implements EnvResource {
             methodsToAdd.add(runEvent);
             Method removeEventListener = MobJS.class.getMethod("removeEventListener", String.class, String.class);
             methodsToAdd.add(removeEventListener);
+            Method npc = MobJS.class.getMethod("npc",
+                    String.class, Double.class, Double.class,
+                    Double.class, String.class, Boolean.class, NativeArray.class);
+            methodsToAdd.add(npc);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

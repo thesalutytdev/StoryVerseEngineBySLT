@@ -9,5 +9,6 @@
   "error_code.storyverse.scriptFailed": "Script can't be executed",
   "text.storyverse.fade_screen": "To Be Continued",
   "prefix.storyverse.default.npc": "NPC",
-  "gui.creator.title": "Script Creation Workspace"
+  "gui.creator.title": "Script Creation Workspace",
+  "item.storyverse.item_epta": "Epta"
 }

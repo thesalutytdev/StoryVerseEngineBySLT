@@ -27,6 +27,7 @@ import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
+import org.thesalutyt.storyverse.common.entities.Entities;
 
 import java.awt.*;
 
@@ -94,7 +95,9 @@ public class MainCommand {
         return 1;
     }
     public static int controllerTest(CommandSource source) throws CommandSyntaxException {
-
+        ServerPlayerEntity player = source.getPlayerOrException();
+        MobController mob = new MobController(player.getX(), player.getY(), player.getZ(), Entities.NPC.get());
+        mob.moveTo(new BlockPos(player.getX() + 2, player.getY(), player.getZ() + 2), 1);
         return 1; // ❄
     }
     public static int controllerTestNoAI(CommandSource source) throws CommandSyntaxException {
@@ -203,8 +206,7 @@ public class MainCommand {
         return 1;
     }
     public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {
-        Interpreter interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
-        interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", script_name));
+        Script.runScript(script_name);
 
         return 1;
     }

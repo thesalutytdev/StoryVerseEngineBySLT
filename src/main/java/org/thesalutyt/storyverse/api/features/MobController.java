@@ -23,7 +23,9 @@ import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
+import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -84,14 +86,25 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.goalSelector.addGoal(0, this.moveGoal);
         return new WalkTask(pos, this.entity, this);
     }
-    public Object[] moveTo(Double x, Double y, Double z, Double speed){
+    public Object[] moveTo(Double x, Double y, Double z, Double speed) {
+        if (this.entity.getType() == Entities.NPC.get()) {
+            NPCEntity npc = (NPCEntity) this.entity;
+            npc.moveEntity(x, y, z, speed.floatValue());
+            return new Object[] {"none", "none"};
+        }
+        // Chat.sendMessage("move started");
         BlockPos pos = new BlockPos(x, y, z);
+        //  Chat.sendMessage("2");
         this.moveGoal = new MoveGoal(entity, pos, speed.floatValue());
+        // Chat.sendMessage("3");
         this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
             this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
         });
-        this.entity.goalSelector.addGoal(0, this.moveGoal);
+        // Chat.sendMessage("4");
+        this.entity.goalSelector.addGoal(1, this.moveGoal);
+        // Chat.sendMessage("5");
         WalkTask task = new WalkTask(pos, this.entity, this);
+        // Chat.sendMessage("6");
         return new Object[] {task, task.getTaskStringID()};
     }
 

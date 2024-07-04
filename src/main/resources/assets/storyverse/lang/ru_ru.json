@@ -9,5 +9,6 @@
   "prefix.storyverse.player": "Игрок",
   "prefix.storyverse.sound": "Звук",
   "prefix.storyverse.world_actions": "Управление Миром",
-  "text.storyverse.fade_screen": "Продолжение следует"
+  "text.storyverse.fade_screen": "Продолжение следует",
+  "item.storyverse.item_epta": "Епта"
 }

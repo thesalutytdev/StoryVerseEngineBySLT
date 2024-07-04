@@ -24,6 +24,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.events.EventType;
 
 import java.lang.reflect.Method;
@@ -151,9 +152,11 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             case "COW": {
                 return EntityType.COW;
             }
-            case "ARMOR_STAND":
-            case "NPC": {
+            case "ARMOR_STAND": {
                 return EntityType.ARMOR_STAND;
+            }
+            case "NPC": {
+                return Entities.NPC.get();
             }
             case "SQUID": {
                 return EntityType.SQUID;

@@ -105,7 +105,11 @@ public class EventLoop {
                         task.run();
                     } catch (final Exception e) {
                         System.out.println(printLoopError(e));
-                        Chat.sendError(printLoopError(e));
+                        try {
+                            Chat.sendError(printLoopError(e));
+                        } catch (Exception e1) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                 }
                 // loop through scheduled tasks and add them into task queue

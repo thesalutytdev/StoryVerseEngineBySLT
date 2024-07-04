@@ -23,6 +23,13 @@ public class MoveGoal extends Goal {
         posY = pos.getY();
         posZ = pos.getZ();
     }
+    public MoveGoal(MobEntity creature, double x, double y, double z, float speedIn) {
+        mob = (CreatureEntity) creature;
+        speedModifier = Double.parseDouble(String.valueOf(speedIn));
+        posX = x;
+        posY = y;
+        posZ = z;
+    }
 
     public boolean canUse() {
         return true;

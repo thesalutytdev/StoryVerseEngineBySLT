@@ -23,6 +23,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -143,7 +144,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         data.addAnimationController(new AnimationController<>(this,"c_loop",15,this::loopC));
     }
 
-    private <E extends IAnimatable> PlayState playOnceC(AnimationEvent<E> event) {
+    public  <E extends IAnimatable> PlayState playOnceC(AnimationEvent<E> event) {
         event.getController().transitionLengthTicks = 15;
         String anim = getPersistentData().getString("a_playonce");
         if(anim == "")
@@ -153,7 +154,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         return PlayState.CONTINUE;
     }
 
-    private <E extends IAnimatable> PlayState loopC(AnimationEvent<E> event) {
+    public <E extends IAnimatable> PlayState loopC(AnimationEvent<E> event) {
         event.getController().transitionLengthTicks = 15;
         String anim = getPersistentData().getString("a_loop");
         if(anim == "")
@@ -240,13 +241,13 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(ANIMATION, "none");
-        this.entityData.define(EMOTION, "none");
-        this.entityData.define(TEXTURE, "none");
-        this.entityData.define(MODEL, "none");
-        this.entityData.define(ONCE_ANIM, "none");
-        this.entityData.define(LOOP_ANIM, "none");
-        this.entityData.define(ANIMATION_FILE, "none");
+        this.entityData.define(ANIMATION, "");
+        this.entityData.define(EMOTION, "");
+        this.entityData.define(TEXTURE, "");
+        this.entityData.define(MODEL, "");
+        this.entityData.define(ONCE_ANIM, "");
+        this.entityData.define(LOOP_ANIM, "");
+        this.entityData.define(ANIMATION_FILE, "");
         this.entityData.define(IDLE_ANIM, "animation.npc.idle");
         this.entityData.define(WALK_ANIM, "animation.npc.walk");
     }
@@ -295,6 +296,9 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         return this.entityData.get(SLEEP);
     }
 
+    public void moveEntity(double x, double y, double z, float speed){
+        this.goalSelector.addGoal(1, new MoveGoal(this, x, y, z, speed));
+    }
 
     @Override
     public boolean removeWhenFarAway(double p_213397_1_) {

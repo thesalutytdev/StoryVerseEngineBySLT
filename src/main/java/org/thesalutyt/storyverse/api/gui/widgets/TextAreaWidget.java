@@ -14,6 +14,7 @@ import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
+import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.utils.RenderUtils;
@@ -59,6 +60,7 @@ public class TextAreaWidget extends Widget {
     private final List<String> externalList = new ArrayList<>();
     private final List<String> locationList = new ArrayList<>();
     private final List<String> fadeList = new ArrayList<>();
+    private final List<String> npcList = new ArrayList<>();
     private boolean test5 = false;
     private String test6;
     private int index = 0;
@@ -146,6 +148,11 @@ public class TextAreaWidget extends Widget {
                 fadeList.add(list3.getName());
             }
         }
+        for (Method list3 : NpcSpecials.methodsToAdd) {
+            if(!npcList.contains(list3.getName())) {
+                npcList.add(list3.getName());
+            }
+        }
         classes.put("Async", asynchronousList);
         classes.put("entity", entityList);
         classes.put("player", playerList);
@@ -160,6 +167,7 @@ public class TextAreaWidget extends Widget {
         classes.put("ExternalFunctions", externalList);
         classes.put("location", locationList);
         classes.put("fade", fadeList);
+        classes.put("npc", npcList);
 
         cursorX = this.lineX + 36 + this.fontRenderer.width(this.lines.get(this.cursorLine).substring(0, this.cursorColumn));
         cursorY = this.lineY + 2 + this.cursorLine * this.fontRenderer.lineHeight;

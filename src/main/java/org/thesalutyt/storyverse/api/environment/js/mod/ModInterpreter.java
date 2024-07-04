@@ -1,44 +1,36 @@
-package org.thesalutyt.storyverse.api.environment.js.interpreter;
+package org.thesalutyt.storyverse.api.environment.js.mod;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
+import org.thesalutyt.storyverse.common.items.adder.CustomItem;
+import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
+import org.thesalutyt.storyverse.common.tabs.adder.CustomTab;
 
-
-public class Interpreter {
+public class ModInterpreter {
     private Scriptable scope;
-
-    public Interpreter(String rootDir) {
+    public ModInterpreter(String rootDir) {
         EventLoop.getLoopInstance().runImmediate(() -> {
             Context ctx = Context.enter();
             scope = ctx.initStandardObjects();
             ExternalFunctions.putIntoScope(scope, rootDir);
-            Player.putIntoScope(scope);
             AsyncJS.putIntoScope(scope, rootDir);
-            Script.putIntoScope(scope);
             Asynchronous.putIntoScope(scope);
-            Server.putIntoScope(scope, rootDir);
-            Chat.putIntoScope(scope);
-            Sounds.putIntoScope(scope);
-            WorldWrapper.putIntoScope(scope);
-            MobController.putIntoScope(scope);
-            MobJS.putIntoScope(scope);
-            CutsceneJS.putIntoScope(scope);
-            LocationCreator.putIntoScope(scope);
-            ScriptProperties.putIntoScope(scope);
-            EventManagerJS.putIntoScope(scope);
-            ScriptableGui.putIntoScope(scope);
-            FadeScreen.putIntoScope(scope);
-            NpcSpecials.putIntoScope(scope);
+            CustomTab.putIntoScope(scope);
+            CustomItem.putIntoScope(scope);
+            Analyze.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

@@ -5,14 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "storyverse.refmap.json",
   "mixins": [
-    "IngameGuiMixin",
-    "MinecraftMixin",
-    "MainMixin"
+    "IngameGuiMixin"
   ],
   "client": [
-    "IngameGuiMixin",
-    "MinecraftMixin",
-    "MainMixin"
+    "IngameGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1
