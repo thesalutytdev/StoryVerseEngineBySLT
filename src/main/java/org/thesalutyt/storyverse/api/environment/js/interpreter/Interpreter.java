@@ -8,6 +8,7 @@ import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
@@ -23,7 +24,7 @@ public class Interpreter {
             scope = ctx.initStandardObjects();
             ExternalFunctions.putIntoScope(scope, rootDir);
             Player.putIntoScope(scope);
-            AsyncJS.putIntoScope(scope, rootDir);
+            AsyncJS.putIntoScope(scope);
             Script.putIntoScope(scope);
             Asynchronous.putIntoScope(scope);
             Server.putIntoScope(scope, rootDir);
@@ -39,6 +40,8 @@ public class Interpreter {
             ScriptableGui.putIntoScope(scope);
             FadeScreen.putIntoScope(scope);
             NpcSpecials.putIntoScope(scope);
+            JSItem.putIntoScope(scope);
+            BackgroundScript.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

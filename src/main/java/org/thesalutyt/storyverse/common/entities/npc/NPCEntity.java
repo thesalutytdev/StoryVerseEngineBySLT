@@ -85,8 +85,8 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(2, new LookRandomlyGoal(this));
-        this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1));
+        // this.goalSelector.addGoal(2, new LookRandomlyGoal(this));
+        // this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1));
         this.goalSelector.addGoal(4, new JumpGoal() {
             @Override
             public boolean canUse() {
@@ -242,7 +242,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(ANIMATION, "");
-        this.entityData.define(EMOTION, "");
+        this.entityData.define(EMOTION, "animation.npc.idle");
         this.entityData.define(TEXTURE, "");
         this.entityData.define(MODEL, "");
         this.entityData.define(ONCE_ANIM, "");

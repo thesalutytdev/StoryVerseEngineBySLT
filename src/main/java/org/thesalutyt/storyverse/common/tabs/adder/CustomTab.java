@@ -3,6 +3,8 @@ package org.thesalutyt.storyverse.common.tabs.adder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -17,11 +19,29 @@ import java.util.HashMap;
 public class CustomTab extends ScriptableObject implements ICustomElement, JSResource, EnvResource {
     public static HashMap<String, CustomTab> tabs = new HashMap<>();
     public ItemGroup tab;
+    public ItemStack icon = new ItemStack(Items.DIAMOND);
     public void create(String name, Boolean hasSearch, Boolean canScroll) {
         tab = new ItemGroup(name) {
             @Override
             public ItemStack makeIcon() {
                 return new ItemStack(Items.DIAMOND);
+            }
+        };
+        if (hasSearch) {
+            tab.hasSearchBar();
+        }
+        if (canScroll) {
+            tab.canScroll();
+        }
+        tabs.put(name, this);
+    }
+    public void create(String name, String item, Boolean hasSearch, Boolean canScroll) {
+        tab = new ItemGroup(name) {
+            @Override
+            public ItemStack makeIcon() {
+                icon = new ItemStack(Registry.ITEM.get(new ResourceLocation(item.split(":")[0],
+                        item.split(":")[1])));
+                return icon;
             }
         };
         if (hasSearch) {
@@ -39,6 +59,9 @@ public class CustomTab extends ScriptableObject implements ICustomElement, JSRes
         try {
             Method create = CustomTab.class.getMethod("create", String.class, Boolean.class, Boolean.class);
             methodsToAdd.add(create);
+            Method crWP = CustomTab.class.getMethod("create", String.class, String.class, Boolean.class,
+                    Boolean.class);
+            methodsToAdd.add(crWP);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

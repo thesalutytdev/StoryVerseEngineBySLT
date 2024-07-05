@@ -27,7 +27,7 @@ public class ModBlocks {
         }
     }
     public static void registerBlockItem(String name, CustomBlock block) {
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.block, new Item.Properties().tab(ModCreativeTabs.ENGINE_TAB)));
+        ModItems.ITEMS.register(name, () -> new BlockItem(block.block, new Item.Properties().tab(block.group)));
     }
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);

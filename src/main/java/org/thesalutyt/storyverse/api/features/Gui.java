@@ -34,6 +34,7 @@ public class Gui extends Screen implements EnvResource {
     protected static Integer gWidth;
     protected static Integer gHeight;
     protected static Boolean isPause = true;
+    protected static Boolean renderBG = true;
     public static GuiType type = GuiType.DEFAULT;
     public Gui() {
         super(new StringTextComponent(label));
@@ -85,7 +86,9 @@ public class Gui extends Screen implements EnvResource {
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
+        if (renderBG) {
+            renderBackground(matrixStack);
+        }
         assert this.minecraft != null;
         if (BACKGROUND != null) {
             this.minecraft.getTextureManager().bind(BACKGROUND);

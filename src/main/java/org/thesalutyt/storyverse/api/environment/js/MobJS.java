@@ -66,14 +66,15 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     @SubscribeEvent
     public static void onKilled(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntityLiving();
         if (!Objects.equals(event.getSource(), DamageSource.playerAttack(Player.getPlayer()))) {
             System.out.printf("%s(%s, %s) killed %s with this damage source: %s%n",
                     event.getEntityLiving().getType(), event.getEntityLiving().getUUID(),
                     event.getEntityLiving(), event.getSource().getEntity(),
                     event.getSource());
+            runEvent(getMob(entity.getUUID()), "kill");
             return;
         }
-        LivingEntity entity = event.getEntityLiving();
         if (entity instanceof LivingEntity) {
             System.out.println("Player killed " + entity.getUUID() + " (" + event.getEntityLiving().getType() + ")");
             runEvent(getMob(entity.getUUID()), "kill");

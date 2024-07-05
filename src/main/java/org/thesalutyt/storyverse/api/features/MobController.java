@@ -22,6 +22,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
@@ -35,14 +36,9 @@ import java.util.UUID;
 
 public class MobController extends ScriptableObject implements EnvResource {
     private MobEntity entity;
-    private WorldWrapper worldWrapper = new WorldWrapper();
+    private final WorldWrapper worldWrapper = new WorldWrapper();
     public HashMap<String, Runnable> handlers = new HashMap<>();
     public static HashMap<UUID, MobController> mobControllers = new HashMap<>();
-    private boolean hasCustomUUID = false;
-    private UUID customUUID = null;
-    private Boolean nameVisible = false;
-    private UUID uuid;
-    private String customName;
     private Float mobSpeed;
     public static ArrayList<String> interactActionsID = new ArrayList<>();
     private Goal moveGoal;
@@ -52,13 +48,13 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController(Double x, Double y, Double z, String type){
         registerFunctions();
-        BlockPos pos = worldWrapper.pos(x, y, z);
-        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, worldWrapper.toEntityType(type));
+        BlockPos pos = WorldWrapper.pos(x, y, z);
+        this.entity = (MobEntity) worldWrapper.spawnEntity(pos, WorldWrapper.toEntityType(type));
         mobSpeed = this.entity.getSpeed();
     }
     public MobController(Double x, Double y, Double z, EntityType type){
         registerFunctions();
-        BlockPos pos = worldWrapper.pos(x, y, z);
+        BlockPos pos = WorldWrapper.pos(x, y, z);
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
         mobSpeed = this.entity.getSpeed();
     }
@@ -69,7 +65,6 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
         System.out.println("Setting mob's speed");
         mobSpeed = this.entity.getSpeed();
-        uuid = this.entity.getUUID();
     }
 
     public MobController() {
@@ -92,19 +87,13 @@ public class MobController extends ScriptableObject implements EnvResource {
             npc.moveEntity(x, y, z, speed.floatValue());
             return new Object[] {"none", "none"};
         }
-        // Chat.sendMessage("move started");
         BlockPos pos = new BlockPos(x, y, z);
-        //  Chat.sendMessage("2");
         this.moveGoal = new MoveGoal(entity, pos, speed.floatValue());
-        // Chat.sendMessage("3");
         this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
             this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
         });
-        // Chat.sendMessage("4");
         this.entity.goalSelector.addGoal(1, this.moveGoal);
-        // Chat.sendMessage("5");
         WalkTask task = new WalkTask(pos, this.entity, this);
-        // Chat.sendMessage("6");
         return new Object[] {task, task.getTaskStringID()};
     }
 
@@ -132,14 +121,12 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Sets custom name for a mob"
     )
     public MobController setName(String newName) {
-        this.customName = newName;
-        ITextComponent name = new StringTextComponent(customName);
+        ITextComponent name = new StringTextComponent(newName);
         this.entity.setCustomName(name);
         return this;
     }
     public MobController setNameVisible(Boolean method) {
-        this.nameVisible = method;
-        this.entity.setCustomNameVisible(nameVisible);
+        this.entity.setCustomNameVisible(method);
         return this;
     }
 
@@ -147,7 +134,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Returns mob's custom name"
     )
     public String getName() {
-        return this.customName;
+        return Objects.requireNonNull(this.entity.getCustomName()).getContents();
     }
 
     @Documentate(
@@ -268,17 +255,41 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Gives mob item in hand"
     )
     public MobController setItemMainHand(Integer item) {
-        this.entity.setItemInHand(Hand.MAIN_HAND, new ItemStack(worldWrapper.item(item)));
+        this.entity.setItemInHand(Hand.MAIN_HAND, new ItemStack(WorldWrapper.item(item)));
         return this;
     }
     public MobController setItemOffHand(Integer item) {
-        this.entity.setItemInHand(Hand.OFF_HAND, new ItemStack(worldWrapper.item(item)));
+        this.entity.setItemInHand(Hand.OFF_HAND, new ItemStack(WorldWrapper.item(item)));
         return this;
     }
     public MobController holdItem(Integer hand, Integer item) {
-        this.entity.setItemInHand(worldWrapper.selectHand(hand), new ItemStack(worldWrapper.item(item)));
+        this.entity.setItemInHand(WorldWrapper.selectHand(hand), new ItemStack(WorldWrapper.item(item)));
         return this;
     }
+
+
+    public MobController setItemMainHand(Object item) {
+        holdItem(0, item);
+        return this;
+    }
+    public MobController setItemOffHand(Object item) {
+        holdItem(1, item);
+        return this;
+    }
+    public MobController holdItem(Integer hand, Object item) {
+        if (item instanceof ItemStack) {
+            this.entity.setItemInHand(WorldWrapper.selectHand(hand), (ItemStack) item);
+        } else {
+            try {
+                this.entity.setItemInHand(WorldWrapper.selectHand(hand), JSItem.items.get(item).item);
+            } catch (Exception e) {
+                Chat.sendError("Item is not an ItemStack");
+                return this;
+            }
+        }
+        return this;
+    }
+
     @Documentate(
             desc = "Removes mob"
     )
@@ -302,7 +313,7 @@ public class MobController extends ScriptableObject implements EnvResource {
     }
     public MobController addEffect(Integer effect, Integer time, Integer level) {
         WorldWrapper worldWrapper = new WorldWrapper();
-        this.entity.addEffect(new EffectInstance(worldWrapper.toEffect(effect), level, time));
+        this.entity.addEffect(new EffectInstance(WorldWrapper.toEffect(effect), level, time));
         return this;
     }
 
@@ -379,16 +390,15 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
     public MobController swing(Integer hand) {
-        this.entity.swing(worldWrapper.selectHand(hand));
+        this.entity.swing(WorldWrapper.selectHand(hand));
         return this;
     }
 
     @Documentate(
             desc = "Sets mob's head rotation"
     )
-    public MobController setHeadRotation(Double[] pos) {
+    public void setHeadRotation(Double[] pos) {
         this.setHeadRotation(pos[0], pos[1]);
-        return this;
     }
 
     public MobController setHeadRotation(Double x, Double y) {
@@ -543,8 +553,6 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController setUUID(UUID uuid) {
         this.entity.setUUID(uuid);
-        this.hasCustomUUID = true;
-        this.customUUID = uuid;
         return this;
     }
 
@@ -654,6 +662,12 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(hurt);
             Method hurtWithDamageType = MobController.class.getMethod("hurt", String.class, Double.class);
             methodsToAdd.add(hurtWithDamageType);
+            Method holdII = MobController.class.getMethod("holdItem", Integer.class, Object.class);
+            methodsToAdd.add(holdII);
+            Method iMh = MobController.class.getMethod("setItemMainHand", Object.class);
+            methodsToAdd.add(iMh);
+            Method iOh = MobController.class.getMethod("setItemOffHand", Object.class);
+            methodsToAdd.add(iOh);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
