@@ -26,6 +26,7 @@ public class RenderUtils {
     public static void drawCircleRect(float x, float y, float x1, float y1, float radius, int color) {
         glColor(color);
         glEnable(GL_BLEND);
+        RenderSystem.defaultBlendFunc();
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_CULL_FACE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.crash.CrashReport;
-import net.minecraft.util.Timer;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.sql.Time;

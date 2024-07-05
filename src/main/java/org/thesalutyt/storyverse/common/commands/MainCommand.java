@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.common.commands;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -13,15 +12,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.MinecraftForge;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.effekseer.loader.EffekseerLoader;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
-import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
+import org.thesalutyt.storyverse.api.gui.QuestGui;
 import org.thesalutyt.storyverse.api.gui.script.CustomGui;
 import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
@@ -53,6 +52,10 @@ public class MainCommand {
                         .then(Commands.literal("gui")
                                 .executes((command) -> {
                                     return guiTest(command.getSource());
+                                }))
+                        .then(Commands.literal("quest")
+                                .executes((command) -> {
+                                    return quest(command.getSource());
                                 }))
                         .then(Commands.literal("camera_entity")
                                 .executes((command) -> {
@@ -140,9 +143,8 @@ public class MainCommand {
 
         return 1;
     }
-    private static final FadeScreenGui fadeScreenGui = new FadeScreenGui();
     public int testFadeColor(CommandSource source) throws CommandSyntaxException {
-        FadeScreen.fade("test", 0xFF000000, 5000);
+        FadeScreen.text("test", 0xFF000000, 1000, 700, 700);
         return 1;
     }
 
@@ -159,10 +161,6 @@ public class MainCommand {
     public int openGui(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         Server server = new Server();
-
-
-
-
         return 1;
     }
 
@@ -220,7 +218,14 @@ public class MainCommand {
         CustomGui testGui = CustomGui.createGui();
         testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
         mc.setScreen(new ScriptGui());
-        //new Gui().init(Minecraft.getInstance(), 1, 1);
+        return 1;
+    }
+
+    public static int quest(CommandSource source) throws CommandSyntaxException {
+        Chat.sendAsEngine("Game started");
+        CustomGui testGui = CustomGui.createGui();
+        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+        mc.setScreen(new QuestGui());
         return 1;
     }
 }

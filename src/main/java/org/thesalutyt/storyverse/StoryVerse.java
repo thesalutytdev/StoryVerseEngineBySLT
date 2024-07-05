@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -10,8 +11,10 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.thesalutyt.storyverse.api.effekseer.loader.EffekseerLoader;
 import org.thesalutyt.storyverse.api.environment.js.mod.Analyze;
 import org.thesalutyt.storyverse.api.features.Chat;
+import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
 import org.thesalutyt.storyverse.common.block.ModBlocks;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.config.SVConfig;
@@ -45,5 +48,6 @@ public class StoryVerse {
         a.analyze();
         SVEngine.specialDocumentation();
         SVEngine.sendInfoMessage();
+        MinecraftForge.EVENT_BUS.register(FadeScreenGui.class);
     }
 }

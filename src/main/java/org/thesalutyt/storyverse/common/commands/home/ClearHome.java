@@ -6,8 +6,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 
-import java.util.Set;
-
 public class ClearHome {
     public ClearHome(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("home").then(Commands.literal("clear").executes((command) -> {

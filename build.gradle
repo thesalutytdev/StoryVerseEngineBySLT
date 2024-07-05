@@ -87,6 +87,7 @@ configurations {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:3.0.106")
+    implementation 'org.joml:joml:1.10.1'
     shade "org.mozilla:rhino:1.7.15"
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

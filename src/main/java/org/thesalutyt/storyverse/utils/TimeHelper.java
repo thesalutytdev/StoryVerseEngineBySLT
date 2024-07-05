@@ -1,7 +1,7 @@
 package org.thesalutyt.storyverse.utils;
 
 public class TimeHelper {
-    private long lastMS = 0L;
+    private long lastMS = System.currentTimeMillis();
 
     public int convertToMS(int d) {
         return 1000 / d;
@@ -10,7 +10,7 @@ public class TimeHelper {
         return System.currentTimeMillis();
     }
     public boolean hasReached(double milliseconds ) {
-        return getCurrentMS() - lastMS >= milliseconds;
+        return ((System.currentTimeMillis() - lastMS) > milliseconds);
     }
     public boolean hasTimeReached(double delay) {
         return System.currentTimeMillis() - lastMS >= delay;
@@ -19,7 +19,7 @@ public class TimeHelper {
         return System.currentTimeMillis() - lastMS;
     }
     public void reset() {
-        lastMS = getCurrentMS();
+        lastMS = System.currentTimeMillis();
     }
     public void reset(long def) {
         this.lastMS = System.currentTimeMillis() - def;
@@ -34,7 +34,7 @@ public class TimeHelper {
         return this.hasReached(d);
     }
     public boolean hasPassed(double milliseconds) {
-        return ((getCurrentMS() - this.lastMS) > milliseconds);
+        return ((System.currentTimeMillis() - this.lastMS) > milliseconds);
     }
     public long getTime() {
         return getCurrentMS() - this.lastMS;

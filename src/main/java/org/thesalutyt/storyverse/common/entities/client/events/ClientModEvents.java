@@ -4,18 +4,15 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.npc.NPCRender;
-import org.thesalutyt.storyverse.common.events.ModEvents;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID,

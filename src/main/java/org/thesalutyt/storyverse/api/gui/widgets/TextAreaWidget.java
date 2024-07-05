@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
@@ -67,6 +68,11 @@ public class TextAreaWidget extends Widget {
     private List<String> matchedItems;
     int offset;
     int moveY;
+    private boolean isSelecting = false;
+    private int selectionStartLine = -1;
+    private int selectionStartColumn = -1;
+    private int selectionEndLine = -1;
+    private int selectionEndColumn = -1;
 
     public TextAreaWidget(int x, int y, int width, int height) {
         super(x, y, width, height, new StringTextComponent(""));
@@ -174,6 +180,13 @@ public class TextAreaWidget extends Widget {
         fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height, new Color(43, 43, 43).getRGB());
         fill(matrixStack, this.x + 33, this.y, this.x + 34, this.y + this.height, new Color(101, 101, 101).getRGB());
 
+        long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+        if (isInside(mouseX, mouseY, this.x, this.y, this.x + this.width, this.y + this.height)) {
+            GLFW.glfwSetCursor(windowHandle, GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR));
+        } else {
+            GLFW.glfwSetCursor(windowHandle, GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR));
+        }
+
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         int lineNumber = 1;
@@ -201,6 +214,11 @@ public class TextAreaWidget extends Widget {
         }
         fill(matrixStack, this.lineX, cursorY - 1, this.lineX + this.width, cursorY + this.fontRenderer.lineHeight, new Color(196, 212, 255, 45).getRGB());
         fill(matrixStack, cursorX, cursorY, cursorX + 1, cursorY + this.fontRenderer.lineHeight, new Color(187, 187, 187, cursorAlpha).getRGB());
+
+        if (selectionStartLine != -1 && selectionEndLine != -1) {
+            drawSelection(matrixStack);
+        }
+
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         GL11.glPopMatrix();
 
@@ -328,10 +346,18 @@ public class TextAreaWidget extends Widget {
         String currentLine = this.lines.get(this.cursorLine);
         String newLine = currentLine.substring(0, this.cursorColumn) + codePoint + currentLine.substring(this.cursorColumn);
         this.lines.set(this.cursorLine, newLine);
+        this.selectionStartLine = -1;
+        this.selectionStartColumn = -1;
+        this.selectionEndLine = -1;
+        this.selectionEndColumn = -1;
         this.cursorColumn++;
     }
 
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        this.selectionStartLine = -1;
+        this.selectionStartColumn = -1;
+        this.selectionEndLine = -1;
+        this.selectionEndColumn = -1;
         if(Screen.isPaste(keyCode)) {
             String clipboardText = Minecraft.getInstance().keyboardHandler.getClipboard();
             if (clipboardText != null) {
@@ -435,11 +461,109 @@ public class TextAreaWidget extends Widget {
                         save();
                         return true;
                     }
+                case 65:
+                    if(Screen.hasControlDown()) {
+                        this.selectionStartLine = 0;
+                        this.selectionStartColumn = 0;
+                        this.selectionEndLine = this.cursorLine;
+                        this.selectionEndColumn = this.cursorColumn;
+                        return true;
+                    }
                 default:
                     return false;
             }
         }
         return false;
+    }
+
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            int yOffset = this.lineY + 2;
+            int lineHeight = this.fontRenderer.lineHeight;
+
+            for (int i = 0; i < this.lines.size(); i++) {
+                int lineTop = yOffset + i * lineHeight;
+                int lineBottom = lineTop + lineHeight;
+
+                if (isInside(mouseX, mouseY, this.x, lineTop, this.x + this.width, lineBottom)) {
+                    this.cursorLine = i;
+                    cursorAlpha = 255;
+                    this.cursorColumn = getCursorColumnFromMouseX(mouseX, this.lineX + 36, this.lines.get(i));
+                    ensureCursorInView();
+
+                    this.selectionStartLine = this.cursorLine;
+                    this.selectionStartColumn = this.cursorColumn;
+                    this.selectionEndLine = this.cursorLine;
+                    this.selectionEndColumn = this.cursorColumn;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void drawSelection(MatrixStack matrixStack) {
+        int startLine = Math.min(selectionStartLine, selectionEndLine);
+        int endLine = Math.max(selectionStartLine, selectionEndLine);
+        int startColumn = (selectionStartLine < selectionEndLine || (selectionStartLine == selectionEndLine && selectionStartColumn < selectionEndColumn)) ? selectionStartColumn : selectionEndColumn;
+        int endColumn = (selectionStartLine < selectionEndLine || (selectionStartLine == selectionEndLine && selectionStartColumn < selectionEndColumn)) ? selectionEndColumn : selectionStartColumn;
+
+        for (int line = startLine; line <= endLine; line++) {
+            int lineStartColumn = (line == startLine) ? startColumn : 0;
+            int lineEndColumn = (line == endLine) ? endColumn : lines.get(line).length();
+
+            int selectionStartX = lineX + 36 + fontRenderer.width(lines.get(line).substring(0, lineStartColumn));
+            int selectionEndX = lineX + 36 + fontRenderer.width(lines.get(line).substring(0, lineEndColumn));
+            int selectionY = lineY + 2 + line * fontRenderer.lineHeight;
+
+            fill(matrixStack, selectionStartX, selectionY, selectionEndX, selectionY + fontRenderer.lineHeight, new Color(196, 212, 255, 100).getRGB());
+        }
+    }
+
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            this.isSelecting = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (button == 0 && selectionStartLine != -1) {
+            int yOffset = this.lineY + 2;
+            int lineHeight = this.fontRenderer.lineHeight;
+
+            for (int i = 0; i < this.lines.size(); i++) {
+                int lineTop = yOffset + i * lineHeight;
+                int lineBottom = lineTop + lineHeight;
+
+                if (isInside(mouseX, mouseY, this.x, lineTop, this.x + this.width, lineBottom)) {
+                    this.selectionEndLine = i;
+                    this.cursorLine = i;
+                    this.selectionEndColumn = getCursorColumnFromMouseX(mouseX, this.lineX + 36, this.lines.get(i));
+                    this.cursorColumn = selectionEndColumn;
+                    ensureCursorInView();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int getCursorColumnFromMouseX(double mouseX, int lineX, String lineText) {
+        int column = 0;
+        int currentX = lineX;
+
+        for (char c : lineText.toCharArray()) {
+            int charWidth = this.fontRenderer.width(String.valueOf(c));
+            if (currentX + charWidth / 2 > mouseX) {
+                return column;
+            }
+            currentX += charWidth;
+            column++;
+        }
+
+        return lineText.length();
     }
 
     public void save() {
@@ -473,6 +597,10 @@ public class TextAreaWidget extends Widget {
         } else if (cursorY + this.fontRenderer.lineHeight > this.y + this.height) {
             this.lineY -= this.fontRenderer.lineHeight;
         }
+    }
+
+    public boolean isInside(double mouseX, double mouseY, double x, double y, double x2, double y2) {
+        return (mouseX > x && mouseX < x2) && (mouseY > y && mouseY < y2);
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {

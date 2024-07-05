@@ -1,34 +1,22 @@
 package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.MoveThroughVillageAtNightGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.stats.Stat;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.mozilla.javascript.*;
-import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.annotations.Documentate;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
-import org.thesalutyt.storyverse.common.dimension.mover.Mover;
-import org.thesalutyt.storyverse.common.events.LegacyEventManager;
 import org.thesalutyt.storyverse.common.specific.networking.Networking;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Player extends ScriptableObject implements EnvResource{

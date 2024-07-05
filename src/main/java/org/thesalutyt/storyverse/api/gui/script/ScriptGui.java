@@ -5,19 +5,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
-import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.api.gui.widgets.TextAreaWidget;
 import org.thesalutyt.storyverse.utils.RenderUtils;
-import sun.font.FontUtilities;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 public class ScriptGui extends Screen {
@@ -91,7 +87,6 @@ public class ScriptGui extends Screen {
         } else {
             boolean key = this.textArea.keyPressed(keyCode, scanCode, modifiers);
             if(key) {
-                Chat.sendMessage("test");
                 return true;
             } else {
                 return false;
@@ -112,12 +107,20 @@ public class ScriptGui extends Screen {
         if(isInside(mouseX, mouseY, 590, 130, 610, 150) && button == 0) {
             Script.runScript("script.js");
         }
+        textArea.mouseClicked(mouseX, mouseY, button);
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        textArea.mouseReleased(mouseX, mouseY, button);
         return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        textArea.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     public boolean isInside(double mouseX, double mouseY, double x, double y, double x2, double y2) {

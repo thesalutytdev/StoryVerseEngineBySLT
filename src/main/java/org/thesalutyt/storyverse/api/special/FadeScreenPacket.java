@@ -1,14 +1,10 @@
 package org.thesalutyt.storyverse.api.special;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraftforge.fml.common.Mod;
 import org.thesalutyt.storyverse.common.events.ModEvents;
 import java.util.UUID;
 import java.util.function.Supplier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
-import org.thesalutyt.storyverse.common.screen.FadeScreen;
 
 public class FadeScreenPacket {
     public UUID uuid;
