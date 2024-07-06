@@ -1,6 +1,6 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
-public class CircleRect {
+public class CircleRect extends GuiWidget {
     public float x;
     public float y;
     public float x1;
@@ -8,6 +8,7 @@ public class CircleRect {
     public float radius;
     public int color;
     public CircleRect(float x, float y, float x1, float y1, float radius, int color) {
+        super((double) x, (double) y, (double) x1, (double) y1);
         this.x = x;
         this.y = y;
         this.x1 = x1;

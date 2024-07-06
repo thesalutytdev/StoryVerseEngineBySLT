@@ -13,12 +13,17 @@ import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiButton;
+import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
 import org.thesalutyt.storyverse.api.screen.gui.resource.GuiType;
 
+import javax.naming.ldap.HasControls;
 import java.awt.*;
 import java.util.ArrayList;
+
+// ACTUAL CLASS IS org.thesalutyt.storyverse.api.screen.CustomizableGui !!!!!!!!!!!
+
 
 public class Gui extends Screen implements EnvResource {
     protected static LivingEntity displayEntity;
@@ -26,6 +31,7 @@ public class Gui extends Screen implements EnvResource {
     protected static ArrayList<Button> buttons = new ArrayList<>();
     protected static ArrayList<GuiLabel> labels = new ArrayList<>();
     protected static ArrayList<CircleRect> circleRect = new ArrayList<>();
+    protected static ArrayList<GuiImage> images = new ArrayList<>();
     protected static Boolean displayCR = false;
     protected static ResourceLocation BACKGROUND;
     protected static Integer entityX;
@@ -36,6 +42,7 @@ public class Gui extends Screen implements EnvResource {
     protected static Boolean isPause = true;
     protected static Boolean renderBG = true;
     public static GuiType type = GuiType.DEFAULT;
+    protected static Boolean closeOnEsc = true;
     public Gui() {
         super(new StringTextComponent(label));
     }
@@ -75,6 +82,17 @@ public class Gui extends Screen implements EnvResource {
                 y.floatValue(),
                 x1.floatValue(), y1.floatValue(), radius.floatValue(), color));
         displayCR = true;
+    }
+
+    public static void addImage(String path, Integer x, Integer y, Integer width, Integer height,
+                                Boolean centered) {
+        images.add(new GuiImage(path, x, y, width, height, centered));
+    }
+    public static void setCloseOnEsc(Boolean closeOnEsc) {
+        Gui.closeOnEsc = closeOnEsc;
+    }
+    public static void setRenderBG(Boolean method) {
+        Gui.renderBG = closeOnEsc;
     }
 
     @Override
@@ -120,13 +138,19 @@ public class Gui extends Screen implements EnvResource {
                         circleRect.get(k).radius, circleRect.get(k).color);
             }
         }
+        for (int l = 0; l < images.size(); l++) {
+            this.minecraft.textureManager.bind(new ResourceLocation(StoryVerse.MOD_ID, images.get(l).path));
+            this.blit(matrixStack, images.get(l).x, images.get(l).y, 0, 0, images.get(l).width, images.get(l).height);
+        }
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     public boolean isPauseScreen() {
         return isPause;
     }
-
+    public boolean shouldCloseOnEsc() {
+        return closeOnEsc;
+    }
     public static void close_gui() {
         Minecraft.getInstance().setScreen(null);
     }

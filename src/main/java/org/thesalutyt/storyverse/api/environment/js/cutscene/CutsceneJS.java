@@ -7,7 +7,6 @@ import net.minecraft.util.math.BlockPos;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CutsceneJS extends ScriptableObject implements JSResource, EnvResource {
-    private static final WorldWrapper worldWrapper = new WorldWrapper();
     private static MobController cameraMob;
     private static Cutscene cutscene;
     private static BlockPos firstCutscenePosition;
@@ -36,8 +34,8 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
         Camera camera = new Camera().setCameraEntity(mob.getEntity());
     }
     public static void enter(String playerName, String mobId, Double x, Double y, Double z, Double xHeadRot, Double yHeadRot, String cameraType) {
-        CameraType camType = worldWrapper.toCameraType(cameraType);
-        BlockPos pos = worldWrapper.pos(x, y, z);
+        CameraType camType = WorldWrapper.toCameraType(cameraType);
+        BlockPos pos = WorldWrapper.pos(x, y, z);
         MobController mob = MobJS.create(mobId + "_CSMOB", x, y, z, "SHEEP");
         cameraMob = mob;
         ServerPlayerEntity player = Server.getPlayerByName(playerName);

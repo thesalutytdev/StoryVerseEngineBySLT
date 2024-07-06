@@ -1,10 +1,10 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
 public class GuiWidget {
-    protected Double x;
-    protected Double y;
-    protected Double width;
-    protected Double height;
+    public Double x;
+    public Double y;
+    public Double width;
+    public Double height;
 
     public GuiWidget(Double x, Double y, Double width, Double height) {
         this.x = x;

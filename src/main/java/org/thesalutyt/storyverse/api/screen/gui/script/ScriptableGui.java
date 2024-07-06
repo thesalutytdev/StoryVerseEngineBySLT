@@ -7,16 +7,17 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.api.features.Gui;
-import org.thesalutyt.storyverse.api.screen.color.Color;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiButton;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
+import org.thesalutyt.storyverse.api.screen.CustomizableGui;
+import org.thesalutyt.storyverse.api.screen.gui.elements.*;
 import org.thesalutyt.storyverse.api.screen.gui.resource.GuiType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScriptableGui extends ScriptableObject implements EnvResource, JSResource {
+    public CustomizableGui gui;
+    public static HashMap<String, CustomizableGui> guis = new HashMap<>();
     public static GuiType toGuiType(String type) {
         switch (type) {
             case "default":
@@ -31,53 +32,66 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
                 return null;
         }
     }
-    public ScriptableGui create(String name, String type, Integer width, Integer height) {
-        Gui.create_gui(name, width, height);
-        Gui.type = toGuiType(type);
-        return this;
+    public CustomizableGui create(String name, String title, Integer width, Integer height) {
+        gui = new CustomizableGui(title);
+        gui.gWidth = width;
+        gui.gHeight = height;
+        gui.init();
+        guis.put(name, gui);
+        return gui;
     }
-    public static void setType(String type) {
-        Gui.type = toGuiType(type);
+    public void setPause(Boolean pause) {
+        gui.isPause = pause;
     }
-    public static void setPause(Boolean pause) {
-        Gui.setPause(pause);
+    public void setBackGround(String background) {
+        gui.background = background;
     }
-    public static void setBackGround(String background) {
-        Gui.setBackGround(background);
+    public void addMob(String mobId, Double x, Double y, Double size) {
+        gui.entities.add(new GuiDisplayEntity(mobId, x, y, size));
     }
-    public static void addMob(String mobId) {
-        Gui.addMob(mobId);
+    public void addButton(String buttonId) {
+        gui.buttons.add(GuiButton.btns.get(buttonId).button);
     }
-    public static void addButton(String buttonId) {
-        Gui.addButton(buttonId);
+    public void addLabel(String labelId) {
+        gui.labels.add(GuiLabel.labels.get(labelId));
     }
-    public static void addLabel(String labelId) {
-        Gui.addLabel(labelId);
+    public void addCircleRect(Double x, Double y, Double x1, Double y1, Double radius, Integer color) {
+        gui.circleRect.add(new CircleRect(x.floatValue(),
+                y.floatValue(),
+                x1.floatValue(),
+                y1.floatValue(),
+                radius.intValue(),
+                color));
     }
-    public static void addCircleRect(Double x, Double y, Double x1, Double y1, Double radius, Integer color) {
-        Gui.addCircle(x, y, x1, y1, radius, color);
+    public Integer getWidth() {
+        return gui.gWidth;
     }
-    public static void setEntityPos(Integer x, Integer y) {
-        Gui.setEntityPos(x, y);
+    public Integer getHeight() {
+        return gui.gHeight;
     }
-    public static void getWidth() {
-        Gui.getWidth();
-    }
-    public static void getHeight() {
-        Gui.getHeight();
-    }
-    public static String createButton(Double x, Double y, Double width, Double height, String text, BaseFunction onClick) {
+    public String createButton(Double x, Double y, Double width, Double height, String text, BaseFunction onClick) {
         return new GuiButton(x, y, width, height, text, onClick).message;
     }
-    public static String createLabel(Double x, Double y, Double width, Double height, String text, Integer size,
+    public String createLabel(Double x, Double y, Double width, Double height, String text, Integer size,
                                      Boolean centered) {
         return new GuiLabel((Integer) x.intValue(), (Integer) y.intValue(), width, height, text, size, centered).message;
     }
-    public static void render(String guiId) {
-        Minecraft.getInstance().setScreen(new Gui());
+    public void render() {
+        Minecraft.getInstance().setScreen(gui);
     }
-    public static void close() {
+    public void close() {
             Minecraft.getInstance().setScreen(null);
+    }
+    public void setCloseOnEsc(Boolean closeOnEsc) {
+        gui.closeOnEsc = closeOnEsc;
+    }
+    public GuiImage addImage(String path, Integer x, Integer y, Integer width, Integer height, Boolean centered) {
+        GuiImage img = new GuiImage(path, x, y, width, height, centered);
+        gui.images.add(img);
+        return img;
+    }
+    public void renderBackground(Boolean method) {
+        gui.renderBG = method;
     }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
@@ -91,16 +105,13 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(setPause);
             Method setBackGround = ScriptableGui.class.getMethod("setBackGround", String.class);
             methodsToAdd.add(setBackGround);
-            Method addMob = ScriptableGui.class.getMethod("addMob", String.class);
-            methodsToAdd.add(addMob);
+            Method addMob = ScriptableGui.class.getMethod("addMob", String.class, Double.class, Double.class, Double.class);
             Method addButton = ScriptableGui.class.getMethod("addButton", String.class);
             methodsToAdd.add(addButton);
             Method addLabel = ScriptableGui.class.getMethod("addLabel", String.class);
             methodsToAdd.add(addLabel);
             Method addCircleRect = ScriptableGui.class.getMethod("addCircleRect", Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class);
             methodsToAdd.add(addCircleRect);
-            Method setEntityPos = ScriptableGui.class.getMethod("setEntityPos", Integer.class, Integer.class);
-            methodsToAdd.add(setEntityPos);
             Method getWidth = ScriptableGui.class.getMethod("getWidth");
             methodsToAdd.add(getWidth);
             Method getHeight = ScriptableGui.class.getMethod("getHeight");
@@ -111,10 +122,18 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             Method createLabel = ScriptableGui.class.getMethod("createLabel", Double.class, Double.class, Double.class, Double.class, String.class,
                     Integer.class, Boolean.class);
             methodsToAdd.add(createLabel);
-            Method render = ScriptableGui.class.getMethod("render", String.class);
+            Method render = ScriptableGui.class.getMethod("render");
             methodsToAdd.add(render);
             Method close = ScriptableGui.class.getMethod("close");
             methodsToAdd.add(close);
+            Method setCloseOnEsc = ScriptableGui.class.getMethod("setCloseOnEsc", Boolean.class);
+            methodsToAdd.add(setCloseOnEsc);
+            Method addImage = ScriptableGui.class.getMethod("addImage",
+                    String.class, Integer.class, Integer.class,
+                    Integer.class, Integer.class, Boolean.class);
+            methodsToAdd.add(addImage);
+            Method renderBackground = ScriptableGui.class.getMethod("renderBackground", Boolean.class);
+            methodsToAdd.add(renderBackground);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

@@ -39,7 +39,7 @@ public class AsyncJS extends ScriptableObject implements EnvResource {
         }
 
         // Здесь ExternalFunctions укладывается в пространство имен верхнего уровня
-        scope.put("async", scope, ef);
+        scope.put("script", scope, ef);
     }
 
     @Override
