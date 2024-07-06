@@ -26,19 +26,12 @@ import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 @Mod(StoryVerse.MOD_ID)
 public class StoryVerse {
     public static final String MOD_ID = "storyverse";
+    public static final String MODID = "storyverse";
     public static final Logger LOGGER = LogManager.getLogger();
 
     public StoryVerse() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
-
-        CustomItem ii = new CustomItem("storyverseiteem", () -> {
-            Chat.sendAsEngine("Ну и зачем ты это сделал, дуралей?");
-        }, 64, ModCreativeTabs.ENGINE_TAB);
-        ii.register();
-        CustomBlock ib = new CustomBlock("storyverseblock", Material.STONE,
-                2, true, ToolType.PICKAXE, 5.0f, 0);
-        ib.register();
         ModItems.register(bus);
         ModBlocks.register(bus);
         Entities.register(bus);

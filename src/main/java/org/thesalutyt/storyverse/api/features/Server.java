@@ -10,6 +10,7 @@ import org.lwjgl.system.CallbackI;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
@@ -108,6 +109,10 @@ public class Server extends ScriptableObject implements EnvResource {
         }
     }
 
+    public static String getOpPlayer() {
+        return SVEngine.OP_PLAYER;
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope, String rootDir) {
         // Создаем объект, к которому потом будем обращаться
@@ -145,6 +150,8 @@ public class Server extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getPlayerByName);
             Method getFirstPlayer = Server.class.getMethod("getFirstPlayer");
             methodsToAdd.add(getFirstPlayer);
+            Method getOp = Server.class.getMethod("getOpPlayer");
+            methodsToAdd.add(getOp);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

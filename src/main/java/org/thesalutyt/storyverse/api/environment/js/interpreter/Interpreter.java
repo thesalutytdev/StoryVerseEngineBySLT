@@ -13,6 +13,7 @@ import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
+import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 
 
 public class Interpreter {
@@ -42,6 +43,7 @@ public class Interpreter {
             NpcSpecials.putIntoScope(scope);
             JSItem.putIntoScope(scope);
             BackgroundScript.putIntoScope(scope);
+            SpecialListener.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

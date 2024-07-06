@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.logging.log4j.Logger;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.js.mod.ModInterpreter;
 import org.thesalutyt.storyverse.api.features.Chat;
@@ -17,16 +18,19 @@ import java.nio.file.Path;
 
 public class SVEngine {
     public static final Codec<SVEngine> CODEC = Codec.unit(SVEngine::new);
-    public static String docLink = "404:NoDocsAtMoment";
-    public static String prefix = "[StoryVerseEngine]";
-    public static String chatPrefix = "§7[§b§lStory§a§lVerse§7]§r ";
-    public static String modVersion = "4.0-Beta";
-    public static String border = " =========================== ";
-    public static String onLineBorder = " || ";
-    public static String description = "Mod what allows and helps you create story-based maps and series!";
+    public static final String MOD_ID = "storyverse";
+    public static final String MODID = "storyverse";
+    public static final String DOC_LINK = "404:NoDocsAtMoment";
+    public static final String PREFIX = "[StoryVerseEngine]";
+    public static final String CHAT_PREFIX = "§7[§b§lStory§a§lVerse§7]§r ";
+    public static final String MOD_VERSION = "4.0-Beta";
+    public static final String BORDER = " =========================== ";
+    public static final String ON_LINE_BORDER = " || ";
+    public static final String DESCRIPTION = "Mod what allows and helps you create story-based maps and series!";
+    public static final Logger LOGGER = StoryVerse.LOGGER;
     public static final Path GAME_DIR_PATH = FMLPaths.GAMEDIR.get().toAbsolutePath();
     public static final String GAME_DIR = GAME_DIR_PATH.toString();
-    public static final String SCRIPTS_PATH = GAME_DIR + "/sve_scripts/";
+    public static final String SCRIPTS_PATH = SVConfig.ROOT_DIR.get().replace("%GAME_DIR%", GAME_DIR);
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
     public static final String DOCS_PATH = SCRIPTS_PATH + "docs/";
@@ -55,6 +59,7 @@ public class SVEngine {
     public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
     public static Interpreter interpreter;
     public static ModInterpreter modInterpreter = new ModInterpreter(SCRIPTS_PATH);
+    public static final String MOD_SCRIPT_FILE = SVConfig.MOD_SCRIPT_FILE.get();
 
     public static FadeScreenGui fadeScreen = new FadeScreenGui();
     public SVEngine(){}
@@ -110,15 +115,17 @@ public class SVEngine {
         }
     }
     public static void sendInfoMessage(){
-        String firstLine = border + prefix + border;
-        String infoLine = onLineBorder + "StoryVerseEngine - " + modVersion + onLineBorder;
-        String descLine = onLineBorder + description + onLineBorder;
-        String docsLine = onLineBorder + "Docs: " + docLink + onLineBorder;
-        String finalLine = border + prefix + border;
+        String firstLine = BORDER + PREFIX + BORDER;
+        String infoLine = ON_LINE_BORDER + "StoryVerseEngine - " + MOD_VERSION + ON_LINE_BORDER;
+        String descLine = ON_LINE_BORDER + DESCRIPTION + ON_LINE_BORDER;
+        String docsLine = ON_LINE_BORDER + "Docs: " + DOC_LINK + ON_LINE_BORDER;
+        String modId = ON_LINE_BORDER + "Mod ID: " + MOD_ID + ON_LINE_BORDER;
+        String finalLine = BORDER + PREFIX + BORDER;
         StoryVerse.LOGGER.info(firstLine);
         StoryVerse.LOGGER.info(infoLine);
         StoryVerse.LOGGER.info(descLine);
         StoryVerse.LOGGER.info(docsLine);
+        StoryVerse.LOGGER.info(modId);
         StoryVerse.LOGGER.info(finalLine);
     }
     public static void createEngineDirectory() {

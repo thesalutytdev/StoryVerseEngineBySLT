@@ -37,21 +37,7 @@ public class ScriptProperties extends ScriptableObject implements EnvResource, J
     public static void resetWorldStart() {
         worldStarterScript = null;
     }
-    @SubscribeEvent
-    public static void onJoined (EntityJoinWorldEvent event) {
-        if (!event.getWorld().isClientSide && event.getEntity() instanceof PlayerEntity) {
-            SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
-            System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
-            ModEvents.inWorld = true;
-            if (worldStarterScript == null) {
-                return;
-            } else {
-                Script.runScript(worldStarterScript);
-            }
-        } else {
-            return;
-        }
-    }
+
     public static void putIntoScope(Scriptable scope) {
         ScriptProperties ef = new ScriptProperties();
         ArrayList<Method> methodsToAdd = new ArrayList<>();

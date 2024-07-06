@@ -21,7 +21,7 @@ import java.util.Scanner;
 
 public class Analyze extends ScriptableObject {
     public void analyze() {
-        Path fullPath = Paths.get(SVEngine.SCRIPTS_PATH + "/" + "mod.js").toAbsolutePath();
+        Path fullPath = Paths.get(SVEngine.SCRIPTS_PATH + "/" + SVEngine.MOD_SCRIPT_FILE).toAbsolutePath();
         if (fullPath.startsWith(SVEngine.SCRIPTS_PATH)) {
             try {
                 Scanner reader = new Scanner(new InputStreamReader(new FileInputStream(fullPath.toFile()), StandardCharsets.UTF_8));

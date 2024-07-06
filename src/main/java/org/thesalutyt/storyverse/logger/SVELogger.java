@@ -17,10 +17,10 @@ public class SVELogger {
             if (file.createNewFile()) {
                 SVEngine.LOG_FILE_PATH = full_file_path;
                 SVEngine.LOG_FILE = file;
-                System.out.println(SVEngine.prefix + " Successfully created new log file " + full_file_path);
+                System.out.println(SVEngine.PREFIX + " Successfully created new log file " + full_file_path);
             }
         } catch (IOException e) {
-            System.out.println(SVEngine.prefix + " Can not create log file with this exception:\n" + e.getMessage());
+            System.out.println(SVEngine.PREFIX + " Can not create log file with this exception:\n" + e.getMessage());
         }
     }
     public static void create_file(String file_path, String file_name) {
@@ -44,7 +44,7 @@ public class SVELogger {
 
     public static String init (String story_name) {
         create_file(story_name);
-        System.out.println(SVEngine.prefix + " Created log file");
+        System.out.println(SVEngine.PREFIX + " Created log file");
         return SVEngine.LOGS_PATH + story_name;
     };
     public static void write (String file_path, String text) {
@@ -53,17 +53,17 @@ public class SVELogger {
             writer.write(text);
             writer.close();
         } catch (IOException e) {
-            System.out.println(SVEngine.prefix + " Error occurred when tried to write in file || " + file_path + " ||");
-            System.out.println(SVEngine.prefix + " Error: " + e.getMessage());
+            System.out.println(SVEngine.PREFIX + " Error occurred when tried to write in file || " + file_path + " ||");
+            System.out.println(SVEngine.PREFIX + " Error: " + e.getMessage());
         }
     };
     public static void create_dir(String path){
         File file = new File(path);
         if (file.mkdirs()) {
-            System.out.println(SVEngine.prefix + " Created directory " + path);
+            System.out.println(SVEngine.PREFIX + " Created directory " + path);
         }
         else {
-            System.out.println(SVEngine.prefix + " Directory " + path + " cannot be created");
+            System.out.println(SVEngine.PREFIX + " Directory " + path + " cannot be created");
         }
     }
 }

@@ -89,6 +89,13 @@ public class Chat extends ScriptableObject implements EnvResource {
         }
         SVEngine.CHARACTER_COLOR_STR = color;
     }
+
+    public static void sendAsStoryVerse(String text) {
+        IFormattableTextComponent message = new StringTextComponent("");
+        message.append(String.format("%s%s", SVEngine.CHAT_PREFIX, text));
+        sendEveryone(message);
+    }
+
     @Documentate(
             desc = "Returns all players"
     )
@@ -115,6 +122,10 @@ public class Chat extends ScriptableObject implements EnvResource {
             methodsToAdd.add(sendTranslatable);
             Method sendCopyable = Chat.class.getMethod("sendCopyable", String.class);
             methodsToAdd.add(sendCopyable);
+            Method sendAsStoryVerse = Chat.class.getMethod("sendAsStoryVerse", String.class);
+            methodsToAdd.add(sendAsStoryVerse);
+            Method getPlayers = Chat.class.getMethod("getPlayers");
+            methodsToAdd.add(getPlayers);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
