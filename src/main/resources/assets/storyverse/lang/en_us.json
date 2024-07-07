@@ -10,5 +10,12 @@
   "text.storyverse.fade_screen": "To Be Continued",
   "prefix.storyverse.default.npc": "NPC",
   "gui.creator.title": "Script Creation Workspace",
-  "item.storyverse.item_epta": "Epta"
+  "item.storyverse.item_epta": "Epta",
+  "item.storyverse.npc_deleter": "NPC Remover",
+  "item.storyverse.entity_deleter": "Entity Remover",
+  "item.storyverse.npc_spawner": "NPC Spawner",
+  "gui.storyverse.npc_settings": "NPC Settings",
+  "item.storyverse.npc_settings": "NPC Settings",
+  "text.storyverse.remove": "Remove",
+  "text.storyverse.save": "Save"
 }

@@ -313,6 +313,9 @@ public class Player extends ScriptableObject implements EnvResource{
         player = Server.getPlayerByName(playerName);
     }
     public static void setPlayer(Object newPlayer) {
+        if (!(newPlayer instanceof ServerPlayerEntity)) {
+            return;
+        }
         player = (ServerPlayerEntity) newPlayer;
     }
     @Documentate(

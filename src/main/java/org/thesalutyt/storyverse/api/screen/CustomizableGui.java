@@ -8,10 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
-import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiDisplayEntity;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
+import org.thesalutyt.storyverse.api.screen.gui.elements.*;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 public class CustomizableGui extends Screen implements EnvResource {
     public String title;
     public ArrayList<GuiLabel> labels = new ArrayList<>();
-    public ArrayList<Button> buttons = new ArrayList<>();
+    public ArrayList<GuiButton> buttons = new ArrayList<>();
     public ArrayList<GuiImage> images = new ArrayList<>();
     public ArrayList<CircleRect> circleRect = new ArrayList<>();
     public ArrayList<GuiDisplayEntity> entities = new ArrayList<>();
@@ -64,7 +61,7 @@ public class CustomizableGui extends Screen implements EnvResource {
             }
         }
         if (!buttons.isEmpty()) {
-            for (Button button : buttons) {
+            for (GuiButton button : buttons) {
                 this.addButton(button);
             }
         }

@@ -9,6 +9,7 @@ public class ItemGoal extends Goal {
     public ItemStack item;
     public ItemGoal() {
         super(GoalType.ITEM);
+
     }
     public ItemGoal itemGoal(String item, Integer amount) {
         this.type = GoalType.ITEM;

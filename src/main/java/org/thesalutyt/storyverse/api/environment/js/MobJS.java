@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -19,8 +20,12 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
+import org.thesalutyt.storyverse.api.screen.gui.npc_settings.NpcSetter;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
+import org.thesalutyt.storyverse.common.items.EntityDeleter;
+import org.thesalutyt.storyverse.common.items.NpcDeleter;
+import org.thesalutyt.storyverse.common.items.NpcSettings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -61,7 +66,26 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     @SubscribeEvent
     public static void onMobInteract(PlayerInteractEvent.EntityInteract event) {
+        if (event.isCanceled()) {
+            return;
+        }
         System.out.println("Interacted with " + event.getTarget().getUUID() + " (" + event.getTarget().getType() + ")");
+        if (event.getItemStack().getItem() instanceof NpcDeleter ||
+                event.getItemStack().getItem() instanceof EntityDeleter) {
+            if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()
+            && event.getItemStack().getItem() instanceof NpcDeleter) {
+                event.getTarget().remove();
+            } else if (event.getTarget() instanceof Entity && ((Entity) event.getTarget()).isAlive()
+            && event.getItemStack().getItem() instanceof EntityDeleter) {
+                event.getTarget().remove();
+            }
+            return;
+        }
+        if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()
+                && event.getItemStack().getItem() instanceof NpcSettings) {
+            Minecraft.getInstance().setScreen(new NpcSetter((NPCEntity) event.getTarget()));
+            return;
+        }
         runEvent(getMob(event.getTarget().getUUID()), "interact");
     }
     @SubscribeEvent

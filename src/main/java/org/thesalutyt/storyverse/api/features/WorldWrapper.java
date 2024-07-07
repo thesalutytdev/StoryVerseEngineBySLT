@@ -176,6 +176,9 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             case "ENDERMAN": {
                 return EntityType.ENDERMAN;
             }
+            case "PLAYER": {
+                return EntityType.PLAYER;
+            }
             default: {
                 return EntityType.SHEEP;
             }

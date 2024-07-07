@@ -50,7 +50,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         gui.entities.add(new GuiDisplayEntity(mobId, x, y, size));
     }
     public void addButton(String buttonId) {
-        gui.buttons.add(GuiButton.btns.get(buttonId).button);
+        gui.buttons.add(GuiButton.btns.get(buttonId));
     }
     public void addLabel(String labelId) {
         gui.labels.add(GuiLabel.labels.get(labelId));
@@ -69,8 +69,8 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public Integer getHeight() {
         return gui.gHeight;
     }
-    public String createButton(Double x, Double y, Double width, Double height, String text, BaseFunction onClick) {
-        return new GuiButton(x, y, width, height, text, onClick).message;
+    public String createButton(String id, String texture, Double x, Double y, Double width, Double height, String text, BaseFunction onClick) {
+        return new GuiButton(id, texture, x, y, width, height, text, onClick).id;
     }
     public String createLabel(Double x, Double y, Double width, Double height, String text, Integer size,
                                      Boolean centered) {
@@ -116,7 +116,9 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(getWidth);
             Method getHeight = ScriptableGui.class.getMethod("getHeight");
             methodsToAdd.add(getHeight);
-            Method createButton = ScriptableGui.class.getMethod("createButton", Double.class, Double.class, Double.class, Double.class, String.class,
+            Method createButton = ScriptableGui.class.getMethod("createButton",
+                    String.class, String.class, Double.class, Double.class,
+                    Double.class, Double.class, String.class,
                     BaseFunction.class);
             methodsToAdd.add(createButton);
             Method createLabel = ScriptableGui.class.getMethod("createLabel", Double.class, Double.class, Double.class, Double.class, String.class,

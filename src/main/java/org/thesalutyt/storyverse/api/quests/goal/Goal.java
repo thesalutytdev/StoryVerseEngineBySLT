@@ -5,22 +5,28 @@ public class Goal {
     public String progress;
     public boolean completed;
 
-    public Goal(GoalType type) {
+    public Goal(GoalType type, String questId) {
         this.type = type;
         this.progress = "Start";
         this.completed = false;
     }
 
-    public Goal(GoalType type, String progress) {
+    public Goal(GoalType type, String progress, String questId) {
         this.type = type;
         this.progress = progress;
         this.completed = false;
     }
 
-    public Goal(GoalType type, String progress, boolean completed) {
+    public Goal(GoalType type, String progress, boolean completed, String questId) {
         this.type = type;
         this.progress = progress;
         this.completed = completed;
+    }
+
+    protected Goal(GoalType type) {
+        this.type = type;
+        this.progress = "Start";
+        this.completed = false;
     }
 
     public GoalType getType() {

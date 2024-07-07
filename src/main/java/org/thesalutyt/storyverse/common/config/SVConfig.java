@@ -12,7 +12,7 @@ public class SVConfig {
     static {
         BUILDER.push("StoryVerse Engine Configuration");
         DEBUG_MODE = BUILDER.comment(" Is engine into debug mode. Default is true").define("is_debug", true);
-        ROOT_DIR = BUILDER.comment(" Root directory for scripts. Default is '%GAME_DIR%/sve_scripts'.").
+        ROOT_DIR = BUILDER.comment(" Root directory for scripts. Default is '%GAME_DIR%/sve_scripts/'. DO NOT FORGER THE TRAILING SLASH").
                 define("root_dir", "%GAME_DIR%/sve_scripts");
         MOD_SCRIPT_FILE = BUILDER.comment(" File name of the script that contains the mod script")
                 .define("mod_script_file", "mod.js");

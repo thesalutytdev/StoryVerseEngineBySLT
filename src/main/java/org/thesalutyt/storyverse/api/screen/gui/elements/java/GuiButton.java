@@ -1,15 +1,16 @@
-package org.thesalutyt.storyverse.api.screen.gui.elements;
+package org.thesalutyt.storyverse.api.screen.gui.elements.java;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import net.minecraft.client.gui.widget.button.Button;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 
 public class GuiButton extends Button {
     public String message;
-    public ArrayList<BaseFunction> onClick = new ArrayList<>();
+    public Runnable onClick;
     public static HashMap<String, GuiButton> btns = new HashMap<>();
     public Button button;
     public Double x;
@@ -28,17 +29,11 @@ public class GuiButton extends Button {
     public String id;
 
     public void onClick() {
-        EventLoop.getLoopInstance().runImmediate(() -> {
-            Context ctx = Context.getCurrentContext();
-            for (int i=0;i<onClick.size(); i++) {
-                onClick.get(i).call(ctx, SVEngine.interpreter.getScope(),
-                        SVEngine.interpreter.getScope(), new Object[]{});
-            }
-        });
+        onClick.run();
     }
 
     public GuiButton(String id, String texture,
-                     Double x, Double y, Double width, Double height, String message, BaseFunction function) {
+                     Double x, Double y, Double width, Double height, String message, Runnable function) {
         super(x.intValue(), y.intValue(),
                 width.intValue(),
                 height.intValue(),
@@ -52,9 +47,7 @@ public class GuiButton extends Button {
         this.width = width;
         this.height = height;
         this.message = message;
-        EventLoop.getLoopInstance().runImmediate(() -> {
-            onClick.add(function);
-        });
+        this.onClick = function;
         this.button = new Button(x.intValue(), y.intValue(), width.intValue(), height.intValue(),
                 new StringTextComponent(message), (button) -> {
             System.out.println("Button clicked: " + message);
@@ -62,6 +55,31 @@ public class GuiButton extends Button {
         });
         btns.put(id, this);
     }
+
+    public GuiButton(String id, String texture,
+                     int x, int y, Double width, Double height, String translatable, Runnable function) {
+        super(x, y,
+                width.intValue(),
+                height.intValue(),
+                new TranslationTextComponent(translatable), (button) -> {
+                    System.out.println("Button clicked: " + translatable);
+                });
+        this.id = id;
+        this.texture = new ResourceLocation(StoryVerse.MOD_ID, texture);
+        this.x = (double) x;
+        this.y = (double) y;
+        this.width = width;
+        this.height = height;
+        this.message = message;
+        this.onClick = function;
+        this.button = new Button(x, y, width.intValue(), height.intValue(),
+                new TranslationTextComponent(message), (button) -> {
+            System.out.println("Button clicked: " + message);
+            onClick();
+        });
+        btns.put(id, this);
+    }
+
     @Override
     public void onPress() {
         onClick();

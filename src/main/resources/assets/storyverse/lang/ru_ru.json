@@ -10,5 +10,12 @@
   "prefix.storyverse.sound": "Звук",
   "prefix.storyverse.world_actions": "Управление Миром",
   "text.storyverse.fade_screen": "Продолжение следует",
-  "item.storyverse.item_epta": "Епта"
+  "item.storyverse.item_epta": "Епта",
+  "item.storyverse.npc_deleter": "Удалить НПС",
+  "item.storyverse.entity_deleter": "Удалить сущность",
+  "item.storyverse.npc_spawner": "Создать НПС",
+  "gui.storyverse.npc_settings": "Настройки НПС",
+  "item.storyverse.npc_settings": "Настроить НПС",
+  "text.storyverse.remove": "Удалить",
+  "text.storyverse.save": "Сохранить"
 }

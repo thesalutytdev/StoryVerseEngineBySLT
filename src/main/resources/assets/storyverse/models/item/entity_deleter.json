@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "storyverse:item/script/item_epta"
+    "layer0": "storyverse:item/entity_deleter"
   }
 }
