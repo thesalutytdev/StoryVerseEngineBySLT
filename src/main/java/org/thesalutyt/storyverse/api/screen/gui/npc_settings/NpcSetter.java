@@ -2,12 +2,14 @@ package org.thesalutyt.storyverse.api.screen.gui.npc_settings;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
+import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.screen.gui.elements.TextArea;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
@@ -33,13 +35,13 @@ public class NpcSetter extends Screen {
     @ParametersAreNonnullByDefault
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         assert this.minecraft != null;
-        GuiButton remove = new GuiButton("remove",
+        GuiButton remove = new GuiButton("model_settings",
                 "textures/gui/buttons/button_0.png",
                 100,
                 100,
-                128.0, 64.0, "text.storyverse.remove", () -> {
-            this.npc.remove(false);
-            this.minecraft.setScreen(null);
+                128.0, 64.0, "text.storyverse.model_settings", () -> {
+            NpcModel ms = new NpcModel(npc);
+            this.minecraft.setScreen(ms);
         });
         GuiButton save = new GuiButton("save", "textures/gui/buttons/button_0.png",
                 300, 100, 128.0, 64.0, "text.storyverse.save", () -> {

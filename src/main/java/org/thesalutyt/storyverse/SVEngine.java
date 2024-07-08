@@ -30,7 +30,7 @@ public class SVEngine {
     public static final Logger LOGGER = StoryVerse.LOGGER;
     public static final Path GAME_DIR_PATH = FMLPaths.GAMEDIR.get().toAbsolutePath();
     public static final String GAME_DIR = GAME_DIR_PATH.toString();
-    public static final String SCRIPTS_PATH = SVConfig.ROOT_DIR.get().replace("%GAME_DIR%", GAME_DIR);
+    public static final String SCRIPTS_PATH = SVConfig.ROOT_DIR.get().replace("%GAME_DIR%", GAME_DIR) + "/";
     public static final File SCRIPTS_PATH_FILE = new File(SCRIPTS_PATH);
     public static final String LOGS_PATH = SCRIPTS_PATH + "logs/";
     public static final String DOCS_PATH = SCRIPTS_PATH + "docs/";
@@ -129,6 +129,9 @@ public class SVEngine {
         StoryVerse.LOGGER.info(finalLine);
     }
     public static void createEngineDirectory() {
+        if (new File(SCRIPTS_PATH).exists()) {
+            return;
+        }
         SVELogger.create_dir(SCRIPTS_PATH);
         System.out.println("[SVEngine::DirectoryCreating] Created main directory");
         SVELogger.create_dir(LOGS_PATH);

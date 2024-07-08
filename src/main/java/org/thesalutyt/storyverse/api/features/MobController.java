@@ -66,6 +66,11 @@ public class MobController extends ScriptableObject implements EnvResource {
         System.out.println("Setting mob's speed");
         mobSpeed = this.entity.getSpeed();
     }
+    public MobController(MobEntity entity) {
+        registerFunctions();
+        this.entity = entity;
+        mobSpeed = this.entity.getSpeed();
+    }
 
     public MobController() {
         registerFunctions();

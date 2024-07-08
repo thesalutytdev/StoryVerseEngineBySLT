@@ -17,5 +17,10 @@
   "gui.storyverse.npc_settings": "Настройки НПС",
   "item.storyverse.npc_settings": "Настроить НПС",
   "text.storyverse.remove": "Удалить",
-  "text.storyverse.save": "Сохранить"
+  "text.storyverse.save": "Сохранить",
+  "text.storyverse.back": "Назад",
+  "text.storyverse.model_list": "Список моделей",
+  "text.storyverse.set_female": "Сделать женщиной",
+  "text.storyverse.set_male": "Сделать мужчиной",
+  "text.storyverse.model_settings": "Настройки моделей"
 }

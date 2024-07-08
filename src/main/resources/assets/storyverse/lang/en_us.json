@@ -17,5 +17,10 @@
   "gui.storyverse.npc_settings": "NPC Settings",
   "item.storyverse.npc_settings": "NPC Settings",
   "text.storyverse.remove": "Remove",
-  "text.storyverse.save": "Save"
+  "text.storyverse.save": "Save",
+  "text.storyverse.back": "Back",
+  "text.storyverse.model_list": "Models List",
+  "text.storyverse.set_female": "Set Female",
+  "text.storyverse.set_male": "Set Male",
+  "text.storyverse.model_settings": "Model Settings"
 }
