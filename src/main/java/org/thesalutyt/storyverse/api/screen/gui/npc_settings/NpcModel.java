@@ -58,7 +58,7 @@ public class NpcModel extends Screen {
         this.addButton(modelListOpener);
         try {
             System.out.println("Loading models...");
-            File[] geo = getFiles("src/main/resources/assets/storyverse/models");
+            File[] geo = getFiles(SVEngine.MODELS_PATH);
             assert geo != null;
             System.out.println(Arrays.toString(Arrays.stream(geo).toArray()));
             System.out.println(SVEngine.MODELS_PATH);
@@ -71,7 +71,9 @@ public class NpcModel extends Screen {
                     System.out.println("Added model: " + f.getName());
                     GuiButton btn = new GuiButton(f.getName(), "textures/gui/buttons/button_0.png",
                             100, currY, 128.0, 64.0, f.getName(), () -> {
+                        System.out.println("Selected model: " + f.getName());
                         this.npc.setModelPath(SVEngine.MODELS_PATH + f.getName());
+                        System.out.println("Model path: " + this.npc.getModelPath());
                     });
                     modelButtons.add(btn);
                     dropdownItems.add(btn);

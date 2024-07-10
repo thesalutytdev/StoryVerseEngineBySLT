@@ -1,7 +1,9 @@
 package org.thesalutyt.storyverse.loader;
 
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.StoryVerse;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class AssetsLoader implements ILoader {
     }
     @Override
     public void init() throws IOException {
-        copyDirectory(SVEngine.ASSETS_DIR, "resources/assets");
+        copyDirectory(SVEngine.ASSETS_DIR, "storyverse:assets");
     }
 
     @Override

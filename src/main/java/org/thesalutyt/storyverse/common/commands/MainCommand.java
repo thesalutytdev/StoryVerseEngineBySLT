@@ -17,6 +17,7 @@ import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.gui.QuestGui;
@@ -25,6 +26,8 @@ import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
+import org.thesalutyt.storyverse.api.special.character.Reputation;
+import org.thesalutyt.storyverse.api.special.character.ReputationScreen;
 import org.thesalutyt.storyverse.common.entities.Entities;
 
 import java.awt.*;
@@ -48,6 +51,10 @@ public class MainCommand {
                 )
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
+                        .then(Commands.literal("rep_sc")
+                                .executes((command) -> {
+                                    return reputationTest(command.getSource());
+                                }))
                         .then(Commands.literal("gui")
                                 .executes((command) -> {
                                     return guiTest(command.getSource());
@@ -225,6 +232,16 @@ public class MainCommand {
         CustomGui testGui = CustomGui.createGui();
         testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
         mc.setScreen(new QuestGui());
+        return 1;
+    }
+
+    public static int reputationTest(CommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrException();
+        MobController controller = MobJS.create("repTest", player.getX(), player.getY(), player.getZ(),
+                "SHEEP");
+        Reputation rep = new Reputation("repTest");
+        ReputationScreen repScreen = new ReputationScreen(rep);
+        mc.setScreen(repScreen);
         return 1;
     }
 }

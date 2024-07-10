@@ -21,7 +21,8 @@ public class PlayerFuncsDebug {
     }
     private int playerDebug(CommandSource source) throws CommandSyntaxException {
         /* CODE LOWER IS FROM CHATGPT */
-        this.player.sendMessage(new StringTextComponent("test"), player.getUUID());
+        source.getPlayerOrException().sendMessage(new StringTextComponent("Hello, I'm a debug message!"),
+                Util.NIL_UUID);
         //this.player.sendMessage(new StringTextComponent("Test message::Тестовое сообщение"), Util.NIL_UUID);
         //this.player.displayClientMessage(new StringTextComponent("Test"), true);
         //source.sendSuccess(new StringTextComponent("§a§lSuccess"), true);
