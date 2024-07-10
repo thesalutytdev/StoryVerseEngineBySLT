@@ -5,42 +5,27 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.multipart.Selector;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.addon.ImAddon;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
-import org.thesalutyt.storyverse.api.effekseer.Effekseer;
-import org.thesalutyt.storyverse.api.effekseer.EffekseerEffect;
-import org.thesalutyt.storyverse.api.effekseer.loader.EffekseerLoader;
-import org.thesalutyt.storyverse.api.environment.js.MobJS;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.gui.QuestGui;
 import org.thesalutyt.storyverse.api.gui.script.CustomGui;
 import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
-import org.thesalutyt.storyverse.api.quests.Quest;
-import org.thesalutyt.storyverse.api.quests.QuestDisplay;
-import org.thesalutyt.storyverse.api.quests.goal.Goal;
-import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.common.entities.Entities;
-import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.awt.*;
 
@@ -50,14 +35,6 @@ public class MainCommand {
     private static final Minecraft mc = Minecraft.getInstance();
     public MainCommand(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("storyverse")
-                        .then(Commands.literal("addon")
-                                .then(Commands.literal("list").executes((command) -> {
-                                    return getAddons(command.getSource()); // octaves noise generator
-                                }))
-                                .then(Commands.argument("addon_name", StringArgumentType.string())
-                                        .executes((command) -> {
-                                            return getAddon(command.getSource(), StringArgumentType.getString(command, "addon_name"));
-                                        })))
                                 .then(Commands.literal("blockpos")
                                         .executes((command) -> {
                                             return getBlockPos(command.getSource());
@@ -69,15 +46,6 @@ public class MainCommand {
                                 })
                         )
                 )
-                .then(Commands.literal("execute")
-                        .then(Commands.argument("line", StringArgumentType.string()).executes((command) -> {
-                            return execute(command.getSource(), StringArgumentType.getString(command, "line"));
-                        }))
-                )
-                        .then(Commands.literal("set_player")
-                                .then(Commands.argument("player", EntityArgument.entities()).executes((command) -> {
-                                    return setPlayer(command.getSource(), EntityArgument.getPlayer(command, "player"));
-                                })))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
                         .then(Commands.literal("gui")
@@ -88,9 +56,9 @@ public class MainCommand {
                                 .executes((command) -> {
                                     return quest(command.getSource());
                                 }))
-                        .then(Commands.literal("quest_display")
+                        .then(Commands.literal("camera_entity")
                                 .executes((command) -> {
-                                    return questDisplayTest(command.getSource());
+                                    return getCameraEntity(command.getSource());
                                 }))
                         .then(Commands.literal("action_packet")
                                 .executes((command) -> {
@@ -110,31 +78,13 @@ public class MainCommand {
                                 }))
                                 .executes((command) -> {return cameraTest(command.getSource());}))
                         .then(Commands.literal("controller")
-                                .then(Commands.literal("effervesce")
+                                .then(Commands.literal("noAI")
                                         .executes((command) -> {return controllerTestNoAI(command.getSource());}))
                                 .executes((command) -> {return controllerTest(command.getSource());}))
                         .then(Commands.literal("fadeScreen")
                                 .executes((command) -> {return testFadeColor(command.getSource());})))
         );
     }
-
-    public static int setPlayer(CommandSource source, ServerPlayerEntity player) throws CommandSyntaxException {
-        Player.setPlayer(player);
-        return 1;
-    }
-
-    public static int execute(CommandSource source, String line) throws CommandSyntaxException {
-        new Thread(() -> {
-            try {
-                SVEngine.interpreter.executeString(line);
-            } catch (Exception e) {
-                Chat.sendError(e.getMessage());
-            }
-        });
-
-        return 1;
-    }
-
     private static int goUp(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
         BlockPos position = player.blockPosition();
@@ -153,12 +103,8 @@ public class MainCommand {
         return 1; // ❄
     }
     public static int controllerTestNoAI(CommandSource source) throws CommandSyntaxException {
-        new EffekseerEffect();
-        EffekseerLoader.loadEffect("effect", new ResourceLocation("storyverse",
-                "effects/lightning.efkefc"));
-        EffekseerLoader.playEffect("effect", source.getPlayerOrException().blockPosition().getX() + 2,
-                source.getPlayerOrException().blockPosition().getY(),
-                source.getPlayerOrException().blockPosition().getZ() + 2);
+        ServerPlayerEntity player = source.getPlayerOrException();
+
         return 1;
     }
     public int moveCamera(CommandSource source) throws CommandSyntaxException {
@@ -232,7 +178,11 @@ public class MainCommand {
 
     public int actionPacketTest(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
-        mc.setScreen(new QuestGui());
+        WorldWrapper world = new WorldWrapper();
+        MobController mob = new MobController(player.blockPosition(), EntityType.WITHER_SKELETON);
+        CustomGui testGui = CustomGui.createGui();
+        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+        mc.setScreen(new ScriptGui());
         return 1;
     }
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
@@ -246,6 +196,10 @@ public class MainCommand {
         String rZ = String.format("%.2f", z).replace(",", ".");
         Chat.sendAsEngine(String.format("%s, %s, %s", rX, rY, rZ));
         Chat.sendCopyable(String.format("%s, %s, %s", rX, rY, rZ));
+        // String myString = String.format("%s, %s, %s", rX, rY, rZ);
+        // StringSelection stringSelection = new StringSelection(myString);
+        // Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        // clipboard.setContents(stringSelection, null);
         return 1;
     }
     public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {
@@ -253,20 +207,9 @@ public class MainCommand {
 
         return 1;
     }
-    public static int questDisplayTest(CommandSource source) throws CommandSyntaxException {
-        mc.setScreen(null);
-        ServerPlayerEntity player = source.getPlayerOrException();
-        Object[] args = new Object[]{"textures/entity/npc/eva.png",
-                "geo/woman.geo.json",
-                "animations/npc.animation.json",
-                1,
-                true};
-        NPCEntity npc = (NPCEntity) MobJS.npc("iQuestAdder", player.getX(), player.getY(), player.getZ(),
-                "Quest Adder", false, new NativeArray(args)).getEntity();
-        Quest q = new Quest("tQcmdPl",
-                "Test Quest",
-                "Interact with the npc", GoalType.INTERACT,
-                "iQuestAdder");
+    public static int getCameraEntity(CommandSource source) throws CommandSyntaxException {
+        System.out.println("Camera entity: " + SVEnvironment.Root.getCameraEntity());
+        Chat.sendAsEngine("Camera entity: " + SVEnvironment.Root.getCameraEntity());
         return 1;
     }
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
@@ -282,27 +225,6 @@ public class MainCommand {
         CustomGui testGui = CustomGui.createGui();
         testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
         mc.setScreen(new QuestGui());
-        return 1;
-    }
-    public static int getAddon(CommandSource source, String addon) {
-        Chat.sendAsEngine("Searching info for addon " + addon);
-        try {
-            Chat.sendAsEngine(ImAddon.addonInfoPrinter(ImAddon.addons.get(addon)));
-        } catch (Exception e) {
-            Chat.sendAsEngine("Addon not found!");
-            Chat.sendAsEngine(e.getMessage());
-        }
-        return 1;
-    }
-    public static int getAddons(CommandSource source) {
-        if (ImAddon.addonsList.isEmpty()) {
-            Chat.sendAsEngine("No addons found!");
-            return 1;
-        }
-        for (ImAddon i : ImAddon.addonsList) {
-            Chat.sendAsEngine(ImAddon.addonInfoPrinter(i));
-        }
-
         return 1;
     }
 }
