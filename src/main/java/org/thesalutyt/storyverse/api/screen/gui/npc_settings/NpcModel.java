@@ -20,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class NpcModel extends Screen {
@@ -58,9 +59,10 @@ public class NpcModel extends Screen {
         try {
             System.out.println("Loading models...");
             File[] geo = getFiles("src/main/resources/assets/storyverse/models");
+            assert geo != null;
+            System.out.println(Arrays.toString(Arrays.stream(geo).toArray()));
             System.out.println(SVEngine.MODELS_PATH);
             System.out.println("Models loaded");
-            assert geo != null;
             System.out.println("Adding models...");
             int currY = 200;
             for (File f : geo) {
@@ -118,7 +120,6 @@ public class NpcModel extends Screen {
         super.render(stack, mouseX, mouseY, partialTicks);
     }
 
-    @Nullable
     public File[] getFiles(String folderPath) {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();

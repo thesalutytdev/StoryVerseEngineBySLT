@@ -11,9 +11,11 @@ import org.thesalutyt.storyverse.api.environment.js.mod.ModInterpreter;
 import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
 import org.thesalutyt.storyverse.common.config.SVConfig;
+import org.thesalutyt.storyverse.loader.AssetsLoader;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class SVEngine {
@@ -60,6 +62,7 @@ public class SVEngine {
     public static Interpreter interpreter;
     public static ModInterpreter modInterpreter = new ModInterpreter(SCRIPTS_PATH);
     public static final String MOD_SCRIPT_FILE = SVConfig.MOD_SCRIPT_FILE.get();
+    public static AssetsLoader assetsLoader = new AssetsLoader();
 
     public static FadeScreenGui fadeScreen = new FadeScreenGui();
     public SVEngine(){}
@@ -154,5 +157,13 @@ public class SVEngine {
         SVELogger.write(DOCS_PATH + "item_id.txt", "ITEM INTENSIFICATION:\n" + Item.getId(new ItemStack(
                 Items.DIAMOND_SWORD
         ).getItem()));
+    }
+    public static void initAssets() {
+        assetsLoader = new AssetsLoader();
+        try {
+            assetsLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

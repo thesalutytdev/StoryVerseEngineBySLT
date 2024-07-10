@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.api.quests.goal;
 public class Goal {
     public GoalType type;
     public String progress;
+    public int prog;
     public boolean completed;
 
     public Goal(GoalType type, String questId) {
@@ -66,5 +67,14 @@ public class Goal {
                 this.completed = true;
                 break;
         }
+    }
+    public void upgradeProgress() {
+        prog++;
+        upgradeProgress(prog);
+    }
+    public void complete() {
+        this.progress = "Completed";
+        this.completed = true;
+        prog = 2;
     }
 }

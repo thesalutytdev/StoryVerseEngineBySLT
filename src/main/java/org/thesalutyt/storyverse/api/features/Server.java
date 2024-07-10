@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -100,13 +101,13 @@ public class Server extends ScriptableObject implements EnvResource {
         }
     }
     public static int execute(String command) {
-        if (server == null) {
-            return 0;
-        } else {
-            assert mc.player != null;
-            mc.player.chat(command);
-            return 1;
-        }
+        assert mc.player != null;
+        MinecraftServer server = mc.player.level.getServer();
+        if(server == null) return 0;
+        CommandSource source = server.createCommandSourceStack()
+                .withEntity(mc.player)
+                .withPermission(4);
+        return server.getCommands().performCommand(source, command);
     }
 
     public static String getOpPlayer() {

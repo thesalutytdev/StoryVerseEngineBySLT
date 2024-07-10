@@ -7,6 +7,7 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.resource.IQuest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Quest implements IQuest, EnvResource, JSResource {
@@ -19,6 +20,7 @@ public class Quest implements IQuest, EnvResource, JSResource {
     public int progress;
     public boolean finished;
     public static HashMap<String, Quest> quests = new HashMap<>();
+    public static ArrayList<String> questList = new ArrayList<>();
 
     public Quest(String id, String name, String description, GoalType goal, String questAdder) {
         this.id = id;
@@ -37,7 +39,8 @@ public class Quest implements IQuest, EnvResource, JSResource {
         this.progress = 0;
         this.finished = false;
 
-        quests.put(name, this);
+        quests.put(id, this);
+        questList.add(id);
     }
 
 

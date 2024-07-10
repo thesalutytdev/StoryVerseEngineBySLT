@@ -11,16 +11,21 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.addon.ImAddon;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.effekseer.Effekseer;
+import org.thesalutyt.storyverse.api.effekseer.EffekseerEffect;
 import org.thesalutyt.storyverse.api.effekseer.loader.EffekseerLoader;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
@@ -35,6 +40,7 @@ import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.common.entities.Entities;
+import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.awt.*;
 
@@ -104,7 +110,7 @@ public class MainCommand {
                                 }))
                                 .executes((command) -> {return cameraTest(command.getSource());}))
                         .then(Commands.literal("controller")
-                                .then(Commands.literal("noAI")
+                                .then(Commands.literal("effervesce")
                                         .executes((command) -> {return controllerTestNoAI(command.getSource());}))
                                 .executes((command) -> {return controllerTest(command.getSource());}))
                         .then(Commands.literal("fadeScreen")
@@ -147,8 +153,12 @@ public class MainCommand {
         return 1; // ❄
     }
     public static int controllerTestNoAI(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-
+        new EffekseerEffect();
+        EffekseerLoader.loadEffect("effect", new ResourceLocation("storyverse",
+                "effects/lightning.efkefc"));
+        EffekseerLoader.playEffect("effect", source.getPlayerOrException().blockPosition().getX() + 2,
+                source.getPlayerOrException().blockPosition().getY(),
+                source.getPlayerOrException().blockPosition().getZ() + 2);
         return 1;
     }
     public int moveCamera(CommandSource source) throws CommandSyntaxException {
@@ -245,10 +255,18 @@ public class MainCommand {
     }
     public static int questDisplayTest(CommandSource source) throws CommandSyntaxException {
         mc.setScreen(null);
-        Chat.sendAsEngine("Quest display test");
-        QuestDisplay qd = new QuestDisplay(new Quest("test", "Test", "tEsT",
-                new Goal(GoalType.ITEM, "start", false, "test").type, SVEngine.OP_PLAYER));
-        mc.setScreen(qd);
+        ServerPlayerEntity player = source.getPlayerOrException();
+        Object[] args = new Object[]{"textures/entity/npc/eva.png",
+                "geo/woman.geo.json",
+                "animations/npc.animation.json",
+                1,
+                true};
+        NPCEntity npc = (NPCEntity) MobJS.npc("iQuestAdder", player.getX(), player.getY(), player.getZ(),
+                "Quest Adder", false, new NativeArray(args)).getEntity();
+        Quest q = new Quest("tQcmdPl",
+                "Test Quest",
+                "Interact with the npc", GoalType.INTERACT,
+                "iQuestAdder");
         return 1;
     }
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
