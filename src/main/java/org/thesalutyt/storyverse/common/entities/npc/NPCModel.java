@@ -12,55 +12,27 @@ import java.io.File;
 public class NPCModel extends AnimatedGeoModel<NPCEntity> {
     @Override
     public ResourceLocation getModelLocation(NPCEntity object) {
-        try {
-            String path = object.getModelPath();
-            File modelFile = getFile(path, AssetType.MODEL);
-            return new ResourceLocation("file", modelFile.getAbsolutePath());
-        } catch (Exception e) {
-            return new ResourceLocation(SVEngine.MOD_ID, "geo/npc.geo.json");
-        }
+        String path = object.getModelPath();
+        ResourceLocation modelPath = parsePath(path == "" ? "geo/alex.geo" : path);
+        return modelPath;
     }
 
-    public File getFile(String path, AssetType type) {
-        switch (type) {
-            case MODEL:
-                String basePath = SVEngine.MODELS_PATH;  // Путь к папке storyverse
-                File modelFile = new File(basePath + path);
-                // Добавляем расширение .json если его нет
-                if (!modelFile.getName().endsWith(".geo.json")) {
-                    modelFile = new File(modelFile.getAbsolutePath() + ".geo.json");
-                }
-                return modelFile;
-            case TEXTURE:
-                String basePath_ = SVEngine.TEXTURES_PATH;  // Путь к папке storyverse
-                File textureFile = new File(basePath_ + path);
-                // Добавляем расширение .json если его нет
-                if (!textureFile.getName().endsWith(".png")) {
-                    textureFile = new File(textureFile.getAbsolutePath() + ".png");
-                }
-                return textureFile;
-            case ANIMATION:
-                String base_Path_ = SVEngine.ANIMATIONS_PATH;  // Путь к папке storyverse
-                File animationsFile = new File(base_Path_ + path);
-                // Добавляем расширение .json если его нет
-                if (!animationsFile.getName().endsWith(".json")) {
-                    animationsFile = new File(animationsFile.getAbsolutePath() + ".json");
-                }
-                return animationsFile;
-            default:
-                return null;
+    public ResourceLocation parsePath(String path) {
+        String id = path;
+        String modId = "storyverse";
+        String name = "animations/npc.animation_1.json";
+        if(id.indexOf(":") != -1) {
+            modId = id.substring(0,id.indexOf(":"));
         }
+        name = id.substring(id.indexOf(":")+1);
+        return new ResourceLocation(modId,name+(name.endsWith(".json") ? "" : ".json"));
     }
+
 
     @Override
     public ResourceLocation getTextureLocation(NPCEntity object) {
-        try {
-            String path = object.getTexturePath();
-            File modelFile = getFile(path, AssetType.TEXTURE);
-            return new ResourceLocation("file", modelFile.getAbsolutePath());
-        } catch (Exception e) {
-            return new ResourceLocation(SVEngine.MOD_ID, "textures/entity/npc/npc.png");
-        }
+        String path = object.getTexturePath();
+        return parsePathTexture(path == "" ? "storyverse:textures/entity/npc" : path.toLowerCase());
     }
 
     public ResourceLocation parsePathTexture(String path) {
@@ -76,13 +48,9 @@ public class NPCModel extends AnimatedGeoModel<NPCEntity> {
 
     @Override
     public ResourceLocation getAnimationFileLocation(NPCEntity animatable) {
-        try {
-            String path = animatable.getAnimationPath();
-            File modelFile = getFile(path, AssetType.ANIMATION);
-            return new ResourceLocation("file", modelFile.getAbsolutePath());
-        } catch (Exception e) {
-            return new ResourceLocation(SVEngine.MOD_ID, "animations/npc.animation.json");
-        }
+        String path = animatable.getAnimationPath();
+        ResourceLocation animPath = parsePath(path == "" ? "animations/npc.animation_1" : path);
+        return animPath;
     }
 
     @Override
