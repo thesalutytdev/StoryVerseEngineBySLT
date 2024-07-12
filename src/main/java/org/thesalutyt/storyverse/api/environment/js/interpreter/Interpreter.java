@@ -44,6 +44,7 @@ public class Interpreter {
             JSItem.putIntoScope(scope);
             BackgroundScript.putIntoScope(scope);
             SpecialListener.putIntoScope(scope);
+            Timer.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

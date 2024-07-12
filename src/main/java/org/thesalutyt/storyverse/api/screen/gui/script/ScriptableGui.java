@@ -69,6 +69,12 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public Integer getHeight() {
         return gui.gHeight;
     }
+    public Integer getMouseX() {
+        return gui.gMouseX;
+    }
+    public Integer getMouseY() {
+        return gui.gMouseY;
+    }
     public String createButton(String id, String texture, Double x, Double y, Double width, Double height, String text, BaseFunction onClick) {
         return new GuiButton(id, texture, x, y, width, height, text, onClick).id;
     }
@@ -116,6 +122,10 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(getWidth);
             Method getHeight = ScriptableGui.class.getMethod("getHeight");
             methodsToAdd.add(getHeight);
+            Method getMouseX = ScriptableGui.class.getMethod("getMouseX");
+            methodsToAdd.add(getMouseX);
+            Method getMouseY = ScriptableGui.class.getMethod("getMouseY");
+            methodsToAdd.add(getMouseY);
             Method createButton = ScriptableGui.class.getMethod("createButton",
                     String.class, String.class, Double.class, Double.class,
                     Double.class, Double.class, String.class,

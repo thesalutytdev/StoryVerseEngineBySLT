@@ -28,6 +28,8 @@ public class CustomizableGui extends Screen implements EnvResource {
     public Boolean closeOnEsc = true;
     public int gWidth;
     public int gHeight;
+    public int gMouseX;
+    public int gMouseY;
 
     public CustomizableGui(String title) {
         super(new StringTextComponent(title));
@@ -88,6 +90,8 @@ public class CustomizableGui extends Screen implements EnvResource {
                 this.blit(matrixStack, image.x, image.y, 0, 0, image.width, image.height);
             }
         }
+        this.gMouseX = mouseX;
+        this.gMouseY = mouseY;
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
