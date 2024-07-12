@@ -49,7 +49,7 @@ public class NPCModel extends AnimatedGeoModel<NPCEntity> {
     @Override
     public ResourceLocation getAnimationFileLocation(NPCEntity animatable) {
         String path = animatable.getAnimationPath();
-        ResourceLocation animPath = parsePath(path == "" ? "animations/npc.animation_1" : path);
+        ResourceLocation animPath = parsePath(path == "" ? "animations/npc.animation" : path);
         return animPath;
     }
 
