@@ -101,8 +101,6 @@ public class IGui extends Screen {
                 new ErrorPrinter(e);
             }
         }
-        blit(stack, 0, 0, 0, 0,
-                this.width, this.height, this.width, this.height);
         super.render(stack, mouseX, mouseY, partialTicks);
     }
 
