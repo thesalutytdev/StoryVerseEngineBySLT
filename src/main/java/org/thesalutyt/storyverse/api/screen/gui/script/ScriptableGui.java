@@ -86,7 +86,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         Minecraft.getInstance().setScreen(gui);
     }
     public void close() {
-            Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().setScreen(null);
     }
     public void setCloseOnEsc(Boolean closeOnEsc) {
         gui.closeOnEsc = closeOnEsc;
@@ -98,6 +98,10 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     }
     public void renderBackground(Boolean method) {
         gui.renderBG = method;
+    }
+    public void setCursorPos(Integer x, Integer y) {
+        gui.cursorX = x;
+        gui.cursorY = y;
     }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
@@ -146,6 +150,8 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(addImage);
             Method renderBackground = ScriptableGui.class.getMethod("renderBackground", Boolean.class);
             methodsToAdd.add(renderBackground);
+            Method setCursorPos = ScriptableGui.class.getMethod("setCursorPos", Integer.class, Integer.class);
+            methodsToAdd.add(setCursorPos);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

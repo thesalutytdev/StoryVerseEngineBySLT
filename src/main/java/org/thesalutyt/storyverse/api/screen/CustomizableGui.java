@@ -1,11 +1,13 @@
 package org.thesalutyt.storyverse.api.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.glfw.GLFW;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.screen.gui.elements.*;
@@ -30,6 +32,8 @@ public class CustomizableGui extends Screen implements EnvResource {
     public int gHeight;
     public int gMouseX;
     public int gMouseY;
+    public Integer cursorX = this.width;
+    public Integer cursorY = this.height;
 
     public CustomizableGui(String title) {
         super(new StringTextComponent(title));
@@ -40,6 +44,8 @@ public class CustomizableGui extends Screen implements EnvResource {
         super.init();
         this.width = gWidth;
         this.height = gHeight;
+        long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+        GLFW.glfwSetCursorPos(windowHandle, cursorX, cursorY);
     }
 
     @Override

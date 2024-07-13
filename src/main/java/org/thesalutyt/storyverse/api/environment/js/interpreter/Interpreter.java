@@ -45,6 +45,7 @@ public class Interpreter {
             BackgroundScript.putIntoScope(scope);
             SpecialListener.putIntoScope(scope);
             Timer.putIntoScope(scope);
+            MathScript.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

@@ -15,38 +15,17 @@ public class Timer extends ScriptableObject implements EnvResource {
     public Integer convertToMS(Integer d) {
         return 1000 / d;
     }
-    public Long getCurrentMS()  {
-        return System.currentTimeMillis();
+    public Integer getCurrentMS()  {
+        return ((int) System.currentTimeMillis());
     }
-    public Boolean hasReached(Double milliseconds ) {
-        return ((System.currentTimeMillis() - lastMS) > milliseconds);
-    }
-    public Boolean hasTimeReached(double delay) {
-        return System.currentTimeMillis() - lastMS >= delay;
-    }
-    public Long getDelay() {
-        return System.currentTimeMillis() - lastMS;
+    public Double getDelay() {
+        return (double) (System.currentTimeMillis() - lastMS);
     }
     public void reset() {
         lastMS = System.currentTimeMillis();
     }
-    public void reset(Long def) {
-        this.lastMS = System.currentTimeMillis() - def;
-    }
     public void setLastMS() {
         lastMS = System.currentTimeMillis();
-    }
-    public void setLastMS(Long lastMS) {
-        this.lastMS = lastMS;
-    }
-    public Boolean isDelayComplete(Double d) {
-        return this.hasReached(d);
-    }
-    public Boolean hasPassed(Double milliseconds) {
-        return ((System.currentTimeMillis() - this.lastMS) > milliseconds);
-    }
-    public Long getTime() {
-        return getCurrentMS() - this.lastMS;
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -59,6 +38,8 @@ public class Timer extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getCurrentMS);
             Method reset = Timer.class.getMethod("reset");
             methodsToAdd.add(reset);
+            Method convertToMS = Timer.class.getMethod("convertToMS", Integer.class);
+            methodsToAdd.add(convertToMS);
 
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
