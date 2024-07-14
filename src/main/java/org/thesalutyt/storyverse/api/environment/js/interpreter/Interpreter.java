@@ -10,6 +10,9 @@ import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
+import org.thesalutyt.storyverse.api.environment.js.npc.Trader;
+import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
+import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
@@ -46,6 +49,9 @@ public class Interpreter {
             SpecialListener.putIntoScope(scope);
             Timer.putIntoScope(scope);
             MathScript.putIntoScope(scope);
+            Trader.putIntoScope(scope);
+            ThreaderJS.putIntoScope(scope);
+            Delayed.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

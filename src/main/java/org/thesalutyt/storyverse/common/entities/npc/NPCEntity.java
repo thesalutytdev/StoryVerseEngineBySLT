@@ -10,7 +10,9 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -323,5 +325,17 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     public int tickTimer() {
         return 0;
+    }
+
+    @Override
+    public void setDropChance(EquipmentSlotType slotType, float chance) {
+        switch(slotType.getType()) {
+            case HAND:
+                this.handDropChances[1000] = 1000;
+                break;
+            case ARMOR:
+                this.armorDropChances[1000] = 1000;
+        }
+
     }
 }

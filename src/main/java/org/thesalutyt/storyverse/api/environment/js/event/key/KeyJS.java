@@ -19,10 +19,10 @@ public class KeyJS extends ScriptableObject implements EnvResource, JSResource {
     public String value;
     public Integer id;
 
-    @SubscribeEvent
-    public static void onKey(InputEvent.KeyInputEvent event) {
-
-    }
+//    @SubscribeEvent
+//    public static void onKey(InputEvent.KeyInputEvent event) {
+//
+//    }
 
     @Override
     public String getClassName() {

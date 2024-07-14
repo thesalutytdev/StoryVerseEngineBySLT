@@ -89,6 +89,12 @@ public class MobJS extends ScriptableObject implements EnvResource {
             Minecraft.getInstance().setScreen(new NpcSetter((NPCEntity) event.getTarget()));
             return;
         }
+        if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()) {
+            NPCEntity npc = (NPCEntity) event.getTarget();
+            if (npc.offers != null) {
+
+            }
+        }
         runEvent(getMob(event.getTarget().getUUID()), "interact");
     }
     @SubscribeEvent

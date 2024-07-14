@@ -64,12 +64,15 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
                 color));
     }
     public Integer getWidth() {
-        return gui.gWidth;
+        return gui.width;
     }
     public Integer getHeight() {
-        return gui.gHeight;
+        return gui.height;
     }
-    public Integer getMouseX() {
+    public static Long toDouble(Double long_) {
+        return long_.longValue();
+    }
+        public Integer getMouseX() {
         return gui.gMouseX;
     }
     public Integer getMouseY() {
