@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
+import org.thesalutyt.storyverse.api.screen.gui.elements.java.ColoredLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiEntity;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class IWidgetList {
     public ArrayList<GuiButton> buttons = new ArrayList<>();
     public ArrayList<GuiLabel> labels = new ArrayList<>();
+    public ArrayList<ColoredLabel> coloredLabels = new ArrayList<>();
     public ArrayList<GuiImage> images = new ArrayList<>();
     public ArrayList<GuiEntity> entities = new ArrayList<>();
     public ArrayList<CircleRect> circleRect = new ArrayList<>();
@@ -28,6 +30,11 @@ public class IWidgetList {
 
     public IWidgetList addLabel(GuiLabel label) {
         labels.add(label);
+        return this;
+    }
+
+    public IWidgetList addLabel(ColoredLabel label) {
+        coloredLabels.add(label);
         return this;
     }
 

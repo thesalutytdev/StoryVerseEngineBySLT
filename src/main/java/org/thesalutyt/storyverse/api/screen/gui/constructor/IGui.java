@@ -11,6 +11,7 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
+import org.thesalutyt.storyverse.api.screen.gui.elements.java.ColoredLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiEntity;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
@@ -81,7 +82,19 @@ public class IGui extends Screen {
                 for (GuiLabel label : widgets.labels) {
                     if (label.centred) {
                         AbstractGui.drawCenteredString(stack, this.minecraft.font, new StringTextComponent(label.message),
-                                label.y, label.size, Color.WHITE.getAlpha());
+                                label.y, label.size, Color.WHITE.getRGB());
+                    } else {
+                        AbstractGui.drawString(stack, this.minecraft.font, new StringTextComponent(label.message),
+                                label.x, label.y, label.size);
+                    }
+                }
+                for (ColoredLabel label : widgets.coloredLabels) {
+                    if (label.centred) {
+                        AbstractGui.drawCenteredString(stack, this.minecraft.font, new StringTextComponent(label.message),
+                                label.y, label.size, label.color.getRGB());
+                    } else {
+                        AbstractGui.drawString(stack, this.minecraft.font, new StringTextComponent(label.message),
+                                label.x, label.y, label.size);
                     }
                 }
                 for (GuiImage image : widgets.images) {
