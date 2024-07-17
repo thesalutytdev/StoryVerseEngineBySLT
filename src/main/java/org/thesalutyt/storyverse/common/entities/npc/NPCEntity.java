@@ -1,5 +1,7 @@
 package org.thesalutyt.storyverse.common.entities.npc;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -9,7 +11,9 @@ import net.minecraft.entity.ai.goal.JumpGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffer;
@@ -18,14 +22,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import org.thesalutyt.storyverse.api.quests.Quest;
+import org.thesalutyt.storyverse.api.quests.QuestManager;
+import org.thesalutyt.storyverse.api.quests.goal.GoalType;
+import org.thesalutyt.storyverse.api.quests.goal.NPCItem;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
+import org.thesalutyt.storyverse.common.items.ModItems;
+import org.thesalutyt.storyverse.utils.StoryUtils;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -84,6 +93,21 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public NPCEntity(EntityType<? extends AnimalEntity> p_i48568_1_, World p_i48568_2_) {
         super(p_i48568_1_, p_i48568_2_);
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (focusedEntity != null) {
+            lookAt(EntityAnchorArgument.Type.EYES, new Vector3d(focusedEntity.getX(), focusedEntity.getEyeY(), focusedEntity.getZ()));
+        }
+        if(ticks % 10 == 0) {
+            setTexturePath(getTexturePath());
+            setModelPath(getModelPath());
+            setAnimationPath(getAnimationPath());
+        }
+        ticks++;
+    }
+
 
     @Override
     protected void registerGoals() {
@@ -331,11 +355,69 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public void setDropChance(EquipmentSlotType slotType, float chance) {
         switch(slotType.getType()) {
             case HAND:
-                this.handDropChances[1000] = 1000;
+                this.handDropChances[0] = 1000;
                 break;
             case ARMOR:
-                this.armorDropChances[1000] = 1000;
+                this.armorDropChances[0] = 1000;
         }
 
+    }
+
+    @Override
+    public ActionResultType interactAt(PlayerEntity player, Vector3d vec, Hand hand) {
+        return super.interactAt(player,vec,hand);
+    }
+
+    @Override
+    protected void pickUpItem(ItemEntity p_175445_1_) {
+        super.pickUpItem(p_175445_1_);
+    }
+
+    @Override
+    public boolean canPickUpLoot() {
+        return canPickup;
+    }
+
+    @Override
+    public void onItemPickup(ItemEntity item) {
+        try {
+            assert Minecraft.getInstance().player != null;
+            PlayerEntity player = Minecraft.getInstance().player;
+            Quest quest = QuestManager.quests.get(player);
+            if (!(quest.entityAdder instanceof NPCEntity) || quest.goal != GoalType.NPC_ITEM
+                    || !(item.getItem().equals(NPCItem.items.get(this).stack))) {
+
+            }
+            System.out.println("Picked up item: " + item.getItem());
+            NPCItem.items.get(this).complete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onItemPickup(item);
+    }
+
+    @Override
+    public boolean wantsToPickUp(ItemStack item) {
+        try {
+            assert Minecraft.getInstance().player != null;
+            PlayerEntity player = Minecraft.getInstance().player;
+            System.out.println("Player: " + player.getDisplayName().getContents() + " " + player.getGameProfile().getName());
+            Quest quest = QuestManager.quests.get(player);
+            System.out.println("Quest: " + quest + " " + quest.entityAdder + " " + quest.goal + " " + quest.id);
+            assert quest.entityAdder != null;
+            if (!(quest.entityAdder instanceof NPCEntity)) {
+                return false;
+            }
+            if (quest.goal == GoalType.NPC_ITEM) {
+                if (item.getItem().equals(NPCItem.items.get(this).stack)) {
+                    System.out.println("Picked up item: " + item.getItem());
+                    return true;
+                }
+            }
+            return super.wantsToPickUp(item);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return super.wantsToPickUp(item);
+        }
     }
 }

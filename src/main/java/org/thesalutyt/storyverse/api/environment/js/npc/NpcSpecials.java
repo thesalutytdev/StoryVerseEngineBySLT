@@ -6,6 +6,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
+import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.lang.reflect.Method;
@@ -94,6 +95,10 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.focusedEntity = null;
     }
+    public static void focusOnPlayer(String npcId, String playerName) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.focusedEntity = Server.getPlayerByName(playerName);
+    }
     public static void setSleep(String npcId, Boolean sleeping) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.setSleep(sleeping);
@@ -160,6 +165,8 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             methodsToAdd.add(setHeadRotation);
             Method setRotation = NpcSpecials.class.getMethod("setRotation", String.class, Double.class);
             methodsToAdd.add(setRotation);
+            Method focusOnPlayer = NpcSpecials.class.getMethod("focusOnPlayer", String.class, String.class);
+            methodsToAdd.add(focusOnPlayer);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

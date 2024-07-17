@@ -3,11 +3,14 @@ package org.thesalutyt.storyverse.api.environment.js;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +32,7 @@ import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 import org.thesalutyt.storyverse.common.items.EntityDeleter;
 import org.thesalutyt.storyverse.common.items.NpcDeleter;
 import org.thesalutyt.storyverse.common.items.NpcSettings;
+import org.thesalutyt.storyverse.utils.StoryUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -91,8 +95,12 @@ public class MobJS extends ScriptableObject implements EnvResource {
         }
         if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()) {
             NPCEntity npc = (NPCEntity) event.getTarget();
-            if (npc.offers != null) {
-
+            System.out.println("Trader: " + npc.traderName + " trades: " + npc.offers);
+            if(event.getHand() == Hand.MAIN_HAND) {
+                if (npc.offers != null && npc.isTrader) {
+                    StoryUtils.openTrade((PlayerEntity) event.getPlayer(), new StringTextComponent(npc.traderName),
+                            npc.offers, 0, false);
+                }
             }
         }
         runEvent(getMob(event.getTarget().getUUID()), "interact");

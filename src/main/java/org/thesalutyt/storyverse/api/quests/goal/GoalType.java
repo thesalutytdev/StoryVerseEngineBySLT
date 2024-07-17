@@ -4,4 +4,5 @@ public enum GoalType {
     ITEM,
     KILL,
     INTERACT,
+    NPC_ITEM
 }
