@@ -24,6 +24,7 @@ import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
 import org.thesalutyt.storyverse.api.quests.Quest;
+import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.InteractGoal;
 import org.thesalutyt.storyverse.api.screen.gui.npc_settings.NpcSetter;
@@ -77,6 +78,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
             return;
         }
         System.out.println("Interacted with " + event.getTarget().getUUID() + " (" + event.getTarget().getType() + ")");
+        // QuestManager.onMobInteract(event);
         if (event.getItemStack().getItem() instanceof NpcDeleter ||
                 event.getItemStack().getItem() instanceof EntityDeleter) {
             if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()

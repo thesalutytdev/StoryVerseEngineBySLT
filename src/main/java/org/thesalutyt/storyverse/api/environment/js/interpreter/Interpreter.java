@@ -20,6 +20,7 @@ import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
+import org.thesalutyt.storyverse.utils.ItemUtils;
 
 
 public class Interpreter {
@@ -57,6 +58,7 @@ public class Interpreter {
             Delayed.putIntoScope(scope);
             IGoalBuilder.putIntoScope(scope);
             Quest.putIntoScope(scope);
+            ItemUtils.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

@@ -7,8 +7,20 @@ import net.minecraft.command.arguments.ItemInput;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
+import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.api.environment.resource.JSResource;
+import org.thesalutyt.storyverse.api.features.Server;
 
-public class ItemUtils {
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+public class ItemUtils extends ScriptableObject implements EnvResource, JSResource {
     public static boolean matches(ItemStack stack1, ItemStack stack2) {
         return ItemStack.matches(stack1, stack2) && ItemStack.tagMatches(stack1, stack2);
     }
@@ -43,6 +55,10 @@ public class ItemUtils {
         }
     }
 
+    public static void giveStack(String playerName, String itemStack) {
+        giveStack(Server.getPlayerByName(playerName), JSItem.getStack(itemStack));
+    }
+
     public static boolean hasAmount(PlayerEntity sender, ItemStack itemStackIn) {
         if (itemStackIn.isEmpty()) return true;
 
@@ -67,6 +83,10 @@ public class ItemUtils {
         }
 
         return false;
+    }
+
+    public static boolean hasItem(String playerName, String itemStack) {
+        return hasItem(Server.getPlayerByName(playerName), JSItem.getStack(itemStack));
     }
 
     public static int getAmount(PlayerEntity sender, ItemStack itemStackIn) {
@@ -95,5 +115,43 @@ public class ItemUtils {
         return itemStack == null || itemStack.isEmpty() ? "minecraft:empty" :
                 itemStack.getItem().getRegistryName()
                         +(itemStack.hasTag() ? itemStack.getTag().toString() : "");
+    }
+
+    public static void showTitle(String playerName, String title) {
+        StoryUtils.showTitle(Server.getPlayerByName(playerName), new StringTextComponent(title));
+    }
+
+    public static ArrayList<Method> methodsToAdd = new ArrayList<>();
+
+    public static void putIntoScope(Scriptable scope) {
+        ItemUtils iu = new ItemUtils();
+        iu.setParentScope(scope);
+
+        try {
+            Method hasItem = ItemUtils.class.getMethod("hasItem", String.class, String.class);
+            methodsToAdd.add(hasItem);
+            Method giveStack = ItemUtils.class.getMethod("giveStack", String.class, String.class);
+            methodsToAdd.add(giveStack);
+            Method showTitle = ItemUtils.class.getMethod("showTitle", String.class, String.class);
+            methodsToAdd.add(showTitle);
+        } catch (Exception e) {
+            new ErrorPrinter(e);
+        }
+        for (Method m : methodsToAdd) {
+            FunctionObject methodInstance = new FunctionObject(m.getName(), m, iu);
+            iu.put(m.getName(), iu, methodInstance);
+        }
+
+        scope.put("utils", scope, iu);
+    }
+
+    @Override
+    public String getClassName() {
+        return "ItemUtils";
+    }
+
+    @Override
+    public String getResourceId() {
+        return "ItemUtils";
     }
 }
