@@ -80,6 +80,30 @@ public class GuiButton extends Button {
         btns.put(id, this);
     }
 
+    public GuiButton(String id, ResourceLocation texture,
+                     int x, int y, Double width, Double height, String translatable, Runnable function) {
+        super(x, y,
+                width.intValue(),
+                height.intValue(),
+                new TranslationTextComponent(translatable), (button) -> {
+                    System.out.println("Button clicked: " + translatable);
+                });
+        this.id = id;
+        this.texture = texture;
+        this.x = (double) x;
+        this.y = (double) y;
+        this.width = width;
+        this.height = height;
+        this.message = message;
+        this.onClick = function;
+        this.button = new Button(x, y, width.intValue(), height.intValue(),
+                new TranslationTextComponent(message), (button) -> {
+            System.out.println("Button clicked: " + message);
+            onClick();
+        });
+        btns.put(id, this);
+    }
+
     @Override
     public void onPress() {
         onClick();
