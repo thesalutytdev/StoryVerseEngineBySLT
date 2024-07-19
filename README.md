@@ -1,5 +1,5 @@
 <h1><b>StoryVerse Engine!</b></h1>
-<h2>Current version: 4.8-Beta</h2>
+<h2>Current version: 4.9-Beta</h2>
 <h3>This is an engine, what can help you create<br>
 <b>story-based maps</b></h3>
 <h3>Abilities:</h3>

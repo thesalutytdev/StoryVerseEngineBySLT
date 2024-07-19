@@ -7,6 +7,7 @@ import net.minecraft.command.arguments.ItemInput;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import org.mozilla.javascript.FunctionObject;
@@ -121,6 +122,10 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
         StoryUtils.showTitle(Server.getPlayerByName(playerName), new StringTextComponent(title));
     }
 
+    public static BlockPos pos(Double x, Double y, Double z) {
+        return new BlockPos(x, y, z);
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
     public static void putIntoScope(Scriptable scope) {
@@ -134,6 +139,8 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
             methodsToAdd.add(giveStack);
             Method showTitle = ItemUtils.class.getMethod("showTitle", String.class, String.class);
             methodsToAdd.add(showTitle);
+            Method pos = ItemUtils.class.getMethod("pos", Double.class, Double.class, Double.class);
+            methodsToAdd.add(pos);
         } catch (Exception e) {
             new ErrorPrinter(e);
         }

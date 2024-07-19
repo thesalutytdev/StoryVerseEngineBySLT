@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class MathScript extends ScriptableObject implements EnvResource {
 
     public static Double PI() {
-        return 3.141592653589793;
+        return Math.PI;
     }
 
     public static Double sin(Double var0) {
@@ -40,6 +40,9 @@ public class MathScript extends ScriptableObject implements EnvResource {
 
     public static Double random() {
         return Math.random();
+    }
+    public static Double random(Double min, Double max) {
+        return Math.random() * (max - min + 1) + min;
     }
 
     public static Double toRadians(Double var0) {
@@ -76,6 +79,8 @@ public class MathScript extends ScriptableObject implements EnvResource {
             methodsToAdd.add(atan);
             Method random = MathScript.class.getMethod("random");
             methodsToAdd.add(random);
+            Method random2 = MathScript.class.getMethod("random", Double.class, Double.class);
+            methodsToAdd.add(random2);
             Method toRadians = MathScript.class.getMethod("toRadians", Double.class);
             methodsToAdd.add(toRadians);
             Method toDegrees = MathScript.class.getMethod("toDegrees", Double.class);
@@ -91,7 +96,7 @@ public class MathScript extends ScriptableObject implements EnvResource {
                     m, ef);
             ef.put(m.getName(), ef, methodInstance);
         }
-        scope.put("Math", scope, ef);
+        scope.put("math", scope, ef);
     }
     @Override
     public String getResourceId() {

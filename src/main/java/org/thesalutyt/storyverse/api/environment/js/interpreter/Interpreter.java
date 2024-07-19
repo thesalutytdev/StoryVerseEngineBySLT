@@ -8,6 +8,7 @@ import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.block.Locker;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.environment.js.npc.Trader;
@@ -59,6 +60,7 @@ public class Interpreter {
             IGoalBuilder.putIntoScope(scope);
             Quest.putIntoScope(scope);
             ItemUtils.putIntoScope(scope);
+            Locker.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

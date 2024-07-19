@@ -1,7 +1,6 @@
 package org.thesalutyt.storyverse.api.features;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.fonts.TexturedGlyph;
 import net.minecraft.entity.Entity;
@@ -13,6 +12,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.datafix.fixes.RedstoneConnections;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -242,6 +242,32 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return null;
     }
 
+    public static void use(String world, Double x, Double y, Double z) {
+        WorldWrapper worldWrapper = new WorldWrapper(getWorld(world));
+        BlockState state = worldWrapper.getMCWorld().getBlockState(new BlockPos(x, y, z));
+        Block block = state.getBlock();
+        if (block instanceof AbstractButtonBlock) {
+            AbstractButtonBlock self = (AbstractButtonBlock) block;
+            self.press(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z));
+        } else if (block instanceof LeverBlock) {
+            LeverBlock self = (LeverBlock) block;
+            self.pull(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z));
+        } else {
+            System.out.println("Cannot use block " + block);
+        }
+    }
+
+    public static void useDoor(String world, Double x, Double y, Double z, Boolean open) {
+        WorldWrapper worldWrapper = new WorldWrapper(getWorld(world));
+        BlockState state = worldWrapper.getMCWorld().getBlockState(new BlockPos(x, y, z));
+        Block block = state.getBlock();
+        if (block instanceof DoorBlock) {
+            DoorBlock self = (DoorBlock) block;
+            self.setOpen(worldWrapper.getMCWorld(), state, new BlockPos(x, y, z), open);
+        }
+
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         WorldWrapper ef = new WorldWrapper();
@@ -270,6 +296,18 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(selectHand);
             Method getMCWorld = WorldWrapper.class.getMethod("getMCWorld");
             methodsToAdd.add(getMCWorld);
+            Method toCameraType = WorldWrapper.class.getMethod("toCameraType", String.class);
+            methodsToAdd.add(toCameraType);
+            Method toEffect = WorldWrapper.class.getMethod("toEffect", Integer.class);
+            methodsToAdd.add(toEffect);
+            Method useBlock = WorldWrapper.class.getMethod("use", String.class, Double.class, Double.class, Double.class);
+            methodsToAdd.add(useBlock);
+            Method key = WorldWrapper.class.getMethod("key", String.class);
+            methodsToAdd.add(key);
+            Method toEventType = WorldWrapper.class.getMethod("toEventType", String.class);
+            methodsToAdd.add(toEventType);
+            Method useDoor = WorldWrapper.class.getMethod("useDoor", String.class, Double.class, Double.class, Double.class, Boolean.class);
+            methodsToAdd.add(useDoor);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
