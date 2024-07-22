@@ -526,6 +526,11 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
 
+    public MobController attackMob(String id) {
+        this.entity.setTarget(MobJS.controllers.get(id).getMobEntity());
+        return this;
+    }
+
     @Documentate(
             desc = "Sets mob invisible"
     )
@@ -673,6 +678,8 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(iMh);
             Method iOh = MobController.class.getMethod("setItemOffHand", Object.class);
             methodsToAdd.add(iOh);
+            Method attackMob = MobController.class.getMethod("attackMob", String.class);
+            methodsToAdd.add(attackMob);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

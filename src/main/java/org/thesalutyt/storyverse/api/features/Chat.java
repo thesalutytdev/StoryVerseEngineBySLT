@@ -17,6 +17,10 @@ import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +85,7 @@ public class Chat extends ScriptableObject implements EnvResource {
                 text,
                 text
         ));
+
     }
     public static void setCharacterColor(String color) {
         if (Objects.equals(color, "reset")) {

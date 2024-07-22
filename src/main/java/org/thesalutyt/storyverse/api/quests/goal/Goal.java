@@ -4,7 +4,7 @@ import org.thesalutyt.storyverse.api.quests.Quest;
 
 import java.util.HashMap;
 
-public class Goal {
+public abstract class Goal {
     public GoalType type;
     public String progress;
     public Quest quest;

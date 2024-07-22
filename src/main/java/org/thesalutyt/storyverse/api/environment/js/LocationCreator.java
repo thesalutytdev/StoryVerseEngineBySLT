@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class LocationCreator extends ScriptableObject implements EnvResource, JSResource {
     public static HashMap<String, ResourceLocation> locations = new HashMap<>();
-    public static ResourceLocation createLocation(String path) {
+    public static ResourceLocation create(String path) {
         if (!path.startsWith(SVEngine.ASSETS_DIR)) {
             return null;
         } else {
@@ -23,6 +23,16 @@ public class LocationCreator extends ScriptableObject implements EnvResource, JS
             return new ResourceLocation(path);
         }
     }
+
+    public static ResourceLocation create(String modId, String path) {
+        if (!path.startsWith(SVEngine.ASSETS_DIR)) {
+            return null;
+        } else {
+            locations.put(path, new ResourceLocation(modId, path));
+            return new ResourceLocation(path);
+        }
+    }
+
     public static ResourceLocation getByPath(String path) {
         return locations.get(path);
     }
@@ -35,8 +45,10 @@ public class LocationCreator extends ScriptableObject implements EnvResource, JS
         LocationCreator ef = new LocationCreator();
         ef.setParentScope(scope);
         try {
-            Method createLocation = LocationCreator.class.getMethod("createLocation", String.class);
+            Method createLocation = LocationCreator.class.getMethod("create", String.class);
             methodsToAdd.add(createLocation);
+            Method createLocation2 = LocationCreator.class.getMethod("create", String.class, String.class);
+            methodsToAdd.add(createLocation2);
             Method getByPath = LocationCreator.class.getMethod("getByPath", String.class);
             methodsToAdd.add(getByPath);
             Method getAssetsPath = LocationCreator.class.getMethod("getAssetsPath");

@@ -1,13 +1,20 @@
 package org.thesalutyt.storyverse.api;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
+import org.thesalutyt.storyverse.api.environment.js.action.Action;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.common.events.LegacyEventManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SVEnvironment{
     public static String envId = "storyverse";
@@ -33,6 +40,10 @@ public class SVEnvironment{
         public static Integer ticks = 0;
         public static void tick() {
             ticks++;
+            if (Action.onEveryTick.isEmpty()) {
+                return;
+            }
+            Action.runOnTick(ticks);
         }
         public static void resetTick() {
             ticks = 0;
@@ -41,7 +52,10 @@ public class SVEnvironment{
             ticks = new_ticks_amount;
         }
         public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-
+            if (ScriptProperties.worldStarterScript == null) {
+                return;
+            }
+            Script.runScript(ScriptProperties.worldStarterScript);
         }
         public static void playerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
             SVEnvironment.Root.resetTick();

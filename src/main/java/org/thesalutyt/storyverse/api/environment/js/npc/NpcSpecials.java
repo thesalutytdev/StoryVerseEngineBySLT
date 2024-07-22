@@ -4,9 +4,11 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Server;
+import org.thesalutyt.storyverse.api.features.WorldWrapper;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.lang.reflect.Method;
@@ -115,6 +117,18 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.xRot = rotation.floatValue();
     }
+    public static void holdItem(String npcId, Integer hand, String item) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.hold(WorldWrapper.selectHand(hand), JSItem.getStack(item));
+    }
+    public static void armor(String npcId, String slot, String item) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.armor(WorldWrapper.armorSlot(slot), JSItem.getStack(item));
+    }
+    public static void armor(String npcId, Integer slot, String item) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.armor(slot, JSItem.getStack(item));
+    }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         NpcSpecials ef = new NpcSpecials();
@@ -167,6 +181,12 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             methodsToAdd.add(setRotation);
             Method focusOnPlayer = NpcSpecials.class.getMethod("focusOnPlayer", String.class, String.class);
             methodsToAdd.add(focusOnPlayer);
+            Method hold = NpcSpecials.class.getMethod("holdItem", String.class, Integer.class, String.class);
+            methodsToAdd.add(hold);
+            Method armor = NpcSpecials.class.getMethod("armor", String.class, String.class, String.class);
+            methodsToAdd.add(armor);
+            Method armor_ = NpcSpecials.class.getMethod("armor", String.class, Integer.class, String.class);
+            methodsToAdd.add(armor);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

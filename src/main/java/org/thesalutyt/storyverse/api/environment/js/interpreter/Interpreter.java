@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.api.environment.js.interpreter;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
+import org.thesalutyt.storyverse.api.environment.js.action.Action;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
 import org.mozilla.javascript.Context;
@@ -20,6 +21,7 @@ import org.thesalutyt.storyverse.api.quests.goal.Goal;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
+import org.thesalutyt.storyverse.api.special.character.Reputation;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.utils.ItemUtils;
 
@@ -61,6 +63,9 @@ public class Interpreter {
             Quest.putIntoScope(scope);
             ItemUtils.putIntoScope(scope);
             Locker.putIntoScope(scope);
+            SpecialListener.putIntoScope(scope);
+            Action.putIntoScope(scope);
+            Reputation.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

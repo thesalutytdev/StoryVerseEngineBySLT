@@ -8,7 +8,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class Mover {
     private ServerPlayerEntity player;
-    public RegistryKey<World> toServerWorld(String dimension) {
+    public static RegistryKey<World> toServerWorld(String dimension) {
         switch (dimension) {
             case "overworld": {
                 return ServerWorld.OVERWORLD;

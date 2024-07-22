@@ -179,11 +179,72 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             case "PLAYER": {
                 return EntityType.PLAYER;
             }
+            case "CREEPER": {
+                return EntityType.CREEPER;
+            }
+            case "ENDER_DRAGON": {
+                return EntityType.ENDER_DRAGON;
+            }
+            case "END_CRYSTAL": {
+                return EntityType.END_CRYSTAL;
+            }
+            case "SKELETON_HORSE": {
+                return EntityType.SKELETON_HORSE;
+            }
+            case "ZOMBIE_HORSE": {
+                return EntityType.ZOMBIE_HORSE;
+            }
+            case "DONKEY": {
+                return EntityType.DONKEY;
+            }
+            case "MULE": {
+                return EntityType.MULE;
+            }
+            case "HORSE": {
+                return EntityType.HORSE;
+            }
+            case "RABBIT": {
+                return EntityType.RABBIT;
+            }
+            case "VEX": {
+                return EntityType.VEX;
+            }
+            case "VINDICATOR": {
+                return EntityType.VINDICATOR;
+            }
+            case "ILLUSIONER": {
+                return EntityType.ILLUSIONER;
+            }
             default: {
                 return EntityType.SHEEP;
             }
         }
     }
+
+    public static Integer armorSlot(String slot) {
+        switch (slot) {
+            case "HEAD":
+            case "HELMET": {
+                return 0;
+            }
+            case "CHEST":
+            case "CHESTPLATE": {
+                return 1;
+            }
+            case "LEGS":
+            case "LEGGINGS":{
+                return 2;
+            }
+            case "FEET":
+            case "BOOTS": {
+                return 3;
+            }
+            default: {
+                return null;
+            }
+        }
+    }
+
     public static CameraType toCameraType(String type) {
         switch (type) {
             case "MOVE":
@@ -308,6 +369,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(toEventType);
             Method useDoor = WorldWrapper.class.getMethod("useDoor", String.class, Double.class, Double.class, Double.class, Boolean.class);
             methodsToAdd.add(useDoor);
+            Method armorSlot = WorldWrapper.class.getMethod("armorSlot", String.class);
+            methodsToAdd.add(armorSlot);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

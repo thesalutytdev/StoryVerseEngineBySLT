@@ -8,24 +8,19 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.JumpGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.thesalutyt.storyverse.api.quests.Quest;
@@ -33,8 +28,6 @@ import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.NPCItem;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
-import org.thesalutyt.storyverse.common.items.ModItems;
-import org.thesalutyt.storyverse.utils.StoryUtils;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -46,6 +39,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable {
     private int ticks = 0;
@@ -107,7 +101,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         }
         ticks++;
     }
-
 
     @Override
     protected void registerGoals() {
@@ -189,7 +182,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         event.getController().setAnimation(def);
         return PlayState.CONTINUE;
     }
-
 
     @Override
     public void readAdditionalSaveData(CompoundNBT tag) {
@@ -419,5 +411,21 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             e.printStackTrace();
             return super.wantsToPickUp(item);
         }
+    }
+
+    public void hold(Hand hand, ItemStack item) {
+        setItemInHand(hand, item);
+        NPCRender.renders.get(0).hold(hand, item);
+    }
+
+    public void armor(Integer slot, ItemStack item) {
+        AtomicInteger cur = new AtomicInteger();
+        getArmorSlots().forEach(sl_ -> {
+            if (cur.get() == slot) {
+                sl_ = item;
+            }
+            cur.getAndIncrement();
+        });
+        NPCRender.renders.get(0).armor(slot, item);
     }
 }

@@ -20,7 +20,7 @@ public class AssetsLoader implements ILoader {
     }
     @Override
     public void init() throws IOException {
-        copyDirectory(SVEngine.ASSETS_DIR, "storyverse:assets");
+        copyDirectory(SVEngine.ASSETS_DIR, "./assets/storyverse/");
     }
 
     @Override

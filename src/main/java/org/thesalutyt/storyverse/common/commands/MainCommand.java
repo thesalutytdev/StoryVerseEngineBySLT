@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.common.commands;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -9,11 +10,13 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.CameraType;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
@@ -23,6 +26,9 @@ import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.gui.QuestGui;
 import org.thesalutyt.storyverse.api.gui.script.CustomGui;
 import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
+import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
+import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertGui;
+import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertType;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
@@ -31,6 +37,10 @@ import org.thesalutyt.storyverse.api.special.character.ReputationScreen;
 import org.thesalutyt.storyverse.common.entities.Entities;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 
 public class MainCommand {
     Context context = Context.enter();
@@ -51,6 +61,9 @@ public class MainCommand {
                 )
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
+                        .then(Commands.literal("res_loc").executes(
+                                (command) -> {return resourceLocationTest(command.getSource());})
+                        )
                         .then(Commands.literal("rep_sc")
                                 .executes((command) -> {
                                     return reputationTest(command.getSource());
@@ -119,8 +132,8 @@ public class MainCommand {
         return 1;
     }
     public int moveCameraNoAI(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-
+        AlertGui ag = new AlertGui(AlertType.TEXT, new GuiLabel(100, 100, 60.0, 30.0, "da", 1, false));
+        ag.render(new MatrixStack());
         return 1;
     }
 
@@ -194,7 +207,7 @@ public class MainCommand {
     }
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
-        Vector3d result = player.pick(100, 0.0f, true).getLocation();
+        Vector3d result = player.pick(20.0D, 0.0F, false).getLocation();
         Double x = result.x;
         Double y = result.y;
         Double z = result.z;
@@ -203,10 +216,17 @@ public class MainCommand {
         String rZ = String.format("%.2f", z).replace(",", ".");
         Chat.sendAsEngine(String.format("%s, %s, %s", rX, rY, rZ));
         Chat.sendCopyable(String.format("%s, %s, %s", rX, rY, rZ));
-        // String myString = String.format("%s, %s, %s", rX, rY, rZ);
-        // StringSelection stringSelection = new StringSelection(myString);
-        // Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        // clipboard.setContents(stringSelection, null);
+        String myString = String.format("%s, %s, %s", rX, rY, rZ);
+//        StringSelection stringSelection = new StringSelection(myString);
+//        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//        clipboard.setContents(stringSelection, null);
+        Clipboard cl = new Clipboard("");
+        cl.setContents(new StringSelection(myString), new ClipboardOwner() {
+            @Override
+            public void lostOwnership(Clipboard clipboard, Transferable contents) {
+
+            }
+        });
         return 1;
     }
     public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {
@@ -242,6 +262,18 @@ public class MainCommand {
         Reputation rep = new Reputation("repTest");
         ReputationScreen repScreen = new ReputationScreen(rep);
         mc.setScreen(repScreen);
+        return 1;
+    }
+
+    public static int resourceLocationTest(CommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrException();
+        MobController controller = MobJS.create("repTest", player.getX(), player.getY(), player.getZ(),
+                "SHEEP");
+        Reputation rep = new Reputation("repTest");
+        ReputationScreen repScreen = new ReputationScreen(rep);
+        mc.setScreen(repScreen);
+        ResourceLocation tLoc = new ResourceLocation(StoryVerse.MOD_ID, "textures/gui/choice_gui.png");
+
         return 1;
     }
 }

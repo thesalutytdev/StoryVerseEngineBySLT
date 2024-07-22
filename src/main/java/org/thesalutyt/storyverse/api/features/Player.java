@@ -1,5 +1,8 @@
 package org.thesalutyt.storyverse.api.features;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -10,18 +13,20 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.annotations.Documentate;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
+import org.thesalutyt.storyverse.common.dimension.mover.Mover;
 import org.thesalutyt.storyverse.common.specific.networking.Networking;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Player extends ScriptableObject implements EnvResource{
     private static ServerPlayerEntity player;
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
+    public static Boolean isWaterWalking = false;
+
     public Player(ServerPlayerEntity player) {
         Player.player = player;
     }
@@ -184,6 +189,10 @@ public class Player extends ScriptableObject implements EnvResource{
         player.getEntity().startRiding((Entity) entity);
     }
 
+    public static void startRiding(String entity) {
+        player.getEntity().startRiding(MobJS.controllers.get(entity).getEntity());
+    }
+
     public static void testRidding() {
         player.getEntity().startRiding(player.getEntity());
     }
@@ -335,6 +344,27 @@ public class Player extends ScriptableObject implements EnvResource{
         hurt(damage, "storyverse:script");
     }
     public static void remove(Boolean keepData) {player.remove(keepData);}
+    public static Boolean isWaterWalking() {
+        return isWaterWalking;
+    }
+    public static void setWaterWalk(Boolean method) {
+        isWaterWalking = method;
+    }
+    public static void tick() {
+        if (Player.isWaterWalking()) {
+            List<Block> water = Arrays.asList(Blocks.WATER, Blocks.KELP, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+            final BlockPos BP = new BlockPos(player.getX(), player.getY() - 0.25, player.getZ());
+            final BlockPos AIR = new BlockPos(player.getX(), player.getY() + 0.3, player.getZ());
+            if (water.contains(player.getCommandSenderWorld().getBlockState(BP).getBlock()) && !player.isSwimming() && !player.isShiftKeyDown() && player.getCommandSenderWorld().getBlockState(AIR).getBlock() == Blocks.AIR) {
+                player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
+                if(Minecraft.getInstance().options.keyJump.isDown()) player.setOnGround(true);
+                if(player.isSprinting()) player.setSprinting(true);
+            }
+        }
+    }
+    public static String getPlayerWorld() {
+        return player.getLevel().toString();
+    }
     public static ServerPlayerEntity getPlayer() {
         return player;
     }
@@ -448,6 +478,16 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(getPlayer);
             Method remove = Player.class.getMethod("remove", Boolean.class);
             methodsToAdd.add(remove);
+            Method startRide = Player.class.getMethod("startRiding", String.class);
+            methodsToAdd.add(startRide);
+            Method tick = Player.class.getMethod("tick");
+            methodsToAdd.add(tick);
+            Method isWaterWalking = Player.class.getMethod("isWaterWalking");
+            methodsToAdd.add(isWaterWalking);
+            Method setWaterWalking = Player.class.getMethod("setWaterWalk", Boolean.class);
+            methodsToAdd.add(setWaterWalking);
+            Method getWorld = Player.class.getMethod("getPlayerWorld");
+            methodsToAdd.add(getWorld);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

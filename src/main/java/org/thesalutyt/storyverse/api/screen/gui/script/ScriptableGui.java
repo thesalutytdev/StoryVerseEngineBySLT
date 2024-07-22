@@ -32,36 +32,42 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
                 return null;
         }
     }
-    public CustomizableGui create(String name, String title, Integer width, Integer height) {
+    public ScriptableGui create(String name, String title, Integer width, Integer height) {
         gui = new CustomizableGui(title);
         gui.gWidth = width;
         gui.gHeight = height;
         gui.init();
         guis.put(name, gui);
-        return gui;
+        return this;
     }
-    public void setPause(Boolean pause) {
+    public ScriptableGui setPause(Boolean pause) {
         gui.isPause = pause;
+        return this;
     }
-    public void setBackGround(String background) {
+    public ScriptableGui setBackGround(String background) {
         gui.background = background;
+        return this;
     }
-    public void addMob(String mobId, Double x, Double y, Double size) {
+    public ScriptableGui addMob(String mobId, Double x, Double y, Double size) {
         gui.entities.add(new GuiDisplayEntity(mobId, x, y, size));
+        return this;
     }
-    public void addButton(String buttonId) {
+    public ScriptableGui addButton(String buttonId) {
         gui.buttons.add(GuiButton.btns.get(buttonId));
+        return this;
     }
-    public void addLabel(String labelId) {
+    public ScriptableGui addLabel(String labelId) {
         gui.labels.add(GuiLabel.labels.get(labelId));
+        return this;
     }
-    public void addCircleRect(Double x, Double y, Double x1, Double y1, Double radius, Integer color) {
+    public ScriptableGui addCircleRect(Double x, Double y, Double x1, Double y1, Double radius, Integer color) {
         gui.circleRect.add(new CircleRect(x.floatValue(),
                 y.floatValue(),
                 x1.floatValue(),
                 y1.floatValue(),
                 radius.intValue(),
                 color));
+        return this;
     }
     public Integer getWidth() {
         return gui.width;
@@ -69,7 +75,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public Integer getHeight() {
         return gui.height;
     }
-    public static Long toDouble(Double long_) {
+    public Long toDouble(Double long_) {
         return long_.longValue();
     }
         public Integer getMouseX() {
@@ -91,20 +97,23 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public void close() {
         Minecraft.getInstance().setScreen(null);
     }
-    public void setCloseOnEsc(Boolean closeOnEsc) {
+    public ScriptableGui setCloseOnEsc(Boolean closeOnEsc) {
         gui.closeOnEsc = closeOnEsc;
+        return this;
     }
     public GuiImage addImage(String path, Integer x, Integer y, Integer width, Integer height, Boolean centered) {
         GuiImage img = new GuiImage(path, x, y, width, height, centered);
         gui.images.add(img);
         return img;
     }
-    public void renderBackground(Boolean method) {
+    public ScriptableGui renderBackground(Boolean method) {
         gui.renderBG = method;
+        return this;
     }
-    public void setCursorPos(Integer x, Integer y) {
+    public ScriptableGui setCursorPos(Integer x, Integer y) {
         gui.cursorX = x;
         gui.cursorY = y;
+        return this;
     }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {

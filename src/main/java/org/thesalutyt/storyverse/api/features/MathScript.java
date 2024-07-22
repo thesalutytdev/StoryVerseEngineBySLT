@@ -45,6 +45,46 @@ public class MathScript extends ScriptableObject implements EnvResource {
         return Math.random() * (max - min + 1) + min;
     }
 
+    public static Double abs(Double var0) {
+        return StrictMath.abs(var0);
+    }
+
+    public static Double ceil(Double var0) {
+        return StrictMath.ceil(var0);
+    }
+
+    public static Double floor(Double var0) {
+        return StrictMath.floor(var0);
+    }
+
+    public static Double round(Double var0) {
+        return (double) StrictMath.round(var0);
+    }
+
+    public static Double pow(Double var0, Double var1) {
+        return StrictMath.pow(var0, var1);
+    }
+
+    public static Double exp(Double var0) {
+        return StrictMath.exp(var0);
+    }
+
+    public static Double log(Double var0) {
+        return StrictMath.log(var0);
+    }
+
+    public static Double log10(Double var0) {
+        return StrictMath.log10(var0);
+    }
+
+    public Integer factorial (Integer target) {
+        if (target <= 1) {
+            return target;
+        } else {
+            return target * factorial(target-1);
+        }
+    }
+
     public static Double toRadians(Double var0) {
         return Math.toRadians(var0);
     }
@@ -87,7 +127,20 @@ public class MathScript extends ScriptableObject implements EnvResource {
             methodsToAdd.add(toDegrees);
             Method sqrt = MathScript.class.getMethod("sqrt", Double.class);
             methodsToAdd.add(sqrt);
-
+            Method abs = MathScript.class.getMethod("abs", Double.class);
+            methodsToAdd.add(abs);
+            Method ceil = MathScript.class.getMethod("ceil", Double.class);
+            methodsToAdd.add(ceil);
+            Method floor = MathScript.class.getMethod("floor", Double.class);
+            methodsToAdd.add(floor);
+            Method round = MathScript.class.getMethod("round", Double.class);
+            methodsToAdd.add(round);
+            Method log = MathScript.class.getMethod("log", Double.class);
+            methodsToAdd.add(log);
+            Method log10 = MathScript.class.getMethod("log10", Double.class);
+            methodsToAdd.add(log10);
+            Method factorial = MathScript.class.getMethod("factorial", Integer.class);
+            methodsToAdd.add(factorial);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

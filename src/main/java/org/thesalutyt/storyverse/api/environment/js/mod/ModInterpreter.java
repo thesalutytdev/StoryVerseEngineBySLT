@@ -3,10 +3,13 @@ package org.thesalutyt.storyverse.api.environment.js.mod;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
+import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
+import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
+import org.thesalutyt.storyverse.api.features.BackgroundScript;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
@@ -27,6 +30,9 @@ public class ModInterpreter {
             CustomBlock.putIntoScope(scope);
             LocationCreator.putIntoScope(scope);
             SpecialListener.putIntoScope(scope);
+            ScriptProperties.putIntoScope(scope);
+            ThreaderJS.putIntoScope(scope);
+            BackgroundScript.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {
