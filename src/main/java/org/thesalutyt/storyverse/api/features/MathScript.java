@@ -103,6 +103,10 @@ public class MathScript extends ScriptableObject implements EnvResource {
         ef.setParentScope(scope);
 
         try {
+            Method pow = MathScript.class.getMethod("pow", Double.class, Double.class);
+            methodsToAdd.add(pow);
+            Method exp = MathScript.class.getMethod("exp", Double.class);
+            methodsToAdd.add(exp);
             Method PI = MathScript.class.getMethod("PI");
             methodsToAdd.add(PI);
             Method sin = MathScript.class.getMethod("sin", Double.class);

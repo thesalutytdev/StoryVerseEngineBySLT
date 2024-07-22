@@ -112,7 +112,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
                 return true;
             }
         });
-        this.goalSelector.addGoal(5, new OpenDoorGoal(this, false));
+        this.goalSelector.addGoal(5, new OpenDoorGoal(this, true));
         super.registerGoals();
     }
 

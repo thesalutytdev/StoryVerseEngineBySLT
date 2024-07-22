@@ -102,12 +102,8 @@ public class Server extends ScriptableObject implements EnvResource {
     }
     public static int execute(String command) {
         assert mc.player != null;
-        MinecraftServer server = mc.player.level.getServer();
-        if(server == null) return 0;
-        CommandSource source = server.createCommandSourceStack()
-                .withEntity(mc.player)
-                .withPermission(4);
-        return server.getCommands().performCommand(source, command);
+        mc.player.chat(command);
+        return 1;
     }
 
     public static String getOpPlayer() {

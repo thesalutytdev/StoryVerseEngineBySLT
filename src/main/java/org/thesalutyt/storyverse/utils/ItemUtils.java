@@ -29,6 +29,13 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
     public static void takeStack(PlayerEntity player, ItemStack itemStack) {
         takeStack(player, itemStack, itemStack.getCount());
     }
+    public static void takeStack(String playerName, String itemStack) {
+        takeStack(Server.getPlayerByName(playerName), JSItem.getStack(itemStack));
+    }
+
+    public static void matches(String stack1, String stack2) {
+        matches(JSItem.getStack(stack1), JSItem.getStack(stack2));
+    }
 
     public static void takeStack(PlayerEntity player, ItemStack itemStack, int neededCount) {
         if (itemStack.isEmpty()) return;
@@ -141,6 +148,10 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
             methodsToAdd.add(showTitle);
             Method pos = ItemUtils.class.getMethod("pos", Double.class, Double.class, Double.class);
             methodsToAdd.add(pos);
+            Method takeStack = ItemUtils.class.getMethod("takeStack", String.class, String.class);
+            methodsToAdd.add(takeStack);
+            Method matches = ItemUtils.class.getMethod("matches", String.class, String.class);
+            methodsToAdd.add(matches);
         } catch (Exception e) {
             new ErrorPrinter(e);
         }

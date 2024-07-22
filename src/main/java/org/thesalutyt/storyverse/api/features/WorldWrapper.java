@@ -18,24 +18,25 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.camera.CameraType;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.events.EventType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class WorldWrapper extends ScriptableObject implements EnvResource {
     private static final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
     private static final Minecraft mc = Minecraft.getInstance();
     private final World world;
-
+    private static HashMap<String, BaseFunction> onTimeChange = new HashMap<>();
     @Documentate(
             desc = "Returns world"
     )
@@ -329,6 +330,56 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
 
     }
 
+    public static boolean isDay() {
+        return getWorld().isDay();
+    }
+
+    public static Double getCurrentTime() {
+        return (double) getWorld().getDayTime();
+    }
+
+    public static void setOnTimeChange(BaseFunction f, String time) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            switch (time) {
+                case "DAY": {
+                    onTimeChange.put("day", f);
+                    break;
+                }
+                case "NIGHT": {
+                    onTimeChange.put("night", f);
+                    break;
+                }
+            }
+        });
+    }
+
+    public static void removeOnTimeChange(String time) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onTimeChange.remove(time);
+        });
+    }
+
+    public static void runOnTimeChange(String time) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            switch (time) {
+                case "DAY": {
+                    onTimeChange.get("day").call(Context.getCurrentContext(), SVEngine.interpreter.getScope(),
+                            SVEngine.interpreter.getScope(), new Object[]{getCurrentTime()});
+                    break;
+                }
+                case "NIGHT": {
+                    onTimeChange.get("night").call(Context.getCurrentContext(), SVEngine.interpreter.getScope(),
+                            SVEngine.interpreter.getScope(), new Object[]{getCurrentTime()});
+                    break;
+                }
+            }
+        });
+    }
+
+    public static void clearOnTimeChange() {
+        onTimeChange.clear();
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         WorldWrapper ef = new WorldWrapper();
@@ -371,6 +422,18 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(useDoor);
             Method armorSlot = WorldWrapper.class.getMethod("armorSlot", String.class);
             methodsToAdd.add(armorSlot);
+            Method isDay = WorldWrapper.class.getMethod("isDay");
+            methodsToAdd.add(isDay);
+            Method getCurrentTime = WorldWrapper.class.getMethod("getCurrentTime");
+            methodsToAdd.add(getCurrentTime);
+//            Method setOnTimeChange = WorldWrapper.class.getMethod("setOnTimeChange", BaseFunction.class, String.class);
+//            methodsToAdd.add(setOnTimeChange);
+//            Method removeOnTimeChange = WorldWrapper.class.getMethod("removeOnTimeChange", String.class);
+//            methodsToAdd.add(removeOnTimeChange);
+//            Method runOnTimeChange = WorldWrapper.class.getMethod("runOnTimeChange", String.class);
+//            methodsToAdd.add(runOnTimeChange);
+//            Method clearOnTimeChange = WorldWrapper.class.getMethod("clearOnTimeChange");
+//            methodsToAdd.add(clearOnTimeChange);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

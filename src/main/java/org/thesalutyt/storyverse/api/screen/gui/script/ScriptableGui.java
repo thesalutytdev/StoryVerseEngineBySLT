@@ -128,6 +128,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             Method setBackGround = ScriptableGui.class.getMethod("setBackGround", String.class);
             methodsToAdd.add(setBackGround);
             Method addMob = ScriptableGui.class.getMethod("addMob", String.class, Double.class, Double.class, Double.class);
+            methodsToAdd.add(addMob);
             Method addButton = ScriptableGui.class.getMethod("addButton", String.class);
             methodsToAdd.add(addButton);
             Method addLabel = ScriptableGui.class.getMethod("addLabel", String.class);

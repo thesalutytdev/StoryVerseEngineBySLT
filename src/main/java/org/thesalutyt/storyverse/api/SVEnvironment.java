@@ -5,7 +5,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import org.mozilla.javascript.NativeArray;
 import org.thesalutyt.storyverse.api.camera.Camera;
 import org.thesalutyt.storyverse.api.camera.Cutscene;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
@@ -38,11 +40,21 @@ public class SVEnvironment{
     }
     public static class Root {
         public static Integer ticks = 0;
+        public static Boolean isDay;
+        public static Boolean started = false;
         public static void tick() {
             ticks++;
             if (Action.onEveryTick.isEmpty()) {
                 return;
             }
+//            if (WorldWrapper.isDay() != isDay) {
+//                isDay = WorldWrapper.isDay();
+//                if (WorldWrapper.isDay()) {
+//                    WorldWrapper.runOnTimeChange("day");
+//                } else {
+//                    WorldWrapper.runOnTimeChange("night");
+//                }
+//            }
             Action.runOnTick(ticks);
         }
         public static void resetTick() {
@@ -52,10 +64,15 @@ public class SVEnvironment{
             ticks = new_ticks_amount;
         }
         public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-            if (ScriptProperties.worldStarterScript == null) {
+            if (ScriptProperties.worldStarterScript == null || started) {
                 return;
             }
+            if (started) {
+                return;
+            }
+            // isDay = WorldWrapper.isDay();
             Script.runScript(ScriptProperties.worldStarterScript);
+            started = true;
         }
         public static void playerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
             SVEnvironment.Root.resetTick();

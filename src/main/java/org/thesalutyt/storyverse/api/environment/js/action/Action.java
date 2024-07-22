@@ -8,11 +8,9 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Action extends ScriptableObject implements EnvResource, JSResource {
     public static ArrayList<BaseFunction> onEveryTick = new ArrayList<>();
-
     public Action() {}
 
     public static void onEveryTick(BaseFunction f) {
@@ -30,6 +28,16 @@ public class Action extends ScriptableObject implements EnvResource, JSResource 
         });
     }
 
+    public static void removeOnTick(BaseFunction f) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onEveryTick.remove(f);
+        });
+    }
+
+    public static void clearOnTick() {
+        onEveryTick.clear();
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         Action ac = new Action();
@@ -40,6 +48,10 @@ public class Action extends ScriptableObject implements EnvResource, JSResource 
             methodsToAdd.add(onTick);
             Method runOnTick = Action.class.getMethod("runOnTick", Integer.class);
             methodsToAdd.add(runOnTick);
+            Method removeOnTick = Action.class.getMethod("removeOnTick", BaseFunction.class);
+            methodsToAdd.add(removeOnTick);
+            Method clearOnTick = Action.class.getMethod("clearOnTick");
+            methodsToAdd.add(clearOnTick);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
