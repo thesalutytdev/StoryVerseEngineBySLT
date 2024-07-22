@@ -13,7 +13,7 @@
     <b>·</b> Adding custom gui screens<br></h4>
 <h3>Now working at:</h3>
     <b>·</b> Cutscenes - 85%<br>
-    
+    <b>·</b> Assets Loader - 0%<br>
     
 
 <h2>If you want to build mod, run shadowJar task</h2>
