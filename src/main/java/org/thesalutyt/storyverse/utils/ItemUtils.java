@@ -10,9 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
+import net.minecraft.world.GameType;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneType;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
@@ -133,6 +135,79 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
         return new BlockPos(x, y, z);
     }
 
+    public static CutsceneType toCutsceneType(String type) {
+        switch (type.toUpperCase()) {
+            case "FULL": {
+                return CutsceneType.FULL;
+            }
+            case "POS_ONLY": {
+                return CutsceneType.POS_ONLY;
+            }
+            case "ROT_ONLY": {
+                return CutsceneType.ROT_ONLY;
+            }
+            default:
+            case "NULL": {
+                return CutsceneType.NULL;
+            }
+        }
+    }
+
+    public static GameType toGameMode(String type) {
+        switch (type.toUpperCase()) {
+            case "SPECTATOR": {
+                return GameType.SPECTATOR;
+            }
+            case "CREATIVE": {
+                return GameType.CREATIVE;
+            }
+            case "ADVENTURE": {
+                return GameType.ADVENTURE;
+            }
+            case "SURVIVAL": {
+                return GameType.SURVIVAL;
+            }
+            default:
+                return GameType.SURVIVAL;
+        }
+    }
+
+    public static CutsceneType toCutsceneType(Integer type) {
+        switch (type) {
+            case 0: {
+                return CutsceneType.FULL;
+            }
+            case 1: {
+                return CutsceneType.POS_ONLY;
+            }
+            case 2: {
+                return CutsceneType.ROT_ONLY;
+            }
+            default:
+            case 3: {
+                return CutsceneType.NULL;
+            }
+        }
+    }
+
+    public static GameType toGameMode(Integer type) {
+        switch (type) {
+            default:
+            case 0: {
+                return GameType.SURVIVAL;
+            }
+            case 1: {
+                return GameType.CREATIVE;
+            }
+            case 2: {
+                return GameType.SPECTATOR;
+            }
+            case 3: {
+                return GameType.ADVENTURE;
+            }
+        }
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
     public static void putIntoScope(Scriptable scope) {
@@ -152,6 +227,14 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
             methodsToAdd.add(takeStack);
             Method matches = ItemUtils.class.getMethod("matches", String.class, String.class);
             methodsToAdd.add(matches);
+            Method toCutsceneType = ItemUtils.class.getMethod("toCutsceneType", String.class);
+            methodsToAdd.add(toCutsceneType);
+            Method toGameMode = ItemUtils.class.getMethod("toGameMode", String.class);
+            methodsToAdd.add(toGameMode);
+            Method toGameMode1 = ItemUtils.class.getMethod("toGameMode", Integer.class);
+            methodsToAdd.add(toGameMode1);
+            Method toCSType = ItemUtils.class.getMethod("toCutsceneType", Integer.class);
+            methodsToAdd.add(toCSType);
         } catch (Exception e) {
             new ErrorPrinter(e);
         }

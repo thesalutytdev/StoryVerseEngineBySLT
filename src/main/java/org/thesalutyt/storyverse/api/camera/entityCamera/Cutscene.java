@@ -1,4 +1,4 @@
-package org.thesalutyt.storyverse.api.camera;
+package org.thesalutyt.storyverse.api.camera.entityCamera;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -12,7 +12,6 @@ import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.*;
-import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 
 public class Cutscene implements EnvResource {
     private Camera camera;

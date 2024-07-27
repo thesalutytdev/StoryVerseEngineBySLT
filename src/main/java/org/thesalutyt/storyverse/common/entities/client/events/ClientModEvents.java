@@ -22,7 +22,6 @@ import org.thesalutyt.storyverse.common.entities.npc.NPCRender;
 public class ClientModEvents {
     public static KeyBinding keyStory;
     public static KeyBinding startStoryButton;
-    public static NPCRender renderManager;
 
     @SubscribeEvent
     public static void register(FMLClientSetupEvent event) {

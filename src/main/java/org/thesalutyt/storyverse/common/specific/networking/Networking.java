@@ -3,7 +3,7 @@ package org.thesalutyt.storyverse.common.specific.networking;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
+import org.thesalutyt.storyverse.SVEngine;
 
 public class Networking {
     public static SimpleChannel CHANNEL;
@@ -18,12 +18,12 @@ public class Networking {
 
     public static void register() {
         CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("storyverse", "network"), () -> {
-            return "1.0";
+            return SVEngine.MOD_VERSION;
         }, (s) -> {
             return true;
         }, (s) -> {
             return true;
         });
-        CHANNEL.registerMessage(nextID(), FadeScreenPacket.class, FadeScreenPacket::encode, FadeScreenPacket::new, FadeScreenPacket::handle);
+
     }
 }

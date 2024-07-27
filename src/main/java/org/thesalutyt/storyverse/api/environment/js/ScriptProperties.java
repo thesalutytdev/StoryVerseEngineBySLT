@@ -27,6 +27,7 @@ import java.util.ArrayList;
 )
 public class ScriptProperties extends ScriptableObject implements EnvResource, JSResource {
     public static String worldStarterScript;
+    public static Boolean ran = false;
     public static void onWorldStart(String script_name, Boolean is) {
         if (!is) {
             return;
@@ -34,6 +35,12 @@ public class ScriptProperties extends ScriptableObject implements EnvResource, J
             worldStarterScript = script_name;
         }
     }
+
+    public static void run() {
+        Script.runScript(worldStarterScript);
+        ran = true;
+    }
+
     public static void resetWorldStart() {
         worldStarterScript = null;
     }
@@ -45,6 +52,10 @@ public class ScriptProperties extends ScriptableObject implements EnvResource, J
         try {
             Method onWorldJoined = ScriptProperties.class.getMethod("onWorldStart", String.class, Boolean.class);
             methodsToAdd.add(onWorldJoined);
+            Method resetWorldStart = ScriptProperties.class.getMethod("resetWorldStart");
+            methodsToAdd.add(resetWorldStart);
+            Method run = ScriptProperties.class.getMethod("run");
+            methodsToAdd.add(run);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

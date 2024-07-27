@@ -1,4 +1,4 @@
-package org.thesalutyt.storyverse.api.camera;
+package org.thesalutyt.storyverse.api.camera.entityCamera;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.CreatureEntity;

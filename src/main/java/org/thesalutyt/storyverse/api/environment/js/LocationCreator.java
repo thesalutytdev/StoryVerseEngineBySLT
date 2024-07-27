@@ -24,6 +24,10 @@ public class LocationCreator extends ScriptableObject implements EnvResource, JS
         }
     }
 
+    public static ResourceLocation create(ResourceLocation loc) {
+        return loc;
+    }
+
     public static ResourceLocation create(String modId, String path) {
         if (!path.startsWith(SVEngine.ASSETS_DIR)) {
             return null;

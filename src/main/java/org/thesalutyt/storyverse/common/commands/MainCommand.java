@@ -18,8 +18,8 @@ import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.camera.CameraType;
-import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
+import org.thesalutyt.storyverse.api.camera.entityCamera.Cutscene;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.features.*;
@@ -36,7 +36,6 @@ import org.thesalutyt.storyverse.api.special.character.Reputation;
 import org.thesalutyt.storyverse.api.special.character.ReputationScreen;
 import org.thesalutyt.storyverse.common.entities.Entities;
 
-import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;

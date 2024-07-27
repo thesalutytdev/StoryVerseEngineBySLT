@@ -9,20 +9,26 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.JumpGoal;
 import net.minecraft.entity.ai.goal.OpenDoorGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.merchant.IMerchant;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
@@ -41,13 +47,16 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable {
+public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable, IMerchant {
     private int ticks = 0;
     public String npcId = "none";
     public String traderName = "none";
     public MerchantOffers offers = null;
     public Boolean isTrader = false;
     public Boolean canPickup = true;
+    public Boolean isAttackable = true;
+    public PlayerEntity tradingPlayer;
+    public Boolean showProgressBar = true;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(100, ItemStack.EMPTY);
     private static final DataParameter<Boolean> SLEEP =
             EntityDataManager.defineId(NPCEntity.class, DataSerializers.BOOLEAN);
@@ -103,6 +112,18 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     }
 
     @Override
+    public boolean isAttackable() {
+        return isAttackable;
+    }
+
+    private void applyOpenDoorsAbility() {
+        if (GroundPathHelper.hasGroundPathNavigation(this)) {
+            ((GroundPathNavigator)this.getNavigation()).setCanOpenDoors(true);
+        }
+
+    }
+
+    @Override
     protected void registerGoals() {
         // this.goalSelector.addGoal(2, new LookRandomlyGoal(this));
         // this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1));
@@ -113,6 +134,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             }
         });
         this.goalSelector.addGoal(5, new OpenDoorGoal(this, true));
+        this.goalSelector.addGoal(6, new SwimGoal(this));
         super.registerGoals();
     }
 
@@ -413,6 +435,27 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         }
     }
 
+    public ActResult useItem(Hand hand) {
+        try {
+            switch (hand) {
+                case MAIN_HAND:
+                    this.getMainHandItem().getItem().onUseTick(this.getEntity().level, this, this.getMainHandItem(),
+                            1);
+                    break;
+                case OFF_HAND:
+                    this.getOffhandItem().getItem().onUseTick(this.getEntity().level, this, this.getOffhandItem(),
+                            1);
+                    break;
+                default:
+                    return ActResult.NULL_POINTER_EXCEPTION;
+            }
+            return ActResult.SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ActResult.FAILED;
+        }
+    }
+
     public void hold(Hand hand, ItemStack item) {
         setItemInHand(hand, item);
         NPCRender.renders.get(0).hold(hand, item);
@@ -427,5 +470,61 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             cur.getAndIncrement();
         });
         NPCRender.renders.get(0).armor(slot, item);
+    }
+
+    @Override
+    public void setTradingPlayer(@Nullable PlayerEntity player) {
+        this.tradingPlayer = player;
+    }
+
+    @Nullable
+    @Override
+    public PlayerEntity getTradingPlayer() {
+        return tradingPlayer;
+    }
+
+    @Override
+    public MerchantOffers getOffers() {
+        return offers;
+    }
+
+    @Override
+    public void overrideOffers(@Nullable MerchantOffers offers) {
+        this.offers = offers;
+    }
+
+    @Override
+    public void notifyTrade(MerchantOffer offers) {
+
+    }
+
+    @Override
+    public void notifyTradeUpdated(ItemStack p_110297_1_) {
+
+    }
+
+    @Override
+    public World getLevel() {
+        return level;
+    }
+
+    @Override
+    public int getVillagerXp() {
+        return this.offers.get(0).getXp();
+    }
+
+    @Override
+    public void overrideXp(int p_213702_1_) {
+
+    }
+
+    @Override
+    public boolean showProgressBar() {
+        return showProgressBar;
+    }
+
+    @Override
+    public SoundEvent getNotifyTradeSound() {
+        return SoundEvents.VILLAGER_TRADE;
     }
 }

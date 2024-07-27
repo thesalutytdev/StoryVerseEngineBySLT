@@ -17,6 +17,7 @@ import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
 import org.thesalutyt.storyverse.common.block.ModBlocks;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.config.SVConfig;
+import org.thesalutyt.storyverse.common.effects.ModEffects;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.items.ModItems;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
@@ -30,16 +31,9 @@ public class StoryVerse {
     public StoryVerse() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
-
-        CustomItem ii = new CustomItem("storyverseiteem", () -> {
-            Chat.sendAsEngine("Ну и зачем ты это сделал, дуралей?");
-        }, 64, ModCreativeTabs.ENGINE_TAB);
-        ii.register();
-        CustomBlock ib = new CustomBlock("storyverseblock", Material.STONE,
-                2, true, ToolType.PICKAXE, 5.0f, 0);
-        ib.register();
         ModItems.register(bus);
         ModBlocks.register(bus);
+        ModEffects.register(bus);
         Entities.register(bus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SVConfig.SPEC, MOD_ID + ".toml");
         SVEngine.createEngineDirectory();

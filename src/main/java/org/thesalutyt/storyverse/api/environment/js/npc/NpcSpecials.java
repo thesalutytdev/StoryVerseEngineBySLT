@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.api.environment.js.npc;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
@@ -129,6 +130,19 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.armor(slot, JSItem.getStack(item));
     }
+    public static boolean useItem(String npcId, Integer hand) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        ActResult res = npc.useItem(WorldWrapper.selectHand(hand));
+        return res == ActResult.SUCCESS;
+    }
+    public static void setNoDie(String npcId, Boolean noDie) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.isAttackable = noDie;
+    }
+    public static boolean getNoDie(String npcId) {
+        NPCEntity attackable = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        return attackable.isAttackable();
+    }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         NpcSpecials ef = new NpcSpecials();
@@ -186,7 +200,13 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             Method armor = NpcSpecials.class.getMethod("armor", String.class, String.class, String.class);
             methodsToAdd.add(armor);
             Method armor_ = NpcSpecials.class.getMethod("armor", String.class, Integer.class, String.class);
-            methodsToAdd.add(armor);
+            methodsToAdd.add(armor_);
+            Method useItem = NpcSpecials.class.getMethod("useItem", String.class, Integer.class);
+            methodsToAdd.add(useItem);
+            Method setNoDie = NpcSpecials.class.getMethod("setNoDie", String.class, Boolean.class);
+            methodsToAdd.add(setNoDie);
+            Method getNoDie = NpcSpecials.class.getMethod("getNoDie", String.class);
+            methodsToAdd.add(getNoDie);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

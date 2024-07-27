@@ -2,30 +2,32 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.fonts.TexturedGlyph;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.datafix.fixes.RedstoneConnections;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
-import org.thesalutyt.storyverse.api.camera.CameraType;
+import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneType;
+import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.block.JSBlock;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.events.EventType;
+import software.bernie.example.registry.BlockRegistry;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -376,6 +378,46 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         });
     }
 
+    public static CutsceneType toCutsceneType(String type) {
+        switch (type.toUpperCase()) {
+            case "FULL": {
+                return CutsceneType.FULL;
+            }
+            case "POS_ONLY": {
+                return CutsceneType.POS_ONLY;
+            }
+            case "ROT_ONLY": {
+                return CutsceneType.ROT_ONLY;
+            }
+            case "NULL": {
+                return CutsceneType.NULL;
+            }
+        }
+        return null;
+    }
+
+    public Boolean setBlock(Double x, Double y, Double z, String block){
+        return this.world.setBlockAndUpdate(new BlockPos(x, y, z), JSBlock.blocks.get(block).defaultBlockState());
+    }
+
+    public void fill(NativeArray pos0, NativeArray pos1, String block) {
+        Double x0 = (Double) pos0.get(0);
+        Double y0 = (Double) pos0.get(1);
+        Double z0 = (Double) pos0.get(2);
+        Double x1 = (Double) pos1.get(0);
+        Double y1 = (Double) pos1.get(1);
+        Double z1 = (Double) pos1.get(2);
+        for (Double x : MathScript.getRange(x0, x1)) {
+            boolean b = this.setBlock(x, y0, z0, block);
+        }
+        for (Double y : MathScript.getRange(y0, y1)) {
+            boolean b = this.setBlock(x1, y, z0, block);
+        }
+        for (Double z : MathScript.getRange(z0, z1)) {
+            boolean b = this.setBlock(x1, y1, z, block);
+        }
+    }
+
     public static void clearOnTimeChange() {
         onTimeChange.clear();
     }
@@ -426,6 +468,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(isDay);
             Method getCurrentTime = WorldWrapper.class.getMethod("getCurrentTime");
             methodsToAdd.add(getCurrentTime);
+            Method toCutsceneType = WorldWrapper.class.getMethod("toCutsceneType", String.class);
+            methodsToAdd.add(toCutsceneType);
 //            Method setOnTimeChange = WorldWrapper.class.getMethod("setOnTimeChange", BaseFunction.class, String.class);
 //            methodsToAdd.add(setOnTimeChange);
 //            Method removeOnTimeChange = WorldWrapper.class.getMethod("removeOnTimeChange", String.class);
@@ -434,6 +478,10 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
 //            methodsToAdd.add(runOnTimeChange);
 //            Method clearOnTimeChange = WorldWrapper.class.getMethod("clearOnTimeChange");
 //            methodsToAdd.add(clearOnTimeChange);
+            Method setBlock = WorldWrapper.class.getMethod("setBlock", Double.class, Double.class, Double.class, String.class);
+            methodsToAdd.add(setBlock);
+            Method fill = WorldWrapper.class.getMethod("fill", NativeArray.class, NativeArray.class, String.class);
+            methodsToAdd.add(fill);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

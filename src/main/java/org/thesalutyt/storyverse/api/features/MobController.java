@@ -102,6 +102,26 @@ public class MobController extends ScriptableObject implements EnvResource {
         return new Object[] {task, task.getTaskStringID()};
     }
 
+    public MobController moveTo(Double x, Double y, Double z) {
+        this.moveTo(new BlockPos(x, y, z), this.entity.getSpeed());
+        return this;
+    }
+
+    public MobController moveTo(String mobId) {
+        this.moveTo(MobJS.controllers.get(mobId).getEntity().blockPosition(), this.entity.getSpeed());
+        return this;
+    }
+
+    public MobController moveToPlayer(String playerName) {
+        this.moveTo(Server.getPlayerByName(playerName).blockPosition(), this.entity.getSpeed());
+        return this;
+    }
+
+    public MobController moveToPlayer() {
+        this.moveTo(Player.getPlayer().blockPosition(), this.entity.getSpeed());
+        return this;
+    }
+
     @Documentate(
             desc = "Stops mob from moving"
     )
@@ -114,7 +134,7 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Makes mob looking at entity"
     )
     public MobController lookAt(Object entity, Double pitch, Double yaw) {
-        this.entity.lookAt((Entity) entity, pitch.floatValue(), yaw.floatValue());
+        this.entity.lookAt((Entity) entity, yaw.floatValue(), pitch.floatValue());
         return this;
     }
     public MobController lookAt(String mobId) {
@@ -680,6 +700,16 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(iOh);
             Method attackMob = MobController.class.getMethod("attackMob", String.class);
             methodsToAdd.add(attackMob);
+            Method moveToNoSpeed = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class);
+            methodsToAdd.add(moveToNoSpeed);
+            Method moveToMob = MobController.class.getMethod("moveTo", String.class);
+            methodsToAdd.add(moveToMob);
+            Method moveToPl = MobController.class.getMethod("moveToPlayer", String.class);
+            methodsToAdd.add(moveToPl);
+            Method mTpl = MobController.class.getMethod("moveToPlayer");
+            methodsToAdd.add(mTpl);
+            Method shShN = MobController.class.getMethod("shouldShowName", Boolean.class);
+            methodsToAdd.add(shShN);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

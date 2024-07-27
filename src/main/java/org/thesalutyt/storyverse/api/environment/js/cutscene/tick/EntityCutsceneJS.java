@@ -1,4 +1,4 @@
-package org.thesalutyt.storyverse.api.environment.js.cutscene;
+package org.thesalutyt.storyverse.api.environment.js.cutscene.tick;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
@@ -7,9 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.thesalutyt.storyverse.api.camera.Camera;
-import org.thesalutyt.storyverse.api.camera.CameraType;
-import org.thesalutyt.storyverse.api.camera.Cutscene;
+import org.thesalutyt.storyverse.api.camera.entityCamera.Camera;
+import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
+import org.thesalutyt.storyverse.api.camera.entityCamera.Cutscene;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CutsceneJS extends ScriptableObject implements JSResource, EnvResource {
+public class EntityCutsceneJS extends ScriptableObject implements JSResource, EnvResource {
     private static MobController cameraMob;
     private static Cutscene cutscene;
     private static BlockPos firstCutscenePosition;
@@ -103,25 +103,25 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
     }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
-        CutsceneJS ef = new CutsceneJS();
+        EntityCutsceneJS ef = new EntityCutsceneJS();
         ef.setParentScope(scope);
 
         try {
-            Method enter = CutsceneJS.class.getMethod("enter", String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, String.class);
+            Method enter = EntityCutsceneJS.class.getMethod("enter", String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, String.class);
             methodsToAdd.add(enter);
-            Method move = CutsceneJS.class.getMethod("move", Double.class, Double.class, Double.class, Integer.class);
+            Method move = EntityCutsceneJS.class.getMethod("move", Double.class, Double.class, Double.class, Integer.class);
             methodsToAdd.add(move);
-            Method stopMove = CutsceneJS.class.getMethod("stopMove");
+            Method stopMove = EntityCutsceneJS.class.getMethod("stopMove");
             methodsToAdd.add(stopMove);
-            Method setRotation = CutsceneJS.class.getMethod("setRotation", Double.class, Double.class);
+            Method setRotation = EntityCutsceneJS.class.getMethod("setRotation", Double.class, Double.class);
             methodsToAdd.add(setRotation);
-            Method getController = CutsceneJS.class.getMethod("getController");
+            Method getController = EntityCutsceneJS.class.getMethod("getController");
             methodsToAdd.add(getController);
-            Method getCameraType = CutsceneJS.class.getMethod("getCameraType");
+            Method getCameraType = EntityCutsceneJS.class.getMethod("getCameraType");
             methodsToAdd.add(getCameraType);
-            Method exit = CutsceneJS.class.getMethod("exit");
+            Method exit = EntityCutsceneJS.class.getMethod("exit");
             methodsToAdd.add(exit);
-            Method setCameraMob = CutsceneJS.class.getMethod("setCameraMob", String.class);
+            Method setCameraMob = EntityCutsceneJS.class.getMethod("setCameraMob", String.class);
             methodsToAdd.add(setCameraMob);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
@@ -131,7 +131,7 @@ public class CutsceneJS extends ScriptableObject implements JSResource, EnvResou
                     m, ef);
             ef.put(m.getName(), ef, methodInstance);
         }
-        scope.put("cutscene", scope, ef);
+        scope.put("entityCutscene", scope, ef);
     }
     @Override
     public String getClassName() {

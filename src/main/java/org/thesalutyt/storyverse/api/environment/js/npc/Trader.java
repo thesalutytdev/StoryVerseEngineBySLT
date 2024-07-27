@@ -36,6 +36,11 @@ public class Trader extends ScriptableObject implements EnvResource, JSResource 
         }
     }
 
+    public Trader showProgressBar(Boolean show) {
+        this.entity.showProgressBar = show;
+        return this;
+    }
+
     public Trader addTrade(String costA, String costB, String saleItem, Integer maxUses, Integer xp) {
         this.entity.offers = new MerchantOffers();
         this.entity.offers.add(new MerchantOffer(JSItem.getStack(costA),
@@ -59,6 +64,8 @@ public class Trader extends ScriptableObject implements EnvResource, JSResource 
                     String.class, String.class, String.class,
                     Integer.class, Integer.class);
             methodsToAdd.add(addTrade);
+            Method showProgressBar = Trader.class.getMethod("showProgressBar", Boolean.class);
+            methodsToAdd.add(showProgressBar);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

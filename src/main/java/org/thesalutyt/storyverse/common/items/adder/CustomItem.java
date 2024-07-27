@@ -5,10 +5,12 @@ import net.minecraft.util.ActionResultType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.StoryVerse;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.common.elements.ICustomElement;
 import org.thesalutyt.storyverse.common.items.ModItems;
 import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
@@ -111,6 +113,25 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
         }
         return cs;
     }
+
+    public void usableItem(String name, Integer maxStackSize, Boolean isFireResistant, String rarity, String group,
+                                 BaseFunction onUse) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            ArrayList<BaseFunction> functions = new ArrayList<>();
+            functions.add(onUse);
+            ItemGroup tab = getGroup(group);
+            assert tab != null;
+            UsableItem item;
+            if (isFireResistant) {
+                item = new UsableItem(name, new Item.Properties().tab(tab)
+                        .rarity(getRarity(rarity)).stacksTo(maxStackSize).fireResistant(), functions);
+            } else {
+                item = new UsableItem(name, new Item.Properties().tab(tab).
+                        rarity(getRarity(rarity)).stacksTo(maxStackSize), functions);
+            }
+        });
+    }
+
     public static ItemGroup getGroup(String name) {
         switch (name) {
             case "engine": {
@@ -122,6 +143,21 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
             }
         }
     }
+
+    public static Rarity getRarity(String name) {
+        switch (name.toLowerCase()) {
+            case "uncommon": {
+                return Rarity.UNCOMMON;
+            } case "rare": {
+                return Rarity.RARE;
+            } case "epic": {
+                return Rarity.EPIC;
+            } default: {
+                return Rarity.COMMON;
+            }
+        }
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         CustomItem cs = new CustomItem();
@@ -137,6 +173,15 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
                     Boolean.class, Boolean.class,
                     Double.class);
             methodsToAdd.add(food);
+            Method usableItem = CustomItem.class.getMethod("usableItem",
+                    String.class, Integer.class,
+                    Boolean.class, String.class, String.class,
+                    BaseFunction.class);
+            methodsToAdd.add(usableItem);
+            Method getGroup = CustomItem.class.getMethod("getGroup", String.class);
+            methodsToAdd.add(getGroup);
+            Method getRarity = CustomItem.class.getMethod("getRarity", String.class);
+            methodsToAdd.add(getRarity);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

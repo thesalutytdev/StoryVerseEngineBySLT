@@ -5,10 +5,14 @@ import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.action.Action;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
-import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.nonTick.CameraMoveSceneJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.EntityCutsceneJS;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.MovingJS;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.block.JSBlock;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.block.Locker;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
@@ -17,7 +21,6 @@ import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.quests.Quest;
-import org.thesalutyt.storyverse.api.quests.goal.Goal;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
@@ -44,7 +47,7 @@ public class Interpreter {
             WorldWrapper.putIntoScope(scope);
             MobController.putIntoScope(scope);
             MobJS.putIntoScope(scope);
-            CutsceneJS.putIntoScope(scope);
+            EntityCutsceneJS.putIntoScope(scope);
             LocationCreator.putIntoScope(scope);
             ScriptProperties.putIntoScope(scope);
             EventManagerJS.putIntoScope(scope);
@@ -66,6 +69,14 @@ public class Interpreter {
             SpecialListener.putIntoScope(scope);
             Action.putIntoScope(scope);
             Reputation.putIntoScope(scope);
+            Random.putIntoScope(scope);
+            File.putIntoScope(scope);
+            CutsceneJS.putIntoScope(scope);
+            MovingJS.putIntoScope(scope);
+            Time.ITime.putIntoScope(scope);
+            JSBlock.putIntoScope(scope);
+            RootJS.putIntoScope(scope);
+            CameraMoveSceneJS.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

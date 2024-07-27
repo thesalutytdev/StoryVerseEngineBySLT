@@ -1,8 +1,10 @@
 package org.thesalutyt.storyverse.api.features;
 
 import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.api.camera.cutscene.math.InterpolationCalculator;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;
@@ -97,6 +99,16 @@ public class MathScript extends ScriptableObject implements EnvResource {
         return StrictMath.sqrt(var0);
     }
 
+    public static ArrayList<Double> getRange(Double min, Double max) {
+        ArrayList<Double> range = new ArrayList<>();
+        for (double i = 0; i <= (max-min); i += 0.1) {
+            range.add(i + min);
+        }
+
+        return range;
+    }
+
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         Server ef = new Server();
@@ -145,6 +157,8 @@ public class MathScript extends ScriptableObject implements EnvResource {
             methodsToAdd.add(log10);
             Method factorial = MathScript.class.getMethod("factorial", Integer.class);
             methodsToAdd.add(factorial);
+            Method getRange = MathScript.class.getMethod("getRange", Double.class, Double.class);
+            methodsToAdd.add(getRange);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

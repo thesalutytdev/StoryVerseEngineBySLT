@@ -8,9 +8,11 @@ import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
+import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.features.BackgroundScript;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
+import org.thesalutyt.storyverse.common.effects.adder.EffectAdder;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
 import org.thesalutyt.storyverse.common.tabs.adder.CustomTab;
@@ -33,6 +35,8 @@ public class ModInterpreter {
             ScriptProperties.putIntoScope(scope);
             ThreaderJS.putIntoScope(scope);
             BackgroundScript.putIntoScope(scope);
+            Delayed.putIntoScope(scope);
+            EffectAdder.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

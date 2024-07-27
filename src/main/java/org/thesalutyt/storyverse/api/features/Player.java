@@ -122,8 +122,14 @@ public class Player extends ScriptableObject implements EnvResource{
             desc = "Sets player's head rotation"
     )
     public static void setHeadRotation(Double pitch, Double yaw) {
-        player.yHeadRot = yaw.floatValue();
-        player.xRot = pitch.floatValue();
+        player.xRot = yaw.floatValue();
+        player.xRotO = yaw.floatValue();
+        player.yHeadRot = pitch.floatValue();
+        player.yBodyRot = pitch.floatValue();
+        player.yRot = pitch.floatValue();
+        player.yRotO = pitch.floatValue();
+        player.yHeadRotO = pitch.floatValue();
+        player.yBodyRotO = pitch.floatValue();
     }
     @Documentate(
             desc = "Returns player's X position"
@@ -254,29 +260,6 @@ public class Player extends ScriptableObject implements EnvResource{
             default:
                 return;
         }
-    }
-
-    @Documentate(
-            desc = "Shows player fade screen"
-    )
-    public static void showFadeScreen(int time, String colorString) {
-        int color = (int)Long.parseLong(colorString, 16);
-        FadeScreenPacket packet = new FadeScreenPacket(player.getUUID(), time, color);
-        Networking.CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
-    }
-
-    public static void showFadeScreen(PlayerEntity player, int time, String colorString) {
-        int color = (int)Long.parseLong(colorString, 16);
-        FadeScreenPacket packet = new FadeScreenPacket(player.getUUID(), time, color);
-        Networking.CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
-    }
-
-    public static void showFadeScreen(PlayerEntity player, int time) {
-        showFadeScreen(player, time, "FF000000");
-    }
-
-    public static void showFadeScreen(int time) {
-        showFadeScreen(time, "FF000000");
     }
 
     @Documentate(

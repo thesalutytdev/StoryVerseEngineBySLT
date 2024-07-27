@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
-import org.thesalutyt.storyverse.api.environment.js.cutscene.CutsceneJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.EntityCutsceneJS;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Asynchronous;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
@@ -99,7 +99,7 @@ public class TextAreaWidget extends Widget {
                 scriptList.add(list3.getName());
             }
         }
-        for(Method list3 : CutsceneJS.methodsToAdd) {
+        for(Method list3 : EntityCutsceneJS.methodsToAdd) {
             if(!cutsceneList.contains(list3.getName())) {
                 cutsceneList.add(list3.getName());
             }

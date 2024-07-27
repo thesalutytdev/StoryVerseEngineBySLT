@@ -18,7 +18,7 @@ public class CrashMyGame {
     }
     private static int crashGame(CommandSource source) throws CommandSyntaxException{
         source.sendSuccess(new StringTextComponent("Crashing your game"), true);
-        Minecraft.crash(new CrashReport("You asked for this!", new Throwable("Idk, what's this")));
+        Minecraft.crash(new CrashReport("You asked for this!", new Throwable(NullPointerException.class.cast(new NullPointerException()))));
 
         return 1;
     }

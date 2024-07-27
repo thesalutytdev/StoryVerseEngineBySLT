@@ -16,6 +16,7 @@ import net.minecraftforge.server.command.ConfigCommand;
 
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
+import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
@@ -94,6 +95,7 @@ public class ModEvents {
             System.out.println("[ModEvents::worldUnloaded] Interpreter closed");
             EventManagerJS.events.clear();
             inWorld = false;
+            SVEnvironment.Root.playerLeft(event);
         }
     }
 }
