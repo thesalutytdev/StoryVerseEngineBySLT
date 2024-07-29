@@ -1,0 +1,194 @@
+---- Minecraft Crash Report ----
+// I'm sorry, Dave.
+
+Time: 2024-07-29 17:30:15
+Description: Mod loading error has occurred
+
+java.lang.Exception: Mod Loading has failed
+	at net.minecraftforge.logging.CrashReportExtender.dumpModLoadingCrashReport(CrashReportExtender.java:55) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23177%23184!/:?] {re:classloading}
+	at net.minecraftforge.client.loading.ClientModLoader.completeModLoading(ClientModLoader.java:167) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23177%23184!/:?] {re:classloading,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.lambda$new$2(Minecraft.java:585) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:mixin,pl:accesstransformer:B,pl:unprotect:A,pl:runtimedistcleaner:A,re:classloading,pl:accesstransformer:B,pl:mixin:APP:architectury.mixins.json:MixinMinecraft,pl:mixin:A,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.Util.ifElse(Util.java:438) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:classloading,pl:unprotect:A}
+	at net.minecraft.client.Minecraft.lambda$new$3(Minecraft.java:579) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:mixin,pl:accesstransformer:B,pl:unprotect:A,pl:runtimedistcleaner:A,re:classloading,pl:accesstransformer:B,pl:mixin:APP:architectury.mixins.json:MixinMinecraft,pl:mixin:A,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.gui.screens.LoadingOverlay.render(LoadingOverlay.java:135) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:classloading,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.GameRenderer.render(GameRenderer.java:885) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:classloading,pl:accesstransformer:B,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1115) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:mixin,pl:accesstransformer:B,pl:unprotect:A,pl:runtimedistcleaner:A,re:classloading,pl:accesstransformer:B,pl:mixin:APP:architectury.mixins.json:MixinMinecraft,pl:mixin:A,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.run(Minecraft.java:700) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:mixin,pl:accesstransformer:B,pl:unprotect:A,pl:runtimedistcleaner:A,re:classloading,pl:accesstransformer:B,pl:mixin:APP:architectury.mixins.json:MixinMinecraft,pl:mixin:A,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.main.Main.run(Main.java:212) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:classloading,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.main.Main.main(Main.java:51) ~[forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.mappings.1_19_2.layered+hash.40545-v2-forge-1.19.2-43.4.2.jar%23178!/:?] {re:classloading,pl:unprotect:A,pl:runtimedistcleaner:A}
+	at jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?] {}
+	at java.lang.reflect.Method.invoke(Method.java:580) ~[?:?] {}
+	at net.minecraftforge.fml.loading.targets.ForgeClientUserdevLaunchHandler.lambda$launchService$0(ForgeClientUserdevLaunchHandler.java:25) ~[fmlloader-1.19.2-43.4.2.jar%2389!/:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-10.0.9.jar%2394!/:?] {}
+	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) [bootstraplauncher-1.1.2.jar:1.1.2+1.1.2+main.09c1f998] {}
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?] {}
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:219) [architectury-transformer-5.2.83-runtime.jar:5.2.83] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Suspected Mods: NONE
+Stacktrace:
+	at jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) ~[?:?] {}
+-- MOD storyverse --
+Details:
+	Caused by 0: java.lang.RuntimeException: Cannot find class org/mozilla/javascript/ScriptableObject
+		at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchyFromFile(TransformerClassWriter.java:161) ~[modlauncher-10.0.9.jar:?] {}
+		at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchy(TransformerClassWriter.java:112) ~[modlauncher-10.0.9.jar:?] {}
+		at cpw.mods.modlauncher.TransformerClassWriter$SuperCollectingVisitor.visit(TransformerClassWriter.java:177) ~[modlauncher-10.0.9.jar:?] {}
+		at org.objectweb.asm.tree.ClassNode.accept(ClassNode.java:388) ~[asm-tree-9.7.jar:?] {}
+		at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchy(TransformerClassWriter.java:99) ~[modlauncher-10.0.9.jar:?] {}
+		at cpw.mods.modlauncher.TransformerClassWriter.getCommonSuperClass(TransformerClassWriter.java:59) ~[modlauncher-10.0.9.jar:?] {}
+		at org.objectweb.asm.SymbolTable.addMergedType(SymbolTable.java:1264) ~[asm-9.7.jar:?] {}
+		at org.objectweb.asm.Frame.merge(Frame.java:1311) ~[asm-9.7.jar:?] {}
+		at org.objectweb.asm.Frame.merge(Frame.java:1208) ~[asm-9.7.jar:?] {}
+		at org.objectweb.asm.MethodWriter.computeAllFrames(MethodWriter.java:1612) ~[asm-9.7.jar:?] {}
+		at org.objectweb.asm.MethodWriter.visitMaxs(MethodWriter.java:1548) ~[asm-9.7.jar:?] {}
+		at org.objectweb.asm.tree.MethodNode.accept(MethodNode.java:767) ~[asm-tree-9.7.jar:?] {}
+		at org.objectweb.asm.tree.MethodNode.accept(MethodNode.java:647) ~[asm-tree-9.7.jar:?] {}
+		at org.objectweb.asm.tree.ClassNode.accept(ClassNode.java:468) ~[asm-tree-9.7.jar:?] {}
+		at cpw.mods.modlauncher.ClassTransformer.transform(ClassTransformer.java:133) ~[modlauncher-10.0.9.jar:?] {}
+		at cpw.mods.modlauncher.TransformingClassLoader.maybeTransformClassBytes(TransformingClassLoader.java:50) ~[modlauncher-10.0.9.jar:?] {}
+		at cpw.mods.cl.ModuleClassLoader.readerToClass(ModuleClassLoader.java:113) ~[securejarhandler-2.1.4.jar:?] {}
+		at cpw.mods.cl.ModuleClassLoader.lambda$findClass$15(ModuleClassLoader.java:219) ~[securejarhandler-2.1.4.jar:?] {}
+		at cpw.mods.cl.ModuleClassLoader.loadFromModule(ModuleClassLoader.java:229) ~[securejarhandler-2.1.4.jar:?] {}
+		at cpw.mods.cl.ModuleClassLoader.findClass(ModuleClassLoader.java:219) ~[securejarhandler-2.1.4.jar:?] {}
+		at cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:135) ~[securejarhandler-2.1.4.jar:?] {}
+		at java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?] {}
+		at java.lang.Class.forName0(Native Method) ~[?:?] {}
+		at java.lang.Class.forName(Class.java:534) ~[?:?] {}
+		at java.lang.Class.forName(Class.java:513) ~[?:?] {}
+		at net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber.lambda$inject$6(AutomaticEventSubscriber.java:61) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+		at java.util.ArrayList.forEach(ArrayList.java:1596) ~[?:?] {}
+		at net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber.inject(AutomaticEventSubscriber.java:48) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+		at net.minecraftforge.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:85) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+		at net.minecraftforge.fml.ModContainer.lambda$buildTransitionHandler$4(ModContainer.java:122) ~[fmlcore-1.19.2-43.4.2.jar%23182!/:?] {}
+		at java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[?:?] {}
+		at java.util.concurrent.CompletableFuture$AsyncRun.exec(CompletableFuture.java:1796) ~[?:?] {}
+		at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) ~[?:?] {}
+		at java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) ~[?:?] {}
+		at java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) ~[?:?] {re:computing_frames}
+		at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) ~[?:?] {re:computing_frames}
+		at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) ~[?:?] {}
+
+	Mod File: /home/maxim/Загрузки/story/storyverse/forge/build/resources/main/
+	Failure message: storyverse (storyverse) has failed to load correctly
+		java.lang.RuntimeException: Cannot find class org/mozilla/javascript/ScriptableObject
+	Mod Version: 1.0-SNAPSHOT
+	Mod Issue URL: NOT PROVIDED
+	Exception message: java.lang.ClassNotFoundException: org.mozilla.javascript.ScriptableObject
+Stacktrace:
+	at jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) ~[?:?] {}
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?] {}
+	at cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:137) ~[securejarhandler-2.1.4.jar:?] {}
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?] {}
+	at cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:137) ~[securejarhandler-2.1.4.jar:?] {}
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?] {}
+	at java.lang.Class.forName0(Native Method) ~[?:?] {}
+	at java.lang.Class.forName(Class.java:534) ~[?:?] {}
+	at java.lang.Class.forName(Class.java:513) ~[?:?] {}
+	at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchyFromFile(TransformerClassWriter.java:157) ~[modlauncher-10.0.9.jar:?] {}
+	at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchy(TransformerClassWriter.java:112) ~[modlauncher-10.0.9.jar:?] {}
+	at cpw.mods.modlauncher.TransformerClassWriter$SuperCollectingVisitor.visit(TransformerClassWriter.java:177) ~[modlauncher-10.0.9.jar:?] {}
+	at org.objectweb.asm.tree.ClassNode.accept(ClassNode.java:388) ~[asm-tree-9.7.jar:?] {}
+	at cpw.mods.modlauncher.TransformerClassWriter.computeHierarchy(TransformerClassWriter.java:99) ~[modlauncher-10.0.9.jar:?] {}
+	at cpw.mods.modlauncher.TransformerClassWriter.getCommonSuperClass(TransformerClassWriter.java:59) ~[modlauncher-10.0.9.jar:?] {}
+	at org.objectweb.asm.SymbolTable.addMergedType(SymbolTable.java:1264) ~[asm-9.7.jar:?] {}
+	at org.objectweb.asm.Frame.merge(Frame.java:1311) ~[asm-9.7.jar:?] {}
+	at org.objectweb.asm.Frame.merge(Frame.java:1208) ~[asm-9.7.jar:?] {}
+	at org.objectweb.asm.MethodWriter.computeAllFrames(MethodWriter.java:1612) ~[asm-9.7.jar:?] {}
+	at org.objectweb.asm.MethodWriter.visitMaxs(MethodWriter.java:1548) ~[asm-9.7.jar:?] {}
+	at org.objectweb.asm.tree.MethodNode.accept(MethodNode.java:767) ~[asm-tree-9.7.jar:?] {}
+	at org.objectweb.asm.tree.MethodNode.accept(MethodNode.java:647) ~[asm-tree-9.7.jar:?] {}
+	at org.objectweb.asm.tree.ClassNode.accept(ClassNode.java:468) ~[asm-tree-9.7.jar:?] {}
+	at cpw.mods.modlauncher.ClassTransformer.transform(ClassTransformer.java:133) ~[modlauncher-10.0.9.jar:?] {}
+	at cpw.mods.modlauncher.TransformingClassLoader.maybeTransformClassBytes(TransformingClassLoader.java:50) ~[modlauncher-10.0.9.jar:?] {}
+	at cpw.mods.cl.ModuleClassLoader.readerToClass(ModuleClassLoader.java:113) ~[securejarhandler-2.1.4.jar:?] {}
+	at cpw.mods.cl.ModuleClassLoader.lambda$findClass$15(ModuleClassLoader.java:219) ~[securejarhandler-2.1.4.jar:?] {}
+	at cpw.mods.cl.ModuleClassLoader.loadFromModule(ModuleClassLoader.java:229) ~[securejarhandler-2.1.4.jar:?] {}
+	at cpw.mods.cl.ModuleClassLoader.findClass(ModuleClassLoader.java:219) ~[securejarhandler-2.1.4.jar:?] {}
+	at cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:135) ~[securejarhandler-2.1.4.jar:?] {}
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?] {}
+	at java.lang.Class.forName0(Native Method) ~[?:?] {}
+	at java.lang.Class.forName(Class.java:534) ~[?:?] {}
+	at java.lang.Class.forName(Class.java:513) ~[?:?] {}
+	at net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber.lambda$inject$6(AutomaticEventSubscriber.java:61) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+	at java.util.ArrayList.forEach(ArrayList.java:1596) ~[?:?] {}
+	at net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber.inject(AutomaticEventSubscriber.java:48) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+	at net.minecraftforge.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:85) ~[javafmllanguage-1.19.2-43.4.2.jar%23179!/:?] {}
+	at net.minecraftforge.fml.ModContainer.lambda$buildTransitionHandler$4(ModContainer.java:122) ~[fmlcore-1.19.2-43.4.2.jar%23182!/:?] {}
+	at java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture$AsyncRun.exec(CompletableFuture.java:1796) ~[?:?] {}
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) ~[?:?] {}
+	at java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) ~[?:?] {}
+	at java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) ~[?:?] {re:computing_frames}
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) ~[?:?] {re:computing_frames}
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) ~[?:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.19.2
+	Minecraft Version ID: 1.19.2
+	Operating System: Linux (amd64) version 6.8.0-36-generic
+	Java Version: 21.0.3, Amazon.com Inc.
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Amazon.com Inc.
+	Memory: 210404256 bytes (200 MiB) / 1451229184 bytes (1384 MiB) up to 4167041024 bytes (3974 MiB)
+	CPUs: 8
+	Processor Vendor: GenuineIntel
+	Processor Name: Intel(R) Core(TM) i3-10100F CPU @ 3.60GHz
+	Identifier: Intel64 Family 6 Model 165 Stepping 3
+	Microarchitecture: unknown
+	Frequency (GHz): 3.60
+	Number of physical packages: 1
+	Number of physical CPUs: 4
+	Number of logical CPUs: 8
+	Graphics card #0 name: GP104 [GeForce GTX 1060 3GB]
+	Graphics card #0 vendor: NVIDIA Corporation (0x10de)
+	Graphics card #0 VRAM (MB): 288.00
+	Graphics card #0 deviceId: 0x1b84
+	Graphics card #0 versionInfo: unknown
+	Virtual memory max (MB): 12040.95
+	Virtual memory used (MB): 15010.61
+	Swap memory total (MB): 4096.00
+	Swap memory used (MB): 910.86
+	JVM Flags: 0 total; 
+	ModLauncher: 10.0.9+10.0.9+main.dcd20f30
+	ModLauncher launch target: forgeclientuserdev
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		mixin-patched-0.8.5.10.jar mixin PLUGINSERVICE 
+		eventbus-6.0.3.jar eventbus PLUGINSERVICE 
+		fmlloader-1.19.2-43.4.2.jar slf4jfixer PLUGINSERVICE 
+		fmlloader-1.19.2-43.4.2.jar object_holder_definalize PLUGINSERVICE 
+		fmlloader-1.19.2-43.4.2.jar runtime_enum_extender PLUGINSERVICE 
+		unprotect-1.2.0.jar unprotect PLUGINSERVICE 
+		fmlloader-1.19.2-43.4.2.jar capability_token_subclass PLUGINSERVICE 
+		accesstransformers-8.0.4.jar accesstransformer PLUGINSERVICE 
+		fmlloader-1.19.2-43.4.2.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-10.0.9.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-10.0.9.jar fml TRANSFORMATIONSERVICE 
+		modlauncher-10.0.9.jar ArchitecturyMixinRemapperInjector TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		minecraft@1.0
+		lowcodefml@null
+		javafml@null
+	Mod List: 
+		forge-1.19.2-43.4.2-minecraft-merged-1.19.2-loom.m|Minecraft                     |minecraft                     |1.19.2              |COMMON_SET|Manifest: NOSIGNATURE
+		                                                  |Forge                         |forge                         |43.4.2              |COMMON_SET|Manifest: NOSIGNATURE
+		geckolib-forge-1.19-3.1.40.jar                    |GeckoLib                      |geckolib3                     |3.1.40              |COMMON_SET|Manifest: NOSIGNATURE
+		architectury-forge-6.6.92.jar                     |Architectury                  |architectury                  |6.6.92              |COMMON_SET|Manifest: NOSIGNATURE
+		main                                              |storyverse                    |storyverse                    |1.0-SNAPSHOT        |ERROR     |Manifest: NOSIGNATURE
+		14549066938845868367.jar                          |generated_fc2a104             |generated_fc2a104             |1                   |COMMON_SET|Manifest: NOSIGNATURE
+	Crash Report UUID: 0b86ff82-6877-46f2-8c85-248e64467102
+	FML: 43.4
+	Forge: net.minecraftforge:43.4.2
