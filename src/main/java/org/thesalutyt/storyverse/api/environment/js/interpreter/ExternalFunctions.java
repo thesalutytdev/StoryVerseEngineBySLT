@@ -4,7 +4,10 @@ import org.mozilla.javascript.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+
+import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.features.Chat;
+import org.thesalutyt.storyverse.common.events.ModEvents;
 
 import java.lang.reflect.Method;
 import java.nio.file.Path;
@@ -130,5 +133,9 @@ public class ExternalFunctions extends ScriptableObject {
         } else {
             System.out.println("Invalid path (" + path_to_file + "): path ends outside root script directory");
         }
+    }
+
+    public SVEnvironment.ScriptEvaluator evaluate(String script) {
+        return new SVEnvironment.ScriptEvaluator(ModEvents.inWorld).configure(script, this.getParentScope());
     }
 }

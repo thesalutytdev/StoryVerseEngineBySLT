@@ -19,6 +19,7 @@ import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.environment.js.npc.Trader;
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
+import org.thesalutyt.storyverse.api.environment.js.waiter.WaitConditionJS;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
@@ -77,6 +78,7 @@ public class Interpreter {
             JSBlock.putIntoScope(scope);
             RootJS.putIntoScope(scope);
             CameraMoveSceneJS.putIntoScope(scope);
+            WaitConditionJS.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

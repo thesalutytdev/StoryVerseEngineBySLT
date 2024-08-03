@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -24,8 +25,11 @@ import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.api.environment.resource.wrappers.EntityData;
+import org.thesalutyt.storyverse.api.environment.resource.wrappers.NPCData;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
+import org.thesalutyt.storyverse.common.entities.client.moveGoals.MovePlayerEntity;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import java.lang.reflect.Method;
@@ -42,6 +46,8 @@ public class MobController extends ScriptableObject implements EnvResource {
     private Float mobSpeed;
     public static ArrayList<String> interactActionsID = new ArrayList<>();
     private Goal moveGoal;
+    public NPCData npcData;
+    public EntityData data;
 
     @Documentate(
             desc = "Setups MobController entity"
@@ -102,13 +108,21 @@ public class MobController extends ScriptableObject implements EnvResource {
         return new Object[] {task, task.getTaskStringID()};
     }
 
-    public MobController moveTo(Double x, Double y, Double z) {
-        this.moveTo(new BlockPos(x, y, z), this.entity.getSpeed());
+
+    @Documentate(
+            desc = "DO NOT ADD FUNCTIONS LOWER TO JS"
+    )
+
+    public MobController defineData(EntityData data) {
+        this.data = data;
         return this;
     }
 
-    public MobController moveTo(String mobId) {
-        this.moveTo(MobJS.controllers.get(mobId).getEntity().blockPosition(), this.entity.getSpeed());
+    public MobController defineNPCData(NPCData data) {
+        if (this.entity.getType() != Entities.NPC.get()) {
+            throw new RuntimeException("Entity is not NPC!");
+        }
+        this.npcData = data;
         return this;
     }
 
@@ -122,11 +136,34 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
 
+    public MobController followPlayer() {
+        MovePlayerEntity goal = new MovePlayerEntity(this.entity,
+                new BlockPos(Player.getX(), Player.getY(), Player.getZ()), this.entity.getSpeed());
+        this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
+            this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
+        });
+        this.entity.goalSelector.addGoal(1, goal);
+        return this;
+    }
+    public MobController followPlayer(String playerName) {
+        ServerPlayerEntity player = Server.getPlayerByName(playerName);
+        MovePlayerEntity goal = new MovePlayerEntity(this.entity,
+                new BlockPos(player.getX(), player.getY(), player.getZ()), this.entity.getSpeed());
+        this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
+            this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
+        });
+        this.entity.goalSelector.addGoal(1, goal);
+        return this;
+    }
+
     @Documentate(
             desc = "Stops mob from moving"
     )
     public MobController stopMove(){
         this.entity.goalSelector.removeGoal(this.moveGoal);
+        try {
+            this.entity.goalSelector.removeGoal(MovePlayerEntity.movePlayerEntities.get(this.entity));
+        } catch (Exception ignored){}
         return this;
     }
 
@@ -376,6 +413,7 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController setX(Double x) {
         this.entity.setXxa(x.floatValue());
+        this.entity.setPos(x, this.entity.getY(), this.entity.getZ());
         return this;
     }
 
@@ -384,6 +422,7 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController setY(Double y) {
         this.entity.setYya(y.floatValue());
+        this.entity.setPos(this.entity.getX(), y, this.entity.getZ());
         return this;
     }
 
@@ -392,7 +431,30 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController setZ(Double z) {
         this.entity.setZza(z.floatValue());
+        this.entity.setPos(this.entity.getX(), this.entity.getY(), z);
         return this;
+    }
+
+    public MobController setPos(Double x, Double y, Double z) {
+        this.entity.setPos(x, y, z);
+        return this;
+    }
+
+    public MobController setPos(Double[] pos) {
+        this.entity.setPos(pos[0], pos[1], pos[2]);
+        return this;
+    }
+
+    public Double getX() {
+        return this.entity.getX();
+    }
+
+    public Double getY() {
+        return this.entity.getY();
+    }
+
+    public Double getZ() {
+        return this.entity.getZ();
     }
 
     @Documentate(
@@ -700,16 +762,25 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(iOh);
             Method attackMob = MobController.class.getMethod("attackMob", String.class);
             methodsToAdd.add(attackMob);
-            Method moveToNoSpeed = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class);
-            methodsToAdd.add(moveToNoSpeed);
-            Method moveToMob = MobController.class.getMethod("moveTo", String.class);
-            methodsToAdd.add(moveToMob);
             Method moveToPl = MobController.class.getMethod("moveToPlayer", String.class);
             methodsToAdd.add(moveToPl);
             Method mTpl = MobController.class.getMethod("moveToPlayer");
             methodsToAdd.add(mTpl);
             Method shShN = MobController.class.getMethod("shouldShowName", Boolean.class);
             methodsToAdd.add(shShN);
+            Method followP = MobController.class.getMethod("followPlayer", String.class);
+            methodsToAdd.add(followP);
+            Method followPl = MobController.class.getMethod("followPlayer");
+            methodsToAdd.add(followPl);
+            Method getX = MobController.class.getMethod("getX");
+            methodsToAdd.add(getX);
+            Method getY = MobController.class.getMethod("getY");
+            methodsToAdd.add(getY);
+            Method getZ = MobController.class.getMethod("getZ");
+            methodsToAdd.add(getZ);
+            Method setPos = MobController.class.getMethod("setPos", Double.class, Double.class, Double.class);
+            methodsToAdd.add(setPos);
+
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

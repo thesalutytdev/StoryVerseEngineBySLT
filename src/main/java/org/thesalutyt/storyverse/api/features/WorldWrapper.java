@@ -418,6 +418,13 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         }
     }
 
+    public void breakBlock(Double x, Double y, Double z) {
+        BlockState state = this.world.getBlockState(new BlockPos(x, y, z));
+        Block block = state.getBlock();
+
+        block.destroy(this.world, new BlockPos(x, y, z), state);
+    }
+
     public static void clearOnTimeChange() {
         onTimeChange.clear();
     }
@@ -482,6 +489,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setBlock);
             Method fill = WorldWrapper.class.getMethod("fill", NativeArray.class, NativeArray.class, String.class);
             methodsToAdd.add(fill);
+            Method breakBlock = WorldWrapper.class.getMethod("breakBlock", Double.class, Double.class, Double.class);
+            methodsToAdd.add(breakBlock);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

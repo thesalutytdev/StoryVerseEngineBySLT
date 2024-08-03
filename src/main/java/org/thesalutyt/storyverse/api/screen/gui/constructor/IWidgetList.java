@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.api.screen.gui.constructor;
 import net.minecraft.client.Minecraft;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
+import org.thesalutyt.storyverse.api.screen.gui.elements.GuiItem;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.ColoredLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
@@ -16,6 +17,7 @@ public class IWidgetList {
     public ArrayList<ColoredLabel> coloredLabels = new ArrayList<>();
     public ArrayList<GuiImage> images = new ArrayList<>();
     public ArrayList<GuiEntity> entities = new ArrayList<>();
+    public ArrayList<GuiItem> items = new ArrayList<>();
     public ArrayList<CircleRect> circleRect = new ArrayList<>();
     public Minecraft mc = Minecraft.getInstance();
 
@@ -50,6 +52,22 @@ public class IWidgetList {
 
     public IWidgetList addCircleRect(CircleRect circleRect) {
         this.circleRect.add(circleRect);
+        return this;
+    }
+
+    public IWidgetList addItem(GuiItem item) {
+        items.add(item);
+        return this;
+    }
+
+    public IWidgetList addAll(IWidgetList list) {
+        buttons.addAll(list.buttons);
+        labels.addAll(list.labels);
+        coloredLabels.addAll(list.coloredLabels);
+        images.addAll(list.images);
+        entities.addAll(list.entities);
+        items.addAll(list.items);
+        circleRect.addAll(list.circleRect);
         return this;
     }
 

@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -14,9 +16,11 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
 import org.thesalutyt.storyverse.common.dimension.mover.Mover;
+import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 import org.thesalutyt.storyverse.common.specific.networking.Networking;
 
 import java.lang.reflect.Method;
@@ -348,6 +352,48 @@ public class Player extends ScriptableObject implements EnvResource{
     public static String getPlayerWorld() {
         return player.getLevel().toString();
     }
+
+    public static void move(Double x, Double y, Double z, Double speed) {
+        MobEntity entity = (MobEntity) player.getEntity();
+
+        entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
+            entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
+        });
+        BlockPos pos = new BlockPos(x, y, z);
+        MoveGoal moveGoal = new MoveGoal(entity, pos, speed.floatValue());
+        entity.goalSelector.addGoal(1, moveGoal);
+    }
+
+    public static Boolean isCrouching() {
+        return player.isCrouching();
+    }
+
+    public static Boolean isSprinting() {
+        return player.isSprinting();
+    }
+
+    public static void setSpeed(Double speed) {
+        player.setSpeed(speed.floatValue());
+    }
+
+    public static String getItemInHand(Integer hand) {
+        switch (hand) {
+            case 0:
+                return new JSItem(player.getMainHandItem()).id;
+            case 1:
+                return new JSItem(player.getOffhandItem()).id;
+            default:
+                return null;
+        }
+    }
+
+    public static Boolean nearTo(NativeArray pos, Double radius) {
+        System.out.println("nearTo: " + pos.get(0) + " " + pos.get(1) + " " + pos.get(2));
+
+        Double[] pos_ = new Double[]{(Double) pos.get(0), Double.parseDouble(pos.get(1).toString()), (Double) pos.get(2)};
+        return MathScript.squareDistance(new Double[]{player.getX(), player.getY(), player.getZ()}, pos_) < radius;
+    }
+
     public static ServerPlayerEntity getPlayer() {
         return player;
     }
@@ -471,6 +517,18 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setWaterWalking);
             Method getWorld = Player.class.getMethod("getPlayerWorld");
             methodsToAdd.add(getWorld);
+            Method move = Player.class.getMethod("move", Double.class, Double.class, Double.class, Double.class);
+            methodsToAdd.add(move);
+            Method isCrouching = Player.class.getMethod("isCrouching");
+            methodsToAdd.add(isCrouching);
+            Method isSprinting = Player.class.getMethod("isSprinting");
+            methodsToAdd.add(isSprinting);
+            Method getItemInHand = Player.class.getMethod("getItemInHand", Integer.class);
+            methodsToAdd.add(getItemInHand);
+            Method setSpeed = Player.class.getMethod("setSpeed", Double.class);
+            methodsToAdd.add(setSpeed);
+            Method nearTo = Player.class.getMethod("nearTo", NativeArray.class, Double.class);
+            methodsToAdd.add(nearTo);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

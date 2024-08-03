@@ -1,28 +1,30 @@
 <h1><b>StoryVerse Engine!</b></h1>
-<h2>Current version: 5.2-Beta</h2>
+<h2>Current version: 5.4-Beta</h2>
 <h3>This is an engine, what can help you create<br>
 <b>story-based maps</b></h3>
 <h3>Abilities:</h3>
 
 <h4>
 
-    · Summon and control mobs<br>
-    · Player controls<br>
-    · Chat messages, world actions<br>
-    · Event manager<br>
-    · Background scripts<br>
-    · Mod scripts<br>
-    · Fade screen<br>
-    · Custom NPC entity<br>
-    · Adding custom gui screens<br>
-    · Cutscenes and Moving cutscenes<br>
+    · Summon and control mobs
+    · Player controls
+    · Chat messages, world actions
+    · Event manager
+    · Background scripts
+    · Mod scripts
+    · Fade screen
+    · Custom NPC entity
+    · Adding custom gui screens
+    · Cutscenes and Moving cutscenes
+    · Condition waiter
 
 </h4>
 
 <h3>Now working at:</h3>
     
-    · Assets Loader - 0%<br>
-    · Quests - 40%<br>
+    · Assets Loader - 0%
+    · Quests - 40%
+    · Trades - 50%
     
 
 <h2>If you want to build mod, run shadowJar task</h2>

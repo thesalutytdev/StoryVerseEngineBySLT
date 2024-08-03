@@ -1,10 +1,9 @@
 package org.thesalutyt.storyverse.api.screen.gui.script;
 
 import net.minecraft.client.Minecraft;
-import org.mozilla.javascript.BaseFunction;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
+import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.screen.CustomizableGui;
@@ -18,6 +17,8 @@ import java.util.HashMap;
 public class ScriptableGui extends ScriptableObject implements EnvResource, JSResource {
     public CustomizableGui gui;
     public static HashMap<String, CustomizableGui> guis = new HashMap<>();
+    public ArrayList<BaseFunction> onGuiTick = new ArrayList<>();
+    public Integer ticks = 0;
     public static GuiType toGuiType(String type) {
         switch (type) {
             case "default":
@@ -32,11 +33,12 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
                 return null;
         }
     }
-    public ScriptableGui create(String name, String title, Integer width, Integer height) {
-        gui = new CustomizableGui(title);
+    public ScriptableGui create(String name, Integer width, Integer height) {
+        gui = new CustomizableGui(name);
         gui.gWidth = width;
         gui.gHeight = height;
         gui.init();
+        gui.setScriptableReference(this);
         guis.put(name, gui);
         return this;
     }
@@ -94,6 +96,11 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public void render() {
         Minecraft.getInstance().setScreen(gui);
     }
+
+    public void render(String name) {
+        Minecraft.getInstance().setScreen(guis.get(name));
+    }
+
     public void close() {
         Minecraft.getInstance().setScreen(null);
     }
@@ -115,13 +122,34 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         gui.cursorY = y;
         return this;
     }
+
+    public ScriptableGui onGuiTick(BaseFunction function) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onGuiTick.add(function);
+        });
+
+        return this;
+    }
+
+    public ScriptableGui tick() {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            for (BaseFunction function : onGuiTick) {
+                ticks++;
+                function.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
+                        new Object[]{ticks});
+            }
+        });
+
+        return this;
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         ScriptableGui sc = new ScriptableGui();
         sc.setParentScope(scope);
 
         try {
-            Method create = ScriptableGui.class.getMethod("create", String.class, String.class, Integer.class, Integer.class);
+            Method create = ScriptableGui.class.getMethod("create", String.class, Integer.class, Integer.class);
             methodsToAdd.add(create);
             Method setPause = ScriptableGui.class.getMethod("setPause", Boolean.class);
             methodsToAdd.add(setPause);
@@ -165,6 +193,10 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(renderBackground);
             Method setCursorPos = ScriptableGui.class.getMethod("setCursorPos", Integer.class, Integer.class);
             methodsToAdd.add(setCursorPos);
+            Method onGuiTick = ScriptableGui.class.getMethod("onGuiTick", BaseFunction.class);
+            methodsToAdd.add(onGuiTick);
+            Method tick = ScriptableGui.class.getMethod("tick");
+            methodsToAdd.add(tick);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

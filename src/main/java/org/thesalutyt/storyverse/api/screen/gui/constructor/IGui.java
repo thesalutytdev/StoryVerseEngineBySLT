@@ -4,12 +4,16 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
+import org.thesalutyt.storyverse.api.screen.gui.elements.GuiItem;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.ColoredLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
@@ -110,6 +114,9 @@ public class IGui extends Screen {
                     RenderUtils.drawCircleRect(rect.x, rect.y, rect.x1, rect.y1,
                             rect.radius, rect.color);
                 }
+                for (GuiItem item : widgets.items) {
+                    item.itemRenderer.renderGuiItem(item.stack, item.x.intValue(), item.y.intValue());
+                }
             } catch (Exception e) {
                 new ErrorPrinter(e);
             }
@@ -119,6 +126,16 @@ public class IGui extends Screen {
 
     public void renderSpec(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.render(stack, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
     }
 
     @Override

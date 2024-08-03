@@ -8,9 +8,11 @@ import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public class MovePlayerEntity extends Goal {
+    public static HashMap<MobEntity, MovePlayerEntity> movePlayerEntities = new HashMap<>();
     public static final int WATER_CHECK_DISTANCE_VERTICAL = 1;
     protected final CreatureEntity mob;
     protected double speedModifier;

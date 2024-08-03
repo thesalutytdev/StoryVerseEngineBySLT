@@ -10,8 +10,11 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import org.mozilla.javascript.Scriptable;
@@ -22,13 +25,17 @@ import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
 import org.thesalutyt.storyverse.api.camera.entityCamera.Cutscene;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.api.environment.trader.TradeOffer;
+import org.thesalutyt.storyverse.api.environment.trader.Trader;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.gui.QuestGui;
 import org.thesalutyt.storyverse.api.gui.script.CustomGui;
 import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
+import org.thesalutyt.storyverse.api.screen.gui.character.trades.TradeGUI;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertGui;
 import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertType;
+import org.thesalutyt.storyverse.api.screen.gui.test.RLC;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 
 import org.mozilla.javascript.Context;
@@ -58,6 +65,7 @@ public class MainCommand {
                                 })
                         )
                 )
+                        .then(Commands.literal("vector").executes((command) -> {return vec(command.getSource());}))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
                         .then(Commands.literal("res_loc").executes(
@@ -87,6 +95,7 @@ public class MainCommand {
                                 .executes((command) -> {
                                     return commandExecutor(command.getSource());
                                 }))
+                        .then(Commands.literal("trade").executes((command) -> {return trade(command.getSource());}))
                         .then(Commands.literal("camera")
                                 .then(Commands.literal("move")
                                         .then(Commands.literal("noAI").
@@ -101,7 +110,7 @@ public class MainCommand {
                                         .executes((command) -> {return controllerTestNoAI(command.getSource());}))
                                 .executes((command) -> {return controllerTest(command.getSource());}))
                         .then(Commands.literal("fadeScreen")
-                                .executes((command) -> {return testFadeColor(command.getSource());})))
+                                .executes((command) -> {return testFade(command.getSource());})))
         );
     }
     private static int goUp(CommandSource source) throws CommandSyntaxException {
@@ -155,9 +164,7 @@ public class MainCommand {
     }
 
     public int testFade(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-
-        FadeScreen fadeScreen = new FadeScreen();
+        Minecraft.getInstance().setScreen(new RLC());
 
         return 1;
     }
@@ -272,6 +279,35 @@ public class MainCommand {
         ReputationScreen repScreen = new ReputationScreen(rep);
         mc.setScreen(repScreen);
         ResourceLocation tLoc = new ResourceLocation(StoryVerse.MOD_ID, "textures/gui/choice_gui.png");
+
+        return 1;
+    }
+
+    public static int vec(CommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity entity = source.getPlayerOrException();
+        Chat.sendAsEngine(String.format("%s, %s", MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)));
+        Chat.sendCopyable(String.format("%s, %s", MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)));
+        // MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)
+        return 1;
+    }
+
+    public static int trade(CommandSource source) throws CommandSyntaxException {
+        try {
+            ServerPlayerEntity player = source.getPlayerOrException();
+
+            MobJS.create("trTest", player.getX(), player.getY(), player.getZ(),
+                    "SHEEP");
+            Trader trader = new Trader("trTest");
+            trader.offers.addOffer(new TradeOffer(new ItemStack(Items.DIAMOND), new ItemStack(Items.EMERALD), "Da")
+                    .setTrader(trader));
+            trader.offers.addOffer(new TradeOffer(new ItemStack(Items.EMERALD, 10),
+                    new ItemStack(Items.DIAMOND, 10), "Da")
+                    .setTrader(trader));
+                TradeGUI tradeGui = new TradeGUI(trader);
+            mc.setScreen(tradeGui);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return 1;
     }

@@ -20,6 +20,8 @@ import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.api.environment.resource.wrappers.EntityData;
+import org.thesalutyt.storyverse.api.environment.resource.wrappers.NPCData;
 import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
@@ -51,6 +53,8 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     public static HashMap<String, MobController> controllers = new HashMap<>();
     public static HashMap<UUID, String> mobNames = new HashMap<>();
+    public static HashMap<String, EntityData> entityData = new HashMap<>();
+    public static HashMap<String, NPCData> npcData = new HashMap<>();
     public static HashMap<MobController, HashMap<String, ArrayList<BaseFunction>>> events = new HashMap<>();
     public MobController addEventListener(String id, String mobId, BaseFunction function) {
         ArrayList<BaseFunction> functions = new ArrayList<>();
@@ -59,6 +63,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
         switch (id) {
             case "interact":
             case "kill":
+            case "shift-interact":
                 eventLoop.runImmediate(() -> {
                     if (!events.containsKey(mob)) {
                         HashMap<String, ArrayList<BaseFunction>> interactEvent = new HashMap<>();
@@ -105,7 +110,11 @@ public class MobJS extends ScriptableObject implements EnvResource {
                 }
             }
         }
-        runEvent(getMob(event.getTarget().getUUID()), "interact");
+        if (!event.getPlayer().isCrouching()) {
+            runEvent(getMob(event.getTarget().getUUID()), "interact");
+        } else if (event.getPlayer().isCrouching()) {
+            runEvent(getMob(event.getTarget().getUUID()), "shift-interact");
+        }
     }
     @SubscribeEvent
     public static void onKilled(LivingDeathEvent event) {
@@ -152,11 +161,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
         });
     }
     public static void removeEventListener(String id, String mobId) {
-        if (!Objects.equals(id, "interact") && !Objects.equals(id, "kill")) {
-            return;
-        } else {
-            events.remove(getMob(mobId));
-        }
+        events.remove(getMob(mobId));
     }
     public static MobController create(String id, Double x, Double y, Double z, String type) {
         System.out.println("Started creating");
@@ -165,6 +170,14 @@ public class MobJS extends ScriptableObject implements EnvResource {
         controllers.put(id, mob);
         mobNames.put(mob.getUUID(), id);
         System.out.println("Putting mob in base");
+
+        EntityData entityData_ = new EntityData((LivingEntity) mob.getEntity(), x, y, z,
+                new Object[]{});
+
+        entityData.put(id, entityData_);
+
+        mob.defineData(entityData_);
+
         return mob;
     }
     public static MobController create(String id, Double x, Double y, Double z, String type, String name, Boolean visible) {
@@ -176,6 +189,16 @@ public class MobJS extends ScriptableObject implements EnvResource {
         System.out.println("Putting mob in base");
         mob.setName(name);
         mob.setNameVisible(visible);
+
+        EntityData entityData_ = new EntityData((LivingEntity) mob.getEntity(), name, x, y, z,
+                new Object[]{});
+
+        entityData_.setNameVisible(visible);
+
+        entityData.put(id, entityData_);
+
+        mob.defineData(entityData_);
+
         return mob;
     }
     public static MobController npc(String id, Double x, Double y, Double z, String name, Boolean visible,
@@ -207,13 +230,23 @@ public class MobJS extends ScriptableObject implements EnvResource {
                 npc.canPickup = (Boolean) args[4];
             }
         }
-        return mob;
-    }
-    public static MobController create(String id, Double x, Double y, Double z, NativeArray npcArgs) {
-        Object[] args = npcArgs.toArray(new Object[0]);
-        MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType("NPC"));
-        controllers.put(id, mob);
-        mobNames.put(mob.getUUID(), id);
+
+        NPCData npcData_ = new NPCData(npc, name, x, y, z,
+                new Object[]{npc.getModelPath(), npc.getAnimation(), npc.getTexturePath()});
+
+        npcData_.setNameVisible(visible);
+
+        EntityData entityData_ = new EntityData((LivingEntity) npc.getEntity(), name, x, y, z,
+                new Object[]{npc.getModelPath(), npc.getAnimation(), npc.getTexturePath()});
+
+        entityData_.setNameVisible(visible);
+
+        npcData.put(id, npcData_);
+        entityData.put(id, entityData_);
+
+        mob.defineNPCData(npcData_);
+        mob.defineData(entityData_);
+
         return mob;
     }
     public static MobController getMob(String id) {
@@ -224,6 +257,38 @@ public class MobJS extends ScriptableObject implements EnvResource {
     }
     public static Entity mob(String id) {
         return controllers.get(id).getEntity();
+    }
+
+    public static MobController respawn(String id) {
+        EntityData data = entityData.get(id);
+        if (data == null) {
+            return null;
+        }
+
+        if (data.entity == null) {
+            return null;
+        }
+
+        return create(id, data.x, data.y, data.z, data.entity.getType().toString().toUpperCase(), data.name, data.name_visible)
+                .defineData(data);
+    }
+
+    public static MobController respawnNpc(String id) {
+        NPCData data = npcData.get(id);
+        if (data == null) {
+            return null;
+        }
+
+        if (data.entity == null) {
+            return null;
+        }
+
+        NativeArray args = new NativeArray(new Object[]{data.texture, data.model, data.animations,
+                ((double) data.entity.getSpeed()),
+                data.npc.canPickup});
+
+        return npc(id, data.x, data.y, data.z, data.name, data.name_visible, args)
+                .defineData(data);
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -258,6 +323,10 @@ public class MobJS extends ScriptableObject implements EnvResource {
                     String.class, Double.class, Double.class,
                     Double.class, String.class, Boolean.class, NativeArray.class);
             methodsToAdd.add(npc);
+            Method respawn = MobJS.class.getMethod("respawn", String.class);
+            methodsToAdd.add(respawn);
+            Method respawnNpc = MobJS.class.getMethod("respawnNpc", String.class);
+            methodsToAdd.add(respawnNpc);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -279,3 +348,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
         return "MobJS";
     }
 }
+//var mob = entity.create('id', 0.66, 4.00, 0.67, 'SHEEP', 'Настя', false)
+//
+//mob.moveTo(1.44, 4.00, 16.37, 1)
+//

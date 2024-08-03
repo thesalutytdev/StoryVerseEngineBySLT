@@ -49,6 +49,9 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     private static String dimension_old = "";
     private static String item_dropped = "";
     private static String player_respawned = "";
+    private static String item_pickup = "";
+    private static String item_crafted = "";
+    private static String item_smelted = "";
     private static Integer key_pressed = 0;
     private static BlockPos blockPos = new BlockPos(0, 0, 0);
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
@@ -104,11 +107,31 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         key_pressed = event.getKey();
         runEvent("key_pressed");
     }
+
+    @SubscribeEvent
+    public static void onItemPickup(PlayerEvent.ItemPickupEvent event) {
+        item_pickup = event.getStack().getItem().getRegistryName().getPath();
+        runEvent("item_pickup");
+    }
+
+    @SubscribeEvent
+    public static void onItemCraft(PlayerEvent.ItemCraftedEvent event) {
+        item_crafted = event.getCrafting().toString();
+        runEvent("item_crafted");
+    }
+
+    @SubscribeEvent
+    public static void onItemSmelt(PlayerEvent.ItemSmeltedEvent event) {
+        item_smelted = event.getSmelting().toString();
+        runEvent("item_smelted");
+    }
+
     public static void addEventListener(String event_name, BaseFunction function) {
         if (!ModEvents.inWorld) {
             return;
         }
-        if (!events.containsKey(event_name) && !Objects.equals(event_name, "sleep")
+        if (!events.containsKey(event_name)
+                && !Objects.equals(event_name, "sleep")
                 || !Objects.equals(event_name, "message")
                 || !Objects.equals(event_name, "block_break")
                 || !Objects.equals(event_name, "block_interact")
@@ -116,7 +139,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
                 || !Objects.equals(event_name, "block_placed")
                 || !Objects.equals(event_name, "item_dropped")
                 || !Objects.equals(event_name, "player_respawned")
-                || !Objects.equals(event_name, "key_pressed")) {
+                || !Objects.equals(event_name, "key_pressed")
+                || !Objects.equals(event_name, "item_pickup")
+                || !Objects.equals(event_name, "item_crafted")
+                || !Objects.equals(event_name, "item_smelted")) {
             EventLoop.getLoopInstance().runImmediate(() -> {
                 ArrayList<BaseFunction> functions = new ArrayList<>();
                 functions.add(function);
@@ -215,6 +241,15 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static Integer getLastKeyPressed() {
         return key_pressed;
     }
+    public static String getLastItemPickup() {
+        return item_pickup;
+    }
+    public static String getLastItemCrafted() {
+        return item_crafted;
+    }
+    public static String getLastItemSmelted() {
+        return item_smelted;
+    }
     public static void clear() {
         events.clear();
         MobJS.events.clear();
@@ -288,6 +323,12 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(clear);
             Method getMsg = EventManagerJS.class.getMethod("getMsg");
             methodsToAdd.add(getMsg);
+            Method item_pickup = EventManagerJS.class.getMethod("getLastItemPickup");
+            methodsToAdd.add(item_pickup);
+            Method item_crafted = EventManagerJS.class.getMethod("getLastItemCrafted");
+            methodsToAdd.add(item_crafted);
+            Method item_smelted = EventManagerJS.class.getMethod("getLastItemSmelted");
+            methodsToAdd.add(item_smelted);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

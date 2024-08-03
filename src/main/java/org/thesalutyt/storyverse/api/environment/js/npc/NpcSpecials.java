@@ -113,6 +113,7 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
     public static void setHeadRotation(String npcId, Double yaw) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.yRot = yaw.floatValue();
+        npc.rotY = (double) yaw.floatValue();
     }
     public static void setRotation(String npcId, Double rotation) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();

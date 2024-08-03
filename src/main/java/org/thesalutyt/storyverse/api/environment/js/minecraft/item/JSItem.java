@@ -14,6 +14,7 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class JSItem extends ScriptableObject implements EnvResource, JSResource {
     public String id;
@@ -34,6 +35,18 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
                 this.count, this.NBT);
         items.put(this.id, this);
     }
+
+    public JSItem(ItemStack item) {
+        this.id = Objects.requireNonNull(item.getItem().getRegistryName()).toString();
+        this.count = item.getCount();
+        this.nbt = String.valueOf(item.getTag());
+        this.NBT = (CompoundNBT) new CompoundNBT().put(this.nbt, new CompoundNBT());
+        this.item = new ItemStack(Registry.ITEM.get(new ResourceLocation(this.id.split(":")[0],
+                this.id.split(":")[1])),
+                this.count, this.NBT);
+        items.put(this.id, this);
+    }
+
     public ItemStack getStack() {
         return this.item;
     }
@@ -69,6 +82,10 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
         return this.id;
     }
 
+    public Boolean itemEquals(String item, String second) {
+        return items.get(item).item.getStack() == items.get(second).item.getStack();
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
     public static void putIntoScope(Scriptable scope) {
@@ -84,6 +101,8 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
             methodsToAdd.add(getItem);
             Method getItemStack = JSItem.class.getMethod("getStack", String.class);
             methodsToAdd.add(getItemStack);
+            Method itemEquals = JSItem.class.getMethod("itemEquals", String.class, String.class);
+            methodsToAdd.add(itemEquals);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

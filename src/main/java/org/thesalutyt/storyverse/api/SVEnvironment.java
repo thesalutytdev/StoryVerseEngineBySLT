@@ -5,13 +5,31 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.cutscene.Cutscene;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneManager;
 import org.thesalutyt.storyverse.api.camera.cutscene.Moving;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.action.Action;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
+import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.api.environment.js.waiter.WaitCondition;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.utils.ErrorPrinter;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class SVEnvironment{
     public static String envId = "storyverse";
@@ -37,6 +55,7 @@ public class SVEnvironment{
             if (Action.onEveryTick.isEmpty()) {
                 return;
             }
+            WaitCondition.tick(ticks);
             Action.runOnTick(ticks);
         }
         public static void resetTick() {
@@ -57,6 +76,137 @@ public class SVEnvironment{
         }
         public static Entity getCameraEntity() {
             return Minecraft.getInstance().cameraEntity;
+        }
+    }
+
+    public static class ScriptEvaluator extends ScriptableObject {
+        public static HashMap<UUID, ScriptEvaluator> evaluators = new HashMap<>();
+        private boolean inWorld = false;
+        private Thread evaluatorThread;
+        private UUID id;
+        private boolean evaluating = false;
+        public ScriptEvaluator(boolean inWorld) {
+            this.inWorld = inWorld;
+            this.id = UUID.randomUUID();
+            this.evaluating = false;
+
+            evaluators.put(id, this);
+        }
+
+        public static ScriptEvaluator getInstance() {
+            return new ScriptEvaluator(true);
+        }
+
+        public ScriptEvaluator getEvaluator() {
+            return this;
+        }
+
+        public ScriptEvaluator configure(String script, Scriptable scope) {
+            new Thread(() -> {
+                if (evaluating) {
+                    throw new IllegalStateException("Already evaluating");
+                }
+                if (!inWorld) {
+                    throw new IllegalStateException("Not in world");
+                }
+
+                this.evaluatorThread = new Thread(() -> {
+                    Path fullPath = Paths.get(SVEngine.SCRIPTS_PATH + "/" + script).toAbsolutePath();
+                    if (fullPath.startsWith(SVEngine.SCRIPTS_PATH)) {
+                        try {
+                            InputStreamReader reader = new InputStreamReader(new FileInputStream(fullPath.toString()), StandardCharsets.UTF_8);
+                            System.out.println("Running script: " + fullPath.toString());
+                            Context ctx = Context.getCurrentContext();
+                            System.out.println("Got context");
+                            System.out.println("Scope: " + scope);
+                            ctx.evaluateReader(
+                                    scope,
+                                    reader,
+                                    fullPath.toString(),
+                                    1,
+                                    new Object()
+                            );
+                            System.out.println("Done running script: " + fullPath.toString());
+                        } catch (final FileNotFoundException e) {
+                            System.out.println("Invalid path (" + script + "): file not found");
+                            Chat.sendError("Invalid path (" + script + "): file not found");
+                        } catch (final IOException e) {
+                            System.out.println("Invalid path (" + script + "): IOException " + e);
+                            Chat.sendError("Invalid path (" + script + "): IOException " + e);
+
+                        } catch (final RhinoException e) {
+                            System.out.println("Script error: " + e);
+                            Chat.sendError("Script error: " + e);
+                        } catch (final Exception e) {
+                            System.out.println("Java exception: " + e.getMessage());
+                            Chat.sendError("Java exception: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("Invalid path (" + script + "): path ends outside root script directory");
+                    }
+                });
+                this.evaluatorThread.setName(configureName(script));
+            }).start();
+            return this;
+        }
+
+        public ScriptEvaluator waitTime(long timeout) {
+            try {
+                this.evaluatorThread.wait(timeout);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            return this;
+        }
+
+        public ScriptEvaluator start() {
+            this.evaluatorThread.start();
+            return this;
+        }
+
+        public ScriptEvaluator stop() {
+            this.evaluating = false;
+            this.evaluatorThread.interrupt();
+            return this;
+        }
+
+        public ScriptEvaluator hardStop() {
+            this.evaluating = false;
+            this.evaluatorThread.stop();
+            return this;
+        }
+
+        public void close() {
+            if (this.evaluating) {
+                this.evaluatorThread.interrupt();
+            }
+        }
+
+        public boolean isEvaluating() {
+            return this.evaluating;
+        }
+
+        public UUID getUUID() {
+            return this.id;
+        }
+
+        private String configureName(String script) {
+            return String.format("[SCRIPT_EVALUATOR_%s] %s", this.id, script);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("ScriptEvaluator{" +
+                    "environmentVersion=%s," +
+                    "id=%s," +
+                    "threadName=%s}", SVEnvironment.version, this.id, this.evaluatorThread.getName());
+        }
+
+        @Override
+        public String getClassName() {
+            return "ScriptEvaluator";
         }
     }
 }

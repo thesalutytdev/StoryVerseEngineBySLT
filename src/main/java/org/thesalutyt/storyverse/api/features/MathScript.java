@@ -108,10 +108,45 @@ public class MathScript extends ScriptableObject implements EnvResource {
         return range;
     }
 
+    public static NativeArray range(Double min, Double max) {
+        return new NativeArray(getRange(min, max).toArray());
+    }
+
+    public static Double squareDistance(NativeArray a, NativeArray b) {
+        double x = (double) a.get(0);
+        double y = (double) a.get(1);
+        double z = (double) a.get(2);
+
+        double x2 = (double) b.get(0);
+        double y2 = (double) b.get(1);
+        double z2 = (double) b.get(2);
+
+        double finX = x - x2;
+        double finY = y - y2;
+        double finZ = z - z2;
+
+        return finX * finX + finY * finY + finZ * finZ;
+    }
+
+    public static Double squareDistance(Double[] a, Double[] b) {
+        double x = a[0];
+        double y = a[1];
+        double z = a[2];
+
+        double x2 = b[0];
+        double y2 = b[1];
+        double z2 = b[2];
+
+        double finX = x - x2;
+        double finY = y - y2;
+        double finZ = z - z2;
+
+        return finX * finX + finY * finY + finZ * finZ;
+    }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
-        Server ef = new Server();
+        MathScript ef = new MathScript();
         ef.setParentScope(scope);
 
         try {
@@ -159,6 +194,10 @@ public class MathScript extends ScriptableObject implements EnvResource {
             methodsToAdd.add(factorial);
             Method getRange = MathScript.class.getMethod("getRange", Double.class, Double.class);
             methodsToAdd.add(getRange);
+            Method range = MathScript.class.getMethod("range", Double.class, Double.class);
+            methodsToAdd.add(range);
+            Method squareDistance = MathScript.class.getMethod("squareDistance", NativeArray.class, NativeArray.class);
+            methodsToAdd.add(squareDistance);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

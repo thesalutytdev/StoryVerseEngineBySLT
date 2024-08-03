@@ -56,6 +56,8 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public Boolean canPickup = true;
     public Boolean isAttackable = true;
     public PlayerEntity tradingPlayer;
+    public Double rotX;
+    public Double rotY;
     public Boolean showProgressBar = true;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(100, ItemStack.EMPTY);
     private static final DataParameter<Boolean> SLEEP =
@@ -103,6 +105,17 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         if (focusedEntity != null) {
             lookAt(EntityAnchorArgument.Type.EYES, new Vector3d(focusedEntity.getX(), focusedEntity.getEyeY(), focusedEntity.getZ()));
         }
+        if (rotX != null || rotY != null) {
+            assert rotX != null;
+            xRot = rotX.floatValue();
+            xRotO = rotX.floatValue();
+            yHeadRot = rotY.floatValue();
+            yBodyRot = rotY.floatValue();
+            yRot = rotY.floatValue();
+            yRotO = rotY.floatValue();
+            yHeadRotO = rotY.floatValue();
+            yBodyRotO = rotY.floatValue();
+        }
         if(ticks % 10 == 0) {
             setTexturePath(getTexturePath());
             setModelPath(getModelPath());
@@ -135,6 +148,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         });
         this.goalSelector.addGoal(5, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(6, new SwimGoal(this));
+        applyOpenDoorsAbility();
         super.registerGoals();
     }
 

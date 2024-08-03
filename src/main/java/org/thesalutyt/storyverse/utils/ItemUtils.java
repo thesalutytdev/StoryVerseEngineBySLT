@@ -35,8 +35,8 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
         takeStack(Server.getPlayerByName(playerName), JSItem.getStack(itemStack));
     }
 
-    public static void matches(String stack1, String stack2) {
-        matches(JSItem.getStack(stack1), JSItem.getStack(stack2));
+    public static boolean matches(String stack1, String stack2) {
+        return matches(JSItem.getStack(stack1), JSItem.getStack(stack2));
     }
 
     public static void takeStack(PlayerEntity player, ItemStack itemStack, int neededCount) {

@@ -63,8 +63,8 @@ public class MovingJS extends ScriptableObject implements EnvResource, JSResourc
     }
 
     public MovingJS finishRot(Double pith, Double yaw) {
-        this.finishRotX = yaw;
-        this.finishRotY = pith;
+        this.finishRotX = pith;
+        this.finishRotY = yaw;
         return this;
     }
 

@@ -1,8 +1,8 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license="All rigths reserved"
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+license="All rigths reserved."
+issueTrackerURL="https://github.com/thesalutytdev/StoryVerseEngineBySLT/issues" #optional
 [[mods]]
 modId="storyverse"
 version="${mod_version}"
@@ -10,11 +10,11 @@ displayName="StoryVerse"
 mixins="storyverse.mixins.json"
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
-#logoFile="storyverse.png" #optional
-credits="Thanks to Tripod311 for some big help with this mod" #optional
+displayURL="https://github.com/thesalutytdev/StoryVerseEngineBySLT" #optional
+logoFile="storyverse.png" #optional
+credits="Thanks to Tripod311 for some big help with interpreter" #optional
 authors="TheSALUTYT" #optional
-description='''Mod, that helps you with creating story-based maps from StoryVerse Team!'''
+description='''Mod, that helps you with creating story-based maps from StoryVerse Team.'''
 [[dependencies.storyverse]]
    modId="forge"
    mandatory=true

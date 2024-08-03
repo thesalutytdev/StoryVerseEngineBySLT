@@ -12,6 +12,7 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.screen.gui.elements.*;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
+import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
@@ -34,9 +35,15 @@ public class CustomizableGui extends Screen implements EnvResource {
     public int gMouseY;
     public Integer cursorX = this.width;
     public Integer cursorY = this.height;
+    public ScriptableGui guiScriptableReference;
+    public Runnable onTick;
 
     public CustomizableGui(String title) {
         super(new StringTextComponent(title));
+    }
+
+    public void setScriptableReference(ScriptableGui guiScriptableReference) {
+        this.guiScriptableReference = guiScriptableReference;
     }
 
     @Override
@@ -60,7 +67,6 @@ public class CustomizableGui extends Screen implements EnvResource {
             this.blit(matrixStack, 0, 0, 1024, 512,
                     1024, 512);
         }
-        drawCenteredString(matrixStack, this.font, title, this.width / 2, 85, 16777215);
         if (!entities.isEmpty()) {
             for (GuiDisplayEntity entity : entities) {
                 InventoryScreen.renderEntityInInventory(entity.widget.x.intValue(), entity.widget.y.intValue(),
@@ -77,7 +83,7 @@ public class CustomizableGui extends Screen implements EnvResource {
             for (GuiLabel label : labels) {
                 if (label.centred) {
                     drawCenteredString(matrixStack, this.font, new StringTextComponent(label.message),
-                            label.y, label.size, Color.WHITE.getAlpha());
+                            label.y, label.size, Color.WHITE.getRGB());
                 } else {
                     drawString(matrixStack, this.font, new StringTextComponent(label.message), label.x,
                             label.y, label.size);
@@ -99,6 +105,17 @@ public class CustomizableGui extends Screen implements EnvResource {
         this.gMouseX = mouseX;
         this.gMouseY = mouseY;
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (onTick != null) {
+            onTick.run();
+        }
+        if (guiScriptableReference != null) {
+            guiScriptableReference.tick();
+        }
     }
 
     @Override
