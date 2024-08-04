@@ -64,6 +64,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
             case "interact":
             case "kill":
             case "shift-interact":
+            case "on-pickup":
                 eventLoop.runImmediate(() -> {
                     if (!events.containsKey(mob)) {
                         HashMap<String, ArrayList<BaseFunction>> interactEvent = new HashMap<>();

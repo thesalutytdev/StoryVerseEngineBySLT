@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.thesalutyt.storyverse.api.ActResult;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
@@ -45,6 +47,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable, IMerchant {
@@ -59,6 +62,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public Double rotX;
     public Double rotY;
     public Boolean showProgressBar = true;
+    public ItemStack lastItemPicked = ItemStack.EMPTY;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(100, ItemStack.EMPTY);
     private static final DataParameter<Boolean> SLEEP =
             EntityDataManager.defineId(NPCEntity.class, DataSerializers.BOOLEAN);
@@ -383,10 +387,13 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public void setDropChance(EquipmentSlotType slotType, float chance) {
         switch(slotType.getType()) {
             case HAND:
-                this.handDropChances[0] = 1000;
+                Arrays.fill(this.armorDropChances, chance);
                 break;
             case ARMOR:
-                this.armorDropChances[0] = 1000;
+                Arrays.fill(this.armorDropChances, 1000);
+                break;
+            default:
+                break;
         }
 
     }
@@ -409,15 +416,8 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     public void onItemPickup(ItemEntity item) {
         try {
-            assert Minecraft.getInstance().player != null;
-            PlayerEntity player = Minecraft.getInstance().player;
-            Quest quest = QuestManager.quests.get(player);
-            if (!(quest.entityAdder instanceof NPCEntity) || quest.goal != GoalType.NPC_ITEM
-                    || !(item.getItem().equals(NPCItem.items.get(this).stack))) {
-
-            }
-            System.out.println("Picked up item: " + item.getItem());
-            NPCItem.items.get(this).complete();
+            this.lastItemPicked = item.getItem();
+            MobJS.runEvent(MobJS.getMob(this.getUUID()), "on-pickup");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -468,6 +468,10 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             e.printStackTrace();
             return ActResult.FAILED;
         }
+    }
+
+    public ItemStack getLastItemPicked() {
+        return lastItemPicked;
     }
 
     public void hold(Hand hand, ItemStack item) {

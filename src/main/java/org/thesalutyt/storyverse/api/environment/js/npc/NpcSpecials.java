@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.environment.js.npc;
 
+import net.minecraft.item.ItemStack;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -26,9 +27,9 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
     }
     public static void stop(String npcId) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setLoopAnim("");
-        npc.setOnceAnim("");
-        npc.setEmote("");
+        npc.setLoopAnim("animation.npc.idle");
+        npc.setOnceAnim("animation.npc.idle");
+        npc.setEmote("animation.npc.idle");
     }
     public static void set_emote(String npcId, String emote) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
@@ -144,6 +145,14 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         NPCEntity attackable = (NPCEntity) MobJS.getMob(npcId).getEntity();
         return attackable.isAttackable();
     }
+    public static ItemStack getLastItemStackPicked(String npcId) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        return npc.getLastItemPicked();
+    }
+    public static String getLastItemPicked(String npcId) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        return npc.getLastItemPicked().toString();
+    }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         NpcSpecials ef = new NpcSpecials();
@@ -208,6 +217,10 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             methodsToAdd.add(setNoDie);
             Method getNoDie = NpcSpecials.class.getMethod("getNoDie", String.class);
             methodsToAdd.add(getNoDie);
+            Method getLastItemPicked = NpcSpecials.class.getMethod("getLastItemPicked", String.class);
+            methodsToAdd.add(getLastItemPicked);
+            Method getLastItem = NpcSpecials.class.getMethod("getLastItemStackPicked", String.class);
+            methodsToAdd.add(getLastItem);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

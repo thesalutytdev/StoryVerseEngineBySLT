@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.environment.js.event;
 
 import com.google.common.base.Ascii;
 import net.minecraft.client.util.SearchTreeManager;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -52,6 +53,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     private static String item_pickup = "";
     private static String item_crafted = "";
     private static String item_smelted = "";
+    private static String item_used = "";
+    private static String player = "";
     private static Integer key_pressed = 0;
     private static BlockPos blockPos = new BlockPos(0, 0, 0);
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
@@ -71,19 +74,22 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static void onBreak(BlockEvent.BreakEvent event) {
         block_broken = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
         blockPos = event.getPos();
-
+        player = event.getPlayer().getName().getContents();
         runEvent("block_break");
     }
     @SubscribeEvent
     public static void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {
         block_interacted = event.getUseBlock().toString();
         block_interacted_name = event.getWorld().getBlockState(event.getPos()).getBlock().getName().toString();
+        player = event.getPlayer().getName().getContents();
+        item_used = event.getItemStack().toString();
         runEvent("block_interact");
     }
     @SubscribeEvent
     public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         dimension_new = event.getTo().getRegistryName().toString();
         dimension_old = event.getFrom().getRegistryName().toString();
+        player = event.getPlayer().getName().getContents();
         runEvent("dimension_change");
     }
     @SubscribeEvent
@@ -95,6 +101,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     @SubscribeEvent
     public static void onItemToss(ItemTossEvent event) {
         item_dropped = event.getEntityItem().getItem().getDisplayName().getContents();
+        player = event.getPlayer().getName().getContents();
         runEvent("item_dropped");
     }
     @SubscribeEvent
@@ -111,18 +118,21 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     @SubscribeEvent
     public static void onItemPickup(PlayerEvent.ItemPickupEvent event) {
         item_pickup = event.getStack().getItem().getRegistryName().getPath();
+        player = event.getPlayer().getName().getContents();
         runEvent("item_pickup");
     }
 
     @SubscribeEvent
     public static void onItemCraft(PlayerEvent.ItemCraftedEvent event) {
         item_crafted = event.getCrafting().toString();
+        player = event.getPlayer().getName().getContents();
         runEvent("item_crafted");
     }
 
     @SubscribeEvent
     public static void onItemSmelt(PlayerEvent.ItemSmeltedEvent event) {
         item_smelted = event.getSmelting().toString();
+        player = event.getPlayer().getName().getContents();
         runEvent("item_smelted");
     }
 
@@ -250,6 +260,12 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static String getLastItemSmelted() {
         return item_smelted;
     }
+    public static String getLastItemUsed() {
+        return item_used;
+    }
+    public static String getPlayerName() {
+        return player;
+    }
     public static void clear() {
         events.clear();
         MobJS.events.clear();
@@ -329,6 +345,14 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(item_crafted);
             Method item_smelted = EventManagerJS.class.getMethod("getLastItemSmelted");
             methodsToAdd.add(item_smelted);
+            Method item_used = EventManagerJS.class.getMethod("getLastItemUsed");
+            methodsToAdd.add(item_used);
+            Method getPlayerName = EventManagerJS.class.getMethod("getPlayerName");
+            methodsToAdd.add(getPlayerName);
+            Method getClassName = EventManagerJS.class.getMethod("getClassName");
+            methodsToAdd.add(getClassName);
+            Method getResourceId = EventManagerJS.class.getMethod("getResourceId");
+            methodsToAdd.add(getResourceId);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

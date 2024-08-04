@@ -1,4 +1,5 @@
 {
+  "entity.storyverse.npc": "Неигровой Персонаж (НПС)",
   "damage.storyverse.script": "Скриптовый урон",
   "error_code.storyverse.scriptFailed": "Скрипт не может быть исполнен",
   "gui.creator.title": "Создание скриптов",

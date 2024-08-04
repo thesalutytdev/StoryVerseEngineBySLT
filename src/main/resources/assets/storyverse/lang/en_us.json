@@ -1,4 +1,5 @@
 {
+  "entity.storyverse.npc": "Character (NPC)",
   "prefix.storyverse.mob_controller": "Mob Controller",
   "prefix.storyverse.world_actions": "World Actions",
   "prefix.storyverse.sound": "Sound",

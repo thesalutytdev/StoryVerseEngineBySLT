@@ -129,6 +129,7 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
                 item = new UsableItem(name, new Item.Properties().tab(tab).
                         rarity(getRarity(rarity)).stacksTo(maxStackSize), functions);
             }
+            ModItems.addItem(item);
         });
     }
 
@@ -142,7 +143,7 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
                 return CustomTab.tabs.get(name).tab;
             }
         }
-    }
+     }
 
     public static Rarity getRarity(String name) {
         switch (name.toLowerCase()) {

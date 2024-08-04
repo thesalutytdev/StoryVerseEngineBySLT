@@ -11,6 +11,7 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunction
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.features.BackgroundScript;
+import org.thesalutyt.storyverse.api.features.Sounds;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.effects.adder.EffectAdder;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
@@ -37,6 +38,7 @@ public class ModInterpreter {
             BackgroundScript.putIntoScope(scope);
             Delayed.putIntoScope(scope);
             EffectAdder.putIntoScope(scope);
+            Sounds.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

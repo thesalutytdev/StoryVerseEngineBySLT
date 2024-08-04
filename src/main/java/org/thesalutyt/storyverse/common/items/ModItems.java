@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
+import org.thesalutyt.storyverse.common.items.adder.UsableItem;
 
 import java.util.ArrayList;
 
@@ -25,5 +26,10 @@ public class ModItems {
     public static void addItem(CustomItem item) {
         ModItems.ITEMS.register(item.name,
                 () -> item.item);
+    }
+
+    public static void addItem(UsableItem item) {
+        ModItems.ITEMS.register(item.name,
+                () -> item);
     }
 }

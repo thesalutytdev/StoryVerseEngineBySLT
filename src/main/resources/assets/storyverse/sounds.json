@@ -1,1 +1,9 @@
-{}
+{
+  "fire-in-the-hole": {
+    "category": "voice",
+    "subtitle": "storyverse.fire_in_the_hole",
+    "sounds": [
+      "storyverse:fire-in-the-hole-geometry-dash"
+    ]
+  }
+}
