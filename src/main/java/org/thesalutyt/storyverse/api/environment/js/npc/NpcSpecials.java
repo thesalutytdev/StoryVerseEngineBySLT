@@ -1,5 +1,7 @@
 package org.thesalutyt.storyverse.api.environment.js.npc;
 
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
@@ -106,6 +108,10 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
     public static void setSleep(String npcId, Boolean sleeping) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.setSleep(sleeping);
+    }
+    public static void clearInventory(String npcId) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
     }
     public static void setMove(String npcId, Boolean moving) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
@@ -221,6 +227,8 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             methodsToAdd.add(getLastItemPicked);
             Method getLastItem = NpcSpecials.class.getMethod("getLastItemStackPicked", String.class);
             methodsToAdd.add(getLastItem);
+            Method clearInventory = NpcSpecials.class.getMethod("clearInventory", String.class);
+            methodsToAdd.add(clearInventory);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

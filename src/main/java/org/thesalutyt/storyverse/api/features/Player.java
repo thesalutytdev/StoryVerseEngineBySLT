@@ -1,5 +1,8 @@
 package org.thesalutyt.storyverse.api.features;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -9,6 +12,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
@@ -394,6 +398,18 @@ public class Player extends ScriptableObject implements EnvResource{
         return MathScript.squareDistance(new Double[]{player.getX(), player.getY(), player.getZ()}, pos_) < radius;
     }
 
+    public static Boolean getAdvancement(String playerName, String advancementName) {
+        ResourceLocation achievementID = new ResourceLocation(advancementName);
+        ServerPlayerEntity player = Server.getPlayerByName(playerName);
+        Advancement advancement = player.getServer().getAdvancements().getAdvancement(achievementID);
+        if (advancement != null) {
+            AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
+            return progress.isDone();
+        } else {
+            return false;
+        }
+    }
+
     public static ServerPlayerEntity getPlayer() {
         return player;
     }
@@ -529,6 +545,8 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(setSpeed);
             Method nearTo = Player.class.getMethod("nearTo", NativeArray.class, Double.class);
             methodsToAdd.add(nearTo);
+            Method getAdvancement = Player.class.getMethod("getAdvancement", String.class, String.class);
+            methodsToAdd.add(getAdvancement);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
