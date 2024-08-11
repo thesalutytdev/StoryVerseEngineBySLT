@@ -113,6 +113,15 @@ public class CutsceneJS extends ScriptableObject implements EnvResource, JSResou
         return this;
     }
 
+    public CutsceneJS stop() {
+        if (!built) {
+            Chat.sendError("Cutscene has not been built yet");
+            return this;
+        }
+        cutscene.finish();
+        return this;
+    }
+
     public static CutsceneType toCutsceneType(int type) {
         switch (type) {
             case 0: {

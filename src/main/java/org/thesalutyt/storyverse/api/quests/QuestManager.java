@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.quests;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
@@ -7,12 +8,14 @@ import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.NPCItem;
+import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
 import org.thesalutyt.storyverse.utils.ItemUtils;
 
 import java.util.HashMap;
 
 public class QuestManager {
     public static HashMap<PlayerEntity, Quest> quests = new HashMap<>();
+    public static HashMap<LivingEntity, ItemQuest> itemQuests = new HashMap<>();
 
     public QuestManager() {
         Quest.questList.forEach(quest -> quests.put(Player.getPlayer(), Quest.quests.get(quest)));

@@ -24,5 +24,6 @@
   "text.storyverse.model_list": "Список моделей",
   "text.storyverse.set_female": "Сделать женщиной",
   "text.storyverse.set_male": "Сделать мужчиной",
-  "text.storyverse.model_settings": "Настройки моделей"
+  "text.storyverse.model_settings": "Настройки моделей",
+  "text.storyverse.quests.item.bring": "Принеси мне %COUNT% %ITEM%!"
 }

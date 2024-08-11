@@ -106,24 +106,23 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     public void tick() {
         super.tick();
+        setTexturePath(getTexturePath());
+        setModelPath(getModelPath());
+        setAnimationPath(getAnimationPath());
         if (focusedEntity != null) {
             lookAt(EntityAnchorArgument.Type.EYES, new Vector3d(focusedEntity.getX(), focusedEntity.getEyeY(), focusedEntity.getZ()));
         }
         if (rotX != null || rotY != null) {
             assert rotX != null;
-            xRot = rotX.floatValue();
-            xRotO = rotX.floatValue();
-            yHeadRot = rotY.floatValue();
-            yBodyRot = rotY.floatValue();
-            yRot = rotY.floatValue();
-            yRotO = rotY.floatValue();
-            yHeadRotO = rotY.floatValue();
-            yBodyRotO = rotY.floatValue();
-        }
-        if(ticks % 10 == 0) {
-            setTexturePath(getTexturePath());
-            setModelPath(getModelPath());
-            setAnimationPath(getAnimationPath());
+            assert rotY != null;
+//            xRot = rotX.floatValue();
+//            xRotO = rotX.floatValue();
+//            yHeadRot = rotY.floatValue();
+//            yBodyRot = rotY.floatValue();
+//            yRot = rotY.floatValue();
+//            yRotO = rotY.floatValue();
+//            yHeadRotO = rotY.floatValue();
+//            yBodyRotO = rotY.floatValue();
         }
         ticks++;
     }

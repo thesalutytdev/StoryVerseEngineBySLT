@@ -23,6 +23,7 @@ import org.thesalutyt.storyverse.api.environment.js.waiter.WaitConditionJS;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
+import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.api.special.character.Reputation;
@@ -79,6 +80,7 @@ public class Interpreter {
             RootJS.putIntoScope(scope);
             CameraMoveSceneJS.putIntoScope(scope);
             WaitConditionJS.putIntoScope(scope);
+            ItemQuest.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

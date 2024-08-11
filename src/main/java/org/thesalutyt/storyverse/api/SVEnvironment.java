@@ -102,7 +102,6 @@ public class SVEnvironment{
         }
 
         public ScriptEvaluator configure(String script, Scriptable scope) {
-            new Thread(() -> {
                 if (evaluating) {
                     throw new IllegalStateException("Already evaluating");
                 }
@@ -124,7 +123,7 @@ public class SVEnvironment{
                                     reader,
                                     fullPath.toString(),
                                     1,
-                                    new Object()
+                                    null
                             );
                             System.out.println("Done running script: " + fullPath.toString());
                         } catch (final FileNotFoundException e) {
@@ -147,7 +146,6 @@ public class SVEnvironment{
                     }
                 });
                 this.evaluatorThread.setName(configureName(script));
-            }).start();
             return this;
         }
 
@@ -163,6 +161,7 @@ public class SVEnvironment{
 
         public ScriptEvaluator start() {
             this.evaluatorThread.start();
+            this.evaluating = true;
             return this;
         }
 
@@ -182,6 +181,10 @@ public class SVEnvironment{
             if (this.evaluating) {
                 this.evaluatorThread.interrupt();
             }
+        }
+
+        public Thread getEvaluatorThread() {
+            return this.evaluatorThread;
         }
 
         public boolean isEvaluating() {

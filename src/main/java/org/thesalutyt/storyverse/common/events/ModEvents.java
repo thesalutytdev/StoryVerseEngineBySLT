@@ -65,8 +65,10 @@ public class ModEvents {
     @SubscribeEvent
     public static void onJoined (PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.isCanceled() && event.getEntity() instanceof PlayerEntity) {
-            SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
-            System.out.println("[ModEvents::onWorldJoin] Created new interpreter");
+            if (SVEngine.interpreter == null) {
+                SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
+                System.out.println("[ModEvents::onJoined] Created new interpreter");
+            }
             ModEvents.inWorld = true;
             if (worldStarterScript != null) {
                 Script.runScript(worldStarterScript);
@@ -82,8 +84,6 @@ public class ModEvents {
         if (event.isCanceled()) {
             return;
         } else {
-            SVEngine.interpreter.close();
-            System.out.println("[ModEvents::onServerStopping] Interpreter closed");
             EventManagerJS.events.clear();
             inWorld = false;
         }
@@ -91,8 +91,6 @@ public class ModEvents {
     @SubscribeEvent
     public static void worldUnloaded(WorldEvent.Unload event) {
         if (!event.getWorld().isClientSide()) {
-            SVEngine.interpreter.close();
-            System.out.println("[ModEvents::worldUnloaded] Interpreter closed");
             EventManagerJS.events.clear();
             inWorld = false;
             SVEnvironment.Root.playerLeft(event);

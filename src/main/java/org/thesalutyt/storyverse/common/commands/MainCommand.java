@@ -68,6 +68,7 @@ public class MainCommand {
                         .then(Commands.literal("vector").executes((command) -> {return vec(command.getSource());}))
                 .then(Commands.literal("up").executes((command) -> {return goUp(command.getSource());}))
                 .then(Commands.literal("test")
+                        .then(Commands.literal("run").executes((command) -> {return runTest(command.getSource());}))
                         .then(Commands.literal("res_loc").executes(
                                 (command) -> {return resourceLocationTest(command.getSource());})
                         )
@@ -308,6 +309,12 @@ public class MainCommand {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return 1;
+    }
+
+    public static int runTest(CommandSource source) throws CommandSyntaxException {
+        Script.evalRun(SVEngine.SCRIPTS_PATH + "eval_run.js");
 
         return 1;
     }

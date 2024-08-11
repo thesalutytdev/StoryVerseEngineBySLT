@@ -16,6 +16,7 @@ import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
+import org.thesalutyt.storyverse.common.events.ModEvents;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.lang.reflect.Method;
@@ -99,7 +100,9 @@ public class Script extends ScriptableObject implements EnvResource {
 
     public static void evalRun(String script) {
         new Thread(() -> {
-            tasks.put(script, new ExternalFunctions(SVEngine.SCRIPTS_PATH).evaluate(script));
+            tasks.put(script, new SVEnvironment.ScriptEvaluator(ModEvents.inWorld).configure(script, interpreter.getScope()));
+            Thread thread = tasks.get(script).getEvaluatorThread();
+            tasks.get(script).start();
         }).start();
     }
 

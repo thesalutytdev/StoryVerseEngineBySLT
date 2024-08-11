@@ -1,9 +1,11 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
@@ -24,11 +26,13 @@ import org.thesalutyt.storyverse.api.environment.resource.wrappers.EntityData;
 import org.thesalutyt.storyverse.api.environment.resource.wrappers.NPCData;
 import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
+import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.InteractGoal;
+import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
 import org.thesalutyt.storyverse.api.screen.gui.npc_settings.NpcSetter;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
@@ -110,6 +114,10 @@ public class MobJS extends ScriptableObject implements EnvResource {
                             npc.offers, 0, false);
                 }
             }
+        }
+        if (QuestManager.itemQuests.containsKey(event.getTarget())) {
+            ItemQuest quest = QuestManager.itemQuests.get(event.getTarget());
+            quest.tryComplete(Server.getPlayerByName(event.getPlayer().getName().getContents()));
         }
         if (!event.getPlayer().isCrouching()) {
             runEvent(getMob(event.getTarget().getUUID()), "interact");

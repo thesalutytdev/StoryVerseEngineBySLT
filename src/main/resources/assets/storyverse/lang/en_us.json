@@ -24,5 +24,6 @@
   "text.storyverse.model_list": "Models List",
   "text.storyverse.set_female": "Set Female",
   "text.storyverse.set_male": "Set Male",
-  "text.storyverse.model_settings": "Model Settings"
+  "text.storyverse.model_settings": "Model Settings",
+  "text.storyverse.quests.item.bring": "Bring me %COUNT% %ITEM%!"
 }
