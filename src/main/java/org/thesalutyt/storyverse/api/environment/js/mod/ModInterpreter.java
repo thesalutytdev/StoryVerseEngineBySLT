@@ -11,11 +11,14 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunction
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.features.BackgroundScript;
+import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.api.features.Sounds;
+import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.effects.adder.EffectAdder;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
+import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
 import org.thesalutyt.storyverse.common.tabs.adder.CustomTab;
 
 public class ModInterpreter {
@@ -39,6 +42,9 @@ public class ModInterpreter {
             Delayed.putIntoScope(scope);
             EffectAdder.putIntoScope(scope);
             Sounds.putIntoScope(scope);
+            CustomArmorMaterial.putIntoScope(scope);
+            Script.putIntoScope(scope);
+            ScriptableGui.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

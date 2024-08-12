@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.common.items.adder;
 
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
+import org.thesalutyt.storyverse.common.items.adder.armor.ArmorItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +15,7 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.common.elements.ICustomElement;
 import org.thesalutyt.storyverse.common.items.ModItems;
+import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
 import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 import org.thesalutyt.storyverse.common.tabs.adder.CustomTab;
 
@@ -31,6 +34,7 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
 
     public CustomItem(String name, int maxStackSize, ItemGroup tab) {
         this.name = name;
+
         this.maxStackSize = maxStackSize;
         this.tab = tab;
         this.item = new Item(new Item.Properties().tab(tab).stacksTo(maxStackSize));
@@ -76,7 +80,9 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
 
     public CustomItem create(String name, Integer maxStackSize, String group) {
         ItemGroup tab = getGroup(group);
-        return new CustomItem(name, maxStackSize, tab);
+        CustomItem cs = new CustomItem(name, maxStackSize, tab);
+        cs.register();
+        return cs;
     }
     public CustomItem foodItem(String name, Integer maxStackSize, String group, Boolean isFast, Integer nutrition,
                                Boolean alwaysEat, Boolean meat, Double saturationModifier) {
@@ -111,6 +117,7 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
                     .food(new Food.Builder().nutrition(nutrition).fast().alwaysEat().meat().saturationMod(saturationModifier.floatValue()).build())
                     .stacksTo(maxStackSize));
         }
+
         return cs;
     }
 
@@ -132,6 +139,33 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
             ModItems.addItem(item);
         });
     }
+
+    public ArmorItem armorItem(String name, Integer maxStackSize, String material,
+                               String group,
+                               String slot,
+                               Boolean fireResistant,
+                               Boolean unbreakable) {
+        ItemGroup tab = getGroup(group);
+        IArmorMaterial arm_mat = getArmorMaterial(material);
+        EquipmentSlotType slot_type = getSlotType(slot);
+        ArmorItem item;
+        Item.Properties props;
+        assert tab != null;
+        if (fireResistant && unbreakable) {
+            props = new Item.Properties().tab(tab).stacksTo(maxStackSize).fireResistant().setNoRepair();
+        } else if (fireResistant) {
+            props = new Item.Properties().tab(tab).stacksTo(maxStackSize).fireResistant();
+        } else if (unbreakable) {
+            props = new Item.Properties().tab(tab).stacksTo(maxStackSize).setNoRepair();
+        } else {
+            props = new Item.Properties().tab(tab).stacksTo(maxStackSize);
+        }
+
+        item = new ArmorItem(name, arm_mat, slot_type, props);
+        ModItems.addItem(item);
+        return item;
+    }
+
 
     public static ItemGroup getGroup(String name) {
         switch (name) {
@@ -159,6 +193,51 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
         }
     }
 
+    public static IArmorMaterial getArmorMaterial(String material) {
+        if (!(CustomArmorMaterial.materials.containsKey(material))) {
+            switch (material.toLowerCase()) {
+                case "leather":
+                    return ArmorMaterial.LEATHER;
+                case "iron":
+                    return ArmorMaterial.IRON;
+                case "chain":
+                    return ArmorMaterial.CHAIN;
+                case "gold":
+                    return ArmorMaterial.GOLD;
+                case "diamond":
+                    return ArmorMaterial.DIAMOND;
+                case "netherite":
+                    return ArmorMaterial.NETHERITE;
+                case "turtle":
+                    return ArmorMaterial.TURTLE;
+                case "null":
+                default:
+                    return null;
+
+            }
+        } else {
+            return CustomArmorMaterial.materials.get(material);
+        }
+    }
+
+    public static EquipmentSlotType getSlotType(String slot) {
+        switch (slot.toLowerCase()) {
+            case "head":
+                return EquipmentSlotType.HEAD;
+            case "chest":
+                return EquipmentSlotType.CHEST;
+            case "legs":
+                return EquipmentSlotType.LEGS;
+            case "feet":
+                return EquipmentSlotType.FEET;
+            case "offhand":
+                return EquipmentSlotType.OFFHAND;
+            case "mainhand":
+            default:
+                return EquipmentSlotType.MAINHAND;
+        }
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         CustomItem cs = new CustomItem();
@@ -166,8 +245,6 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
         try {
             Method create = CustomItem.class.getMethod("create", String.class, Integer.class, String.class);
             methodsToAdd.add(create);
-            Method register = CustomItem.class.getMethod("register", String.class);
-            methodsToAdd.add(register);
             Method food = CustomItem.class.getMethod("foodItem",
                     String.class, Integer.class,
                     String.class, Boolean.class, Integer.class,
@@ -183,6 +260,15 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
             methodsToAdd.add(getGroup);
             Method getRarity = CustomItem.class.getMethod("getRarity", String.class);
             methodsToAdd.add(getRarity);
+            Method armorItem = CustomItem.class.getMethod("armorItem",
+                    String.class, Integer.class,
+                    String.class, String.class, String.class,
+                    Boolean.class, Boolean.class);
+            methodsToAdd.add(armorItem);
+            Method getArmorMaterial = CustomItem.class.getMethod("getArmorMaterial", String.class);
+            methodsToAdd.add(getArmorMaterial);
+            Method getSlotType = CustomItem.class.getMethod("getSlotType", String.class);
+            methodsToAdd.add(getSlotType);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

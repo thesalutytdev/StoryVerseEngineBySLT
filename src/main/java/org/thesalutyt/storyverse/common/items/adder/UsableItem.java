@@ -23,25 +23,20 @@ public class UsableItem extends Item {
     public UsableItem(String name, Properties properties) {
         super(properties);
         this.name = name;
-        reg();
     }
 
     public UsableItem(String name, Properties properties, Runnable onUse) {
         super(properties);
         this.name = name;
+
         this.onUse = onUse;
-        reg();
     }
 
     public UsableItem(String name, Properties properties, ArrayList<BaseFunction> onUseFunctions) {
         super(properties);
         this.name = name;
-        this.onUseFunctions = onUseFunctions;
-        reg();
-    }
 
-    private void reg() {
-        ModItems.ITEMS.register(name, () -> this);
+        this.onUseFunctions = onUseFunctions;
     }
 
     @Override

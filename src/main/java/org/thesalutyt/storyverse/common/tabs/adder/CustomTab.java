@@ -52,6 +52,15 @@ public class CustomTab extends ScriptableObject implements ICustomElement, JSRes
         }
         tabs.put(name, this);
     }
+
+    public static void setBackGroundImage(String tab, String path) {
+        tabs.get(tab).tab.setBackgroundImage(new ResourceLocation(path));
+    }
+
+    public static void hideScroll(String tab) {
+        tabs.get(tab).tab.hideScroll();
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope(Scriptable scope) {
         CustomTab tab = new CustomTab();
@@ -62,6 +71,11 @@ public class CustomTab extends ScriptableObject implements ICustomElement, JSRes
             Method crWP = CustomTab.class.getMethod("create", String.class, String.class, Boolean.class,
                     Boolean.class);
             methodsToAdd.add(crWP);
+            Method setBackGroundImage = CustomTab.class.getMethod("setBackGroundImage",
+                    String.class, String.class);
+            methodsToAdd.add(setBackGroundImage);
+            Method hideScroll = CustomTab.class.getMethod("hideScroll", String.class);
+            methodsToAdd.add(hideScroll);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

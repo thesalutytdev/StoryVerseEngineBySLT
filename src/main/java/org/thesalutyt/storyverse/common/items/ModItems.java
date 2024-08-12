@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.common.items;
 
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -8,8 +9,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
 import org.thesalutyt.storyverse.common.items.adder.UsableItem;
+import org.thesalutyt.storyverse.common.items.adder.armor.ArmorItem;
+import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ModItems {
     public static ArrayList<RegistryObject<Item>> items = new ArrayList<>();
@@ -31,5 +35,17 @@ public class ModItems {
     public static void addItem(UsableItem item) {
         ModItems.ITEMS.register(item.name,
                 () -> item);
+    }
+    public static void addItem(ArmorItem item) {
+        ModItems.ITEMS.register(item.name,
+                () -> item);
+    }
+    public static void addItem(Item item) {
+        ModItems.ITEMS.register(Objects.requireNonNull(item.getRegistryName()).getPath(),
+                () -> item);
+    }
+    public static void addItem(RegistryObject<Item> item) {
+        ModItems.ITEMS.register(item.getId().getPath(),
+                item);
     }
 }
