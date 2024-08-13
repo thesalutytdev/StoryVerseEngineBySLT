@@ -269,6 +269,10 @@ public class CustomItem extends ScriptableObject implements ICustomElement {
             methodsToAdd.add(getArmorMaterial);
             Method getSlotType = CustomItem.class.getMethod("getSlotType", String.class);
             methodsToAdd.add(getSlotType);
+            Method register = CustomItem.class.getMethod("register");
+            methodsToAdd.add(register);
+            Method register_ = CustomItem.class.getMethod("register", String.class);
+            methodsToAdd.add(register_);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
