@@ -3,25 +3,18 @@ package org.thesalutyt.storyverse.api.screen.gui.npc_settings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiDisplayEntity;
-import org.thesalutyt.storyverse.api.screen.gui.elements.TextArea;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class NpcModel extends Screen {
     public NPCEntity npc;

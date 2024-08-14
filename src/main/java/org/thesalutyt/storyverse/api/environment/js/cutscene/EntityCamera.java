@@ -3,25 +3,21 @@ package org.thesalutyt.storyverse.api.environment.js.cutscene;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.thesalutyt.storyverse.api.camera.entityCamera.Camera;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.api.features.Player;
+import org.thesalutyt.storyverse.api.features.Server;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class EntityCamera extends ScriptableObject implements EnvResource, JSResource {
-    public static void setCameraEntity(String mobId) {
-        if (!(MobJS.controllers.containsKey(mobId))) {
-            return;
-        }
-        new Camera().setCameraEntity(MobJS.controllers.get(mobId).getMobEntity());
+    public static void setCameraEntity(String player, String mobId) {
+        Server.getPlayerByName(player).setCamera(MobJS.controllers.get(mobId).getMobEntity());
     }
 
-    public static void resetCamera() {
-        new Camera().resetCamera(Player.getPlayer());
+    public static void resetCamera(String player) {
+        Server.getPlayerByName(player).setCamera(null);
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -30,9 +26,9 @@ public class EntityCamera extends ScriptableObject implements EnvResource, JSRes
         ef.setParentScope(scope);
 
         try {
-            Method setCamera = EntityCamera.class.getMethod("setCameraEntity", String.class);
+            Method setCamera = EntityCamera.class.getMethod("setCameraEntity", String.class, String.class);
             methodsToAdd.add(setCamera);
-            Method resetCamera = EntityCamera.class.getMethod("resetCamera");
+            Method resetCamera = EntityCamera.class.getMethod("resetCamera", String.class);
             methodsToAdd.add(resetCamera);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

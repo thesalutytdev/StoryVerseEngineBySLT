@@ -1,19 +1,14 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MerchantOffer;
-import net.minecraft.item.MerchantOffers;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,10 +23,7 @@ import org.thesalutyt.storyverse.api.features.MobController;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
-import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
-import org.thesalutyt.storyverse.api.quests.goal.GoalType;
-import org.thesalutyt.storyverse.api.quests.goal.InteractGoal;
 import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
 import org.thesalutyt.storyverse.api.screen.gui.npc_settings.NpcSetter;
 import org.thesalutyt.storyverse.common.entities.Entities;
@@ -69,6 +61,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
             case "kill":
             case "shift-interact":
             case "on-pickup":
+            case "hurt":
                 eventLoop.runImmediate(() -> {
                     if (!events.containsKey(mob)) {
                         HashMap<String, ArrayList<BaseFunction>> interactEvent = new HashMap<>();
@@ -125,6 +118,17 @@ public class MobJS extends ScriptableObject implements EnvResource {
             runEvent(getMob(event.getTarget().getUUID()), "shift-interact");
         }
     }
+
+    @SubscribeEvent
+    public static void onHurt(LivingHurtEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        runEvent(getMob(entity.getUUID()), "hurt");
+        if (entity instanceof LivingEntity) {
+            System.out.println("Player hurt " + entity.getUUID() + " (" + event.getEntityLiving().getType() + ")");
+            runEvent(getMob(entity.getUUID()), "hurt");
+        }
+    }
+
     @SubscribeEvent
     public static void onKilled(LivingDeathEvent event) {
         LivingEntity entity = event.getEntityLiving();
@@ -147,8 +151,8 @@ public class MobJS extends ScriptableObject implements EnvResource {
                if (events.get(mob).containsKey(id)) {
                    ArrayList<BaseFunction> arr = events.get(mob).get(id);
                    Context ctx = Context.getCurrentContext();
-                   for (int i=0;i<arr.size(); i++) {
-                       arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                   for (BaseFunction baseFunction : arr) {
+                       baseFunction.call(ctx, SVEngine.interpreter.getScope(),
                                SVEngine.interpreter.getScope(), new Object[]{mob});
                    }
                }
@@ -161,8 +165,8 @@ public class MobJS extends ScriptableObject implements EnvResource {
                 if (events.get(getMob(mobId)).containsKey(id)) {
                     ArrayList<BaseFunction> arr = events.get(getMob(mobId)).get(id);
                     Context ctx = Context.getCurrentContext();
-                    for (int i=0;i<arr.size(); i++) {
-                        arr.get(i).call(ctx, SVEngine.interpreter.getScope(),
+                    for (BaseFunction baseFunction : arr) {
+                        baseFunction.call(ctx, SVEngine.interpreter.getScope(),
                                 SVEngine.interpreter.getScope(), new Object[]{getMob(mobId)});
                     }
                 }

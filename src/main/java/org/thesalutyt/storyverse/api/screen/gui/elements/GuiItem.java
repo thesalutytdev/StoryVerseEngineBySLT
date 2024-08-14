@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.api.screen.gui.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 
 public class GuiItem {

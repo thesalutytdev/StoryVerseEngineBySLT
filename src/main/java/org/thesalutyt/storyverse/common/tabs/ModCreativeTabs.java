@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.common.tabs;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import org.thesalutyt.storyverse.common.items.ModItems;
 
 public class ModCreativeTabs {

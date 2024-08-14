@@ -1,7 +1,6 @@
 package org.thesalutyt.storyverse.api.environment.js.npc;
 
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;

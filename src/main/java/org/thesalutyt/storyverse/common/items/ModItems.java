@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.common.items;
 
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -10,7 +9,6 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
 import org.thesalutyt.storyverse.common.items.adder.UsableItem;
 import org.thesalutyt.storyverse.common.items.adder.armor.ArmorItem;
-import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
 
 import java.util.ArrayList;
 import java.util.Objects;

@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.api.environment.resource.wrappers;
 
-import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 public class NPCData extends EntityData {

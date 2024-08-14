@@ -6,14 +6,9 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import org.mozilla.javascript.BaseFunction;
-import org.mozilla.javascript.Context;
-import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GuiButton extends Button {

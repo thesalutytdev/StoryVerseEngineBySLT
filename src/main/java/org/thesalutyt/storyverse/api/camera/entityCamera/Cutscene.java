@@ -42,7 +42,7 @@ public class Cutscene implements EnvResource {
         this.player = player;
         this.beforeGameMode = GameType.SURVIVAL;
         player.setGameMode(GameType.SPECTATOR);
-        Server.execute(player, "/gamemode spectator @s");
+        Server.execute("/gamemode spectator @s");
 
         return this;
     }

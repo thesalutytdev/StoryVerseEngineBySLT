@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.api.environment.js.minecraft.block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mozilla.javascript.FunctionObject;
@@ -14,7 +15,6 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class Locker extends ScriptableObject implements EnvResource, JSResource {
@@ -46,6 +46,15 @@ public class Locker extends ScriptableObject implements EnvResource, JSResource 
         if (lockedBlocks.contains(event.getPos())) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onExplode(ExplosionEvent event) {
+        lockedBlocks.forEach(blockPos -> {
+            if (event.getExplosion().getToBlow().contains(blockPos)) {
+                event.setCanceled(true);
+            }
+        });
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();

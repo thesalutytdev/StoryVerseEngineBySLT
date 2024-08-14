@@ -8,8 +8,6 @@ import org.thesalutyt.storyverse.api.features.Chat;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.thesalutyt.storyverse.common.events.ModEvents.player;
-
 public class LegacyEventManager {
     private LegacyEventManager eventManager;
     public HashMap<UUID, Boolean> managers = new HashMap<>();

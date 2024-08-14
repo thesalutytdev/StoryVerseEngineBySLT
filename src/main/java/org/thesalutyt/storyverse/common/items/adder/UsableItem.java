@@ -10,7 +10,6 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import org.thesalutyt.storyverse.common.items.ModItems;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;

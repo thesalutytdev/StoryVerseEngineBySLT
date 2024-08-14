@@ -675,6 +675,11 @@ public class MobController extends ScriptableObject implements EnvResource {
         mobControllers.put(controller.getUUID(), controller);
     }
 
+    public MobController changeDimension(String world) {
+        this.entity.changeDimension(Objects.requireNonNull(Objects.requireNonNull(Server.getWorld(world).getServer()).getLevel(Server.getWorld(world).dimension())));
+        return this;
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     private void registerFunctions() {
 
@@ -791,6 +796,8 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setPos);
             Method jump = MobController.class.getMethod("jump");
             methodsToAdd.add(jump);
+            Method changeDimension = MobController.class.getMethod("changeDimension", String.class);
+            methodsToAdd.add(changeDimension);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

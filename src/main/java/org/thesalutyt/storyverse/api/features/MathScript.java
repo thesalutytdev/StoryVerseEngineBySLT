@@ -4,7 +4,6 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.thesalutyt.storyverse.api.camera.cutscene.math.InterpolationCalculator;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;

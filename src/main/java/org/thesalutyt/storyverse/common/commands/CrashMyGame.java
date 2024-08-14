@@ -8,8 +8,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.text.StringTextComponent;
 
-import java.sql.Time;
-
 public class CrashMyGame {
     public CrashMyGame(CommandDispatcher<CommandSource> dispatcher){
         dispatcher.register(Commands.literal("crash").executes((command) -> {

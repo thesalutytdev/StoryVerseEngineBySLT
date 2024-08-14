@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.screen.gui.elements;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import org.mozilla.javascript.BaseFunction;
@@ -9,7 +10,6 @@ import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import net.minecraft.client.gui.widget.button.Button;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;

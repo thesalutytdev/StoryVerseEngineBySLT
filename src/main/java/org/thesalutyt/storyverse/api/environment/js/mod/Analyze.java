@@ -1,16 +1,12 @@
 package org.thesalutyt.storyverse.api.environment.js.mod;
 
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
-import org.thesalutyt.storyverse.api.features.Chat;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;

@@ -1,7 +1,7 @@
 package org.thesalutyt.storyverse.effekseer;
 
-import org.thesalutyt.storyverse.effekseer.enums.TextureType;
 import Effekseer.swig.EffekseerEffectCore;
+import org.thesalutyt.storyverse.effekseer.enums.TextureType;
 
 import java.io.IOException;
 import java.io.InputStream;

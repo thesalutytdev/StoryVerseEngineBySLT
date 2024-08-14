@@ -1,28 +1,23 @@
 package org.thesalutyt.storyverse.common.events;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.server.command.ConfigCommand;
-
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
-import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.common.commands.CrashMyGame;
 import org.thesalutyt.storyverse.common.commands.MainCommand;
+import org.thesalutyt.storyverse.common.commands.adder.CustomCommand;
 import org.thesalutyt.storyverse.common.commands.home.ClearHome;
 import org.thesalutyt.storyverse.common.commands.home.GetHomePos;
 import org.thesalutyt.storyverse.common.commands.home.ReturnHome;
@@ -31,8 +26,6 @@ import org.thesalutyt.storyverse.common.commands.scripts.PlayerFuncsDebug;
 
 import java.util.HashMap;
 import java.util.UUID;
-
-import static org.thesalutyt.storyverse.api.environment.js.ScriptProperties.worldStarterScript;
 
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class ModEvents {
@@ -50,6 +43,7 @@ public class ModEvents {
         new CrashMyGame(event.getDispatcher());
         new ClearHome(event.getDispatcher());
         new PlayerFuncsDebug(event.getDispatcher());
+        new CustomCommand(event.getDispatcher());
 
         ConfigCommand.register(event.getDispatcher());
     }
@@ -64,15 +58,12 @@ public class ModEvents {
     @SubscribeEvent
     public static void onJoined (PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.isCanceled() && event.getEntity() instanceof PlayerEntity) {
+            ModEvents.inWorld = true;
             if (SVEngine.interpreter == null) {
                 SVEngine.interpreter = new Interpreter(SVEngine.SCRIPTS_PATH);
                 System.out.println("[ModEvents::onJoined] Created new interpreter");
-            }
-            ModEvents.inWorld = true;
-            if (worldStarterScript != null) {
-                Script.runScript(worldStarterScript);
-            } else {
-                return;
+                System.out.println(Minecraft.getInstance().cameraEntity);
+                SVEnvironment.Root.playerJoined(event);
             }
         } else {
             return;

@@ -1,10 +1,11 @@
 package org.thesalutyt.storyverse.api.special;
 
-import org.thesalutyt.storyverse.common.events.ModEvents;
-import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+import org.thesalutyt.storyverse.common.events.ModEvents;
+
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class FadeScreenPacket {
     public UUID uuid;

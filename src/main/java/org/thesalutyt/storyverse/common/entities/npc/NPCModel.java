@@ -1,13 +1,10 @@
 package org.thesalutyt.storyverse.common.entities.npc;
 
 import net.minecraft.util.ResourceLocation;
-import org.thesalutyt.storyverse.SVEngine;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
-
-import java.io.File;
 
 public class NPCModel extends AnimatedGeoModel<NPCEntity> {
     @Override

@@ -1,5 +1,7 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
@@ -9,8 +11,6 @@ import org.thesalutyt.storyverse.api.environment.js.cutscene.EntityCamera;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.nonTick.CameraMoveSceneJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.CutsceneJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.EntityCutsceneJS;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.MovingJS;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.block.JSBlock;
@@ -21,6 +21,7 @@ import org.thesalutyt.storyverse.api.environment.js.npc.Trader;
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.environment.js.waiter.WaitConditionJS;
+import org.thesalutyt.storyverse.api.environment.json.JSON;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
@@ -83,6 +84,7 @@ public class Interpreter {
             WaitConditionJS.putIntoScope(scope);
             ItemQuest.putIntoScope(scope);
             EntityCamera.putIntoScope(scope);
+            JSON.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

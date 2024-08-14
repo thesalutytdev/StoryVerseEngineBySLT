@@ -1,7 +1,6 @@
 package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.*;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

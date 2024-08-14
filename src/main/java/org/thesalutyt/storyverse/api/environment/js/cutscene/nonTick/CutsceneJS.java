@@ -1,21 +1,15 @@
 package org.thesalutyt.storyverse.api.environment.js.cutscene.nonTick;
 
 import net.minecraft.util.math.BlockPos;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.thesalutyt.storyverse.api.camera.cutscene.nonTicking.Cutscene;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneArguments;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneType;
+import org.thesalutyt.storyverse.api.camera.cutscene.nonTicking.Cutscene;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.features.Time;
-import org.thesalutyt.storyverse.utils.ErrorPrinter;
 import org.thesalutyt.storyverse.utils.ItemUtils;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 public class CutsceneJS extends ScriptableObject implements EnvResource, JSResource {
     public String player;

@@ -6,13 +6,9 @@ import net.minecraft.world.GameType;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.cutscene.instance.CutsceneInstance;
 import org.thesalutyt.storyverse.api.camera.cutscene.math.InterpolationCalculator;
-import org.thesalutyt.storyverse.api.features.MathScript;
 import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.Time;
-import org.thesalutyt.storyverse.utils.ErrorPrinter;
-
-import java.util.ArrayList;
 
 public class Moving extends CutsceneInstance {
     public BlockPos finishPos;

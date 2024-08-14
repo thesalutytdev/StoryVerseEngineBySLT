@@ -7,13 +7,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.lwjgl.system.CallbackI;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;
@@ -91,19 +89,12 @@ public class Server extends ScriptableObject implements EnvResource {
     @Documentate(
             desc = "Executes command"
     )
-    public static int execute(PlayerEntity player, String command) {
-        if (server == null) {
-            return 0;
-        } else {
-            assert mc.player != null;
-            mc.player.chat(command);
-            return 1;
-        }
-    }
     public static int execute(String command) {
-        assert mc.player != null;
-        mc.player.chat(command);
-        return 1;
+        if(server == null) return 0;
+        CommandSource source = server.createCommandSourceStack()
+                .withEntity(Player.getPlayerEntity())
+                .withPermission(4);
+        return server.getCommands().performCommand(source, command);
     }
 
     public static String getOpPlayer() {

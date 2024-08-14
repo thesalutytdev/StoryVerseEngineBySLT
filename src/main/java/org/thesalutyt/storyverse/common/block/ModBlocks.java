@@ -10,7 +10,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
 import org.thesalutyt.storyverse.common.items.ModItems;
-import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =

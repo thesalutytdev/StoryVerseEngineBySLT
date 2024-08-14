@@ -3,7 +3,6 @@ package org.thesalutyt.storyverse.api.environment.js.async;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;

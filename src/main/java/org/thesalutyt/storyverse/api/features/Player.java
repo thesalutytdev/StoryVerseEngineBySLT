@@ -2,12 +2,10 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -16,16 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.network.PacketDistributor;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
-import org.thesalutyt.storyverse.api.special.FadeScreenPacket;
-import org.thesalutyt.storyverse.common.dimension.mover.Mover;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
-import org.thesalutyt.storyverse.common.specific.networking.Networking;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -266,7 +260,6 @@ public class Player extends ScriptableObject implements EnvResource{
             case "spectator":
                 setGameMode(3);
             default:
-                return;
         }
     }
 
@@ -360,9 +353,7 @@ public class Player extends ScriptableObject implements EnvResource{
     public static void move(Double x, Double y, Double z, Double speed) {
         MobEntity entity = (MobEntity) player.getEntity();
 
-        entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
-            entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
-        });
+        entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> entity.goalSelector.removeGoal(prioritizedGoal.getGoal()));
         BlockPos pos = new BlockPos(x, y, z);
         MoveGoal moveGoal = new MoveGoal(entity, pos, speed.floatValue());
         entity.goalSelector.addGoal(1, moveGoal);
@@ -405,13 +396,29 @@ public class Player extends ScriptableObject implements EnvResource{
     public static Boolean getAdvancement(String playerName, String advancementName) {
         ResourceLocation achievementID = new ResourceLocation(advancementName);
         ServerPlayerEntity player = Server.getPlayerByName(playerName);
-        Advancement advancement = player.getServer().getAdvancements().getAdvancement(achievementID);
+        Advancement advancement = Objects.requireNonNull(player.getServer()).getAdvancements().getAdvancement(achievementID);
         if (advancement != null) {
             AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
             return progress.isDone();
         } else {
             return false;
         }
+    }
+
+    public static void give(String itemStack) {
+        player.addItem(JSItem.getStack(itemStack));
+    }
+
+    public static void addTag(String tag) {
+        player.addTag(tag);
+    }
+
+    public static void removeTag(String tag) {
+        player.removeTag(tag);
+    }
+
+    public static void setHealth(Double health) {
+        player.setHealth(health.floatValue());
     }
 
     public static ServerPlayerEntity getPlayer() {
@@ -553,6 +560,14 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(getAdvancement);
             Method getHealth = Player.class.getMethod("getHealth");
             methodsToAdd.add(getHealth);
+            Method addTag = Player.class.getMethod("addTag", String.class);
+            methodsToAdd.add(addTag);
+            Method removeTag = Player.class.getMethod("removeTag", String.class);
+            methodsToAdd.add(removeTag);
+            Method give = Player.class.getMethod("give", String.class);
+            methodsToAdd.add(give);
+            Method setHealth = Player.class.getMethod("setHealth", Double.class);
+            methodsToAdd.add(setHealth);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

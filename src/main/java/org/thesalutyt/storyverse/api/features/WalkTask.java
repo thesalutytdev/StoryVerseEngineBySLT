@@ -2,14 +2,10 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.math.BlockPos;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class WalkTask extends ScriptableObject implements EnvResource {

@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.common.dimension.mover;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;

@@ -12,7 +12,6 @@ import org.thesalutyt.storyverse.utils.RenderUtils;
 import org.thesalutyt.storyverse.utils.TimeHelper;
 
 import java.awt.*;
-import java.util.Random;
 
 public class QuestGui extends Screen {
     Minecraft mc = Minecraft.getInstance();

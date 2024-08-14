@@ -11,7 +11,6 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class LocationCreator extends ScriptableObject implements EnvResource, JSResource {
     public static HashMap<String, ResourceLocation> locations = new HashMap<>();

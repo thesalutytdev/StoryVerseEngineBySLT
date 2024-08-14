@@ -10,11 +10,12 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
-import org.thesalutyt.storyverse.api.features.BackgroundScript;
-import org.thesalutyt.storyverse.api.features.Script;
-import org.thesalutyt.storyverse.api.features.Sounds;
+import org.thesalutyt.storyverse.api.environment.json.JSON;
+import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.common.block.adder.CustomBlock;
+import org.thesalutyt.storyverse.common.commands.adder.CommandAdder;
+import org.thesalutyt.storyverse.common.dimension.Dimensions;
 import org.thesalutyt.storyverse.common.effects.adder.EffectAdder;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
@@ -45,6 +46,11 @@ public class ModInterpreter {
             CustomArmorMaterial.putIntoScope(scope);
             Script.putIntoScope(scope);
             ScriptableGui.putIntoScope(scope);
+            CommandAdder.putIntoScope(scope);
+            Dimensions.putIntoScope(scope);
+            JSON.putIntoScope(scope);
+            File.putIntoScope(scope);
+            Random.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

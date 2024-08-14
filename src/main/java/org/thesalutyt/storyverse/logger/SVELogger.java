@@ -1,10 +1,11 @@
 package org.thesalutyt.storyverse.logger;
 
+import org.thesalutyt.storyverse.SVEngine;
+import org.thesalutyt.storyverse.annotations.Documentate;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.thesalutyt.storyverse.SVEngine;
-import org.thesalutyt.storyverse.annotations.Documentate;
 
 public class SVELogger {
     @Documentate(

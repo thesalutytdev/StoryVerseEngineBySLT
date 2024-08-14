@@ -6,7 +6,6 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import org.thesalutyt.storyverse.StoryVerse;
-import org.thesalutyt.storyverse.api.features.Timer;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 

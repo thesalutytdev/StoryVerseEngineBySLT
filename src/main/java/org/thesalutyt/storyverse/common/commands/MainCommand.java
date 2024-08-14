@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
@@ -37,8 +38,6 @@ import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertGui;
 import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertType;
 import org.thesalutyt.storyverse.api.screen.gui.test.RLC;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
-
-import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.api.special.character.Reputation;
 import org.thesalutyt.storyverse.api.special.character.ReputationScreen;
 import org.thesalutyt.storyverse.common.entities.Entities;
@@ -178,8 +177,8 @@ public class MainCommand {
         ServerPlayerEntity player = source.getPlayerOrException();
         Server server = new Server();
 
-        Server.execute(player, "Command executor works fine :D");
-        Server.execute(player, "/tp @s ~1 ~5 ~1");
+        Server.execute("Command executor works fine :D");
+        Server.execute("/tp @s ~1 ~5 ~1");
 
         return 1;
     }

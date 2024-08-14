@@ -1,15 +1,14 @@
 package org.thesalutyt.storyverse.api.environment.events;
 
 import net.minecraft.client.settings.KeyBinding;
-import org.mozilla.javascript.*;
-import org.thesalutyt.storyverse.SVEngine;
+import org.mozilla.javascript.BaseFunction;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 

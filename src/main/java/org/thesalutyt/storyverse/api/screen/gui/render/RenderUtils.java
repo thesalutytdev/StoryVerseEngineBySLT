@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glColor4f;
 
 public class RenderUtils {
     public static void drawCircleRect(float x, float y, float x1, float y1, float radius, int color) {

@@ -13,8 +13,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.*;
@@ -27,7 +25,6 @@ import org.thesalutyt.storyverse.api.environment.js.minecraft.block.JSBlock;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.events.EventType;
-import software.bernie.example.registry.BlockRegistry;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -354,7 +351,7 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
 
     public static void setOnTimeChange(BaseFunction f, String time) {
         EventLoop.getLoopInstance().runImmediate(() -> {
-            switch (time) {
+            switch (time.toUpperCase()) {
                 case "DAY": {
                     onTimeChange.put("day", f);
                     break;

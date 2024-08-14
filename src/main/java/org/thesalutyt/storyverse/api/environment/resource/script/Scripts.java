@@ -9,9 +9,7 @@ import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.features.Server;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Scripts implements EnvResource {
     public static ArrayList<String> scripts = new ArrayList<>();

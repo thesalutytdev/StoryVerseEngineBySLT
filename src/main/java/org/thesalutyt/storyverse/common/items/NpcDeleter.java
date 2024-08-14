@@ -3,7 +3,6 @@ package org.thesalutyt.storyverse.common.items;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.RegistryObject;
 import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 
 public class NpcDeleter extends Item {

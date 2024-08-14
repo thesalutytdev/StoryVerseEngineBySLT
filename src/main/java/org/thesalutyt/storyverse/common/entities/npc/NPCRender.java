@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class NPCRender extends GeoEntityRenderer<NPCEntity> {
     public static ArrayList<NPCRender> renders = new ArrayList<>();

@@ -5,8 +5,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Random;
-
 public class MoveGoal extends Goal {
     protected final CreatureEntity mob;
     protected double speedModifier;

@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.api.environment.resource.wrappers;
 
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
 public class EntityData {

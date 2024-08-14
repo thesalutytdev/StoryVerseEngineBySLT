@@ -25,7 +25,7 @@ public class SVEngine {
     public static final String DOC_LINK = "404:NoDocsAtMoment";
     public static final String PREFIX = "[StoryVerseEngine]";
     public static final String CHAT_PREFIX = "§7[§b§lStory§a§lVerse§7]§r ";
-    public static final String MOD_VERSION = "5.7-Beta";
+    public static final String MOD_VERSION = "5.9-Beta";
     public static final String BORDER = " =========================== ";
     public static final String ON_LINE_BORDER = " || ";
     public static final String DESCRIPTION = "Mod what allows and helps you create story-based maps and series!";

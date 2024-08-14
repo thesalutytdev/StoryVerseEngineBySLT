@@ -11,15 +11,13 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.cutscene.Cutscene;
-import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneManager;
 import org.thesalutyt.storyverse.api.camera.cutscene.Moving;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.action.Action;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
-import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.js.waiter.WaitCondition;
-import org.thesalutyt.storyverse.api.features.*;
-import org.thesalutyt.storyverse.utils.ErrorPrinter;
+import org.thesalutyt.storyverse.api.features.Chat;
+import org.thesalutyt.storyverse.api.features.Script;
+import org.thesalutyt.storyverse.api.features.WorldWrapper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

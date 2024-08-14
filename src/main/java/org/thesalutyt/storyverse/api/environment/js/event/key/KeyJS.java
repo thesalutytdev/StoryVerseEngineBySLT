@@ -1,14 +1,11 @@
 package org.thesalutyt.storyverse.api.environment.js.event.key;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 
 @Mod.EventBusSubscriber(
         modid = StoryVerse.MOD_ID,

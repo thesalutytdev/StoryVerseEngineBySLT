@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.common.items.adder;
 
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
-import org.thesalutyt.storyverse.common.items.adder.armor.ArmorItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,6 +14,7 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.common.elements.ICustomElement;
 import org.thesalutyt.storyverse.common.items.ModItems;
+import org.thesalutyt.storyverse.common.items.adder.armor.ArmorItem;
 import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
 import org.thesalutyt.storyverse.common.tabs.ModCreativeTabs;
 import org.thesalutyt.storyverse.common.tabs.adder.CustomTab;

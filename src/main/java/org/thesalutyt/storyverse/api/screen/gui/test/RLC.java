@@ -1,11 +1,9 @@
 package org.thesalutyt.storyverse.api.screen.gui.test;
 
 import net.minecraft.util.ResourceLocation;
-import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGui;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGuiProperties;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IWidgetList;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 
 public class RLC extends IGui {

@@ -18,7 +18,6 @@ import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.render.RenderUtils;
 import org.thesalutyt.storyverse.api.screen.gui.resource.GuiType;
 
-import javax.naming.ldap.HasControls;
 import java.awt.*;
 import java.util.ArrayList;
 

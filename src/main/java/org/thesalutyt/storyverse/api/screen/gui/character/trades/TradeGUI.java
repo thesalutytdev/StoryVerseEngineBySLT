@@ -1,13 +1,8 @@
 package org.thesalutyt.storyverse.api.screen.gui.character.trades;
 
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.trader.Offers;
 import org.thesalutyt.storyverse.api.environment.trader.TradeOffer;
 import org.thesalutyt.storyverse.api.environment.trader.Trader;
