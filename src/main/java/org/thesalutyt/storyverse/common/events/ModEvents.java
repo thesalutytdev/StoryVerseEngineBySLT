@@ -28,7 +28,6 @@ import org.thesalutyt.storyverse.common.commands.home.GetHomePos;
 import org.thesalutyt.storyverse.common.commands.home.ReturnHome;
 import org.thesalutyt.storyverse.common.commands.home.SetHome;
 import org.thesalutyt.storyverse.common.commands.scripts.PlayerFuncsDebug;
-import org.thesalutyt.storyverse.common.entities.npcNOTWORK.NPCRenderer;
 
 import java.util.HashMap;
 import java.util.UUID;

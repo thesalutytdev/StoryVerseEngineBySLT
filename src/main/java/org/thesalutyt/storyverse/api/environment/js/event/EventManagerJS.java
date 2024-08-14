@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.environment.js.event;
 
 import com.google.common.base.Ascii;
 import net.minecraft.client.util.SearchTreeManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mozilla.javascript.*;
@@ -55,6 +57,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     private static String item_smelted = "";
     private static String item_used = "";
     private static String player = "";
+    private static NativeArray pos_exploded = new NativeArray(3);
     private static Integer key_pressed = 0;
     private static BlockPos blockPos = new BlockPos(0, 0, 0);
     public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
@@ -136,6 +139,16 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         runEvent("item_smelted");
     }
 
+    @SubscribeEvent
+    public static void onExplode(ExplosionEvent event) {
+        if (event.getExplosion().getExploder() instanceof PlayerEntity) {
+            pos_exploded.set(0, event.getExplosion().getPosition().x);
+            pos_exploded.set(1, event.getExplosion().getPosition().y);
+            pos_exploded.set(2, event.getExplosion().getPosition().z);
+            runEvent("exploded");
+        }
+    }
+
     public static void addEventListener(String event_name, BaseFunction function) {
         if (!ModEvents.inWorld) {
             return;
@@ -152,7 +165,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
                 || !Objects.equals(event_name, "key_pressed")
                 || !Objects.equals(event_name, "item_pickup")
                 || !Objects.equals(event_name, "item_crafted")
-                || !Objects.equals(event_name, "item_smelted")) {
+                || !Objects.equals(event_name, "item_smelted")
+                || !Objects.equals(event_name, "exploded")) {
             EventLoop.getLoopInstance().runImmediate(() -> {
                 ArrayList<BaseFunction> functions = new ArrayList<>();
                 functions.add(function);
@@ -202,11 +216,6 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     }
     public static void removeEventListener(String event_name) {
         if (!ModEvents.inWorld) {
-            return;
-        }
-        if (!Objects.equals(event_name, "sleep") && !Objects.equals(event_name, "message")
-        && !Objects.equals(event_name, "block_break") && !Objects.equals(event_name, "block_interact")
-        && Objects.equals(event_name, "dimension_change") && !Objects.equals(event_name, "block_placed")    ) {
             return;
         } else {
             events.remove(event_name);
@@ -266,6 +275,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static String getPlayerName() {
         return player;
     }
+    public static NativeArray getLastExplodedPos() {
+        return pos_exploded;
+    }
+
     public static void clear() {
         events.clear();
         MobJS.events.clear();
@@ -353,6 +366,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(getClassName);
             Method getResourceId = EventManagerJS.class.getMethod("getResourceId");
             methodsToAdd.add(getResourceId);
+            Method getLastExplodedPos = EventManagerJS.class.getMethod("getLastExplodedPos");
+            methodsToAdd.add(getLastExplodedPos);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

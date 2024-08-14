@@ -391,6 +391,10 @@ public class Player extends ScriptableObject implements EnvResource{
         }
     }
 
+    public static Double getHealth() {
+        return (double) player.getHealth();
+    }
+
     public static Boolean nearTo(NativeArray pos, Double radius) {
         System.out.println("nearTo: " + pos.get(0) + " " + pos.get(1) + " " + pos.get(2));
 
@@ -547,6 +551,8 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(nearTo);
             Method getAdvancement = Player.class.getMethod("getAdvancement", String.class, String.class);
             methodsToAdd.add(getAdvancement);
+            Method getHealth = Player.class.getMethod("getHealth");
+            methodsToAdd.add(getHealth);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

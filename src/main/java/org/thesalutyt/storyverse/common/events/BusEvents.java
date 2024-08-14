@@ -4,7 +4,7 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.thesalutyt.storyverse.common.entities.Entities;
-import org.thesalutyt.storyverse.common.entities.npcNOTWORK.NPCEntity;
+import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 @Mod.EventBusSubscriber(
         modid = "storyverse",

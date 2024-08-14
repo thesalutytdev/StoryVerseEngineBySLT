@@ -489,6 +489,10 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         NPCRender.renders.get(0).armor(slot, item);
     }
 
+    public void jump() {
+        this.jumpControl.jump();
+    }
+
     @Override
     public void setTradingPlayer(@Nullable PlayerEntity player) {
         this.tradingPlayer = player;

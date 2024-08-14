@@ -5,6 +5,7 @@ import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.action.Action;
 import org.thesalutyt.storyverse.api.environment.js.async.AsyncJS;
+import org.thesalutyt.storyverse.api.environment.js.cutscene.EntityCamera;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.nonTick.CameraMoveSceneJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.CutsceneJS;
 import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.EntityCutsceneJS;
@@ -81,6 +82,7 @@ public class Interpreter {
             CameraMoveSceneJS.putIntoScope(scope);
             WaitConditionJS.putIntoScope(scope);
             ItemQuest.putIntoScope(scope);
+            EntityCamera.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

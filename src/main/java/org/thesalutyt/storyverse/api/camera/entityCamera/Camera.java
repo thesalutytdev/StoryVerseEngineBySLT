@@ -40,6 +40,7 @@ public class Camera implements EnvResource {
     }
     public void resetCamera(PlayerEntity player) {
         this.cameraEntity = null;
+        Minecraft.getInstance().cameraEntity = null;
     }
 
     public void moveCamera(BlockPos pos, float speed){

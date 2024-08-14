@@ -179,6 +179,15 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
 
+    public MobController jump() {
+        if (this.entity instanceof NPCEntity) {
+            ((NPCEntity) this.entity).jump();
+        } else {
+            this.entity.getJumpControl().jump();
+        }
+        return this;
+    }
+
     @Documentate(
             desc = "Sets custom name for a mob"
     )
@@ -780,7 +789,8 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getZ);
             Method setPos = MobController.class.getMethod("setPos", Double.class, Double.class, Double.class);
             methodsToAdd.add(setPos);
-
+            Method jump = MobController.class.getMethod("jump");
+            methodsToAdd.add(jump);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

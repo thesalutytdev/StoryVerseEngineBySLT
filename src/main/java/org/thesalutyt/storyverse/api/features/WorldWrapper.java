@@ -136,12 +136,21 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return new BlockPos(x, y, z);
     }
     public static EntityType<?> toEntityType(String entityType) {
-        switch (entityType) {
+        switch (entityType.toUpperCase()) {
             case "BAT": {
                 return EntityType.BAT;
             }
             case "SHEEP": {
                 return EntityType.SHEEP;
+            }
+            case "WITHER": {
+                return EntityType.WITHER;
+            }
+            case "SPIDER": {
+                return EntityType.SPIDER;
+            }
+            case "FIREBALL": {
+                return EntityType.FIREBALL;
             }
             case "WITHER_SKELETON": {
                 return EntityType.WITHER_SKELETON;
@@ -316,6 +325,9 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         } else if (block instanceof LeverBlock) {
             LeverBlock self = (LeverBlock) block;
             self.pull(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z));
+        } else if (block instanceof TrapDoorBlock) {
+            TrapDoorBlock self = (TrapDoorBlock) block;
+            self.use(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z), Player.getPlayer(), Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(x, y, z), Direction.DOWN, new BlockPos(x, y, z), false));
         } else {
             System.out.println("Cannot use block " + block);
         }
