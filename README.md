@@ -3,7 +3,7 @@
 <h3>This is an engine, what can help you create<br>
 <b>story-based maps</b></h3>
 <h3>Abilities:</h3>
-
+<h3>ENGINE IS CURRENTLY IN BETA AND SOME THINGS ARE MY EXPERIMENTS, WHAT I FORGOT ABOUT. CHECK IT COMMIT DATE</h3>
 <h4>
 
     · Summon and control mobs
