@@ -67,6 +67,9 @@ public class CustomCommand {
                             break;
                     }
                 }
+                if (commandAdder.permissionLevel > -1) {
+                    command.requires((commandSource) -> commandSource.hasPermission(commandAdder.permissionLevel));
+                }
             }
             dispatcher.register(command);
         });

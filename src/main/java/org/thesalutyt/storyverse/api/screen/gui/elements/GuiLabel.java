@@ -1,8 +1,9 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class GuiLabel extends GuiWidget {
+public class GuiLabel extends GuiWidget implements Serializable {
     public String message;
     public Integer size;
     public Integer x;

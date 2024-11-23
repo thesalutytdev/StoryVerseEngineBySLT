@@ -15,8 +15,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 public class JSItem extends ScriptableObject implements EnvResource, JSResource {
+    public UUID uuid;
     public String id;
     public Integer count;
     public String nbt;
@@ -33,7 +35,7 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
         this.item = new ItemStack(Registry.ITEM.get(new ResourceLocation(this.id.split(":")[0],
                 this.id.split(":")[1])),
                 this.count, this.NBT);
-        items.put(this.id, this);
+        items.put(this.uuid.toString(), this);
     }
 
     public JSItem(ItemStack item) {
@@ -44,7 +46,8 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
         this.item = new ItemStack(Registry.ITEM.get(new ResourceLocation(this.id.split(":")[0],
                 this.id.split(":")[1])),
                 this.count, this.NBT);
-        items.put(this.id, this);
+        this.uuid = UUID.randomUUID();
+        items.put(this.uuid.toString(), this);
     }
 
     public ItemStack getStack() {
@@ -67,8 +70,9 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
         this.item = new ItemStack(Registry.ITEM.get(new ResourceLocation(this.id.split(":")[0],
                 this.id.split(":")[1])),
                 this.count, this.NBT);
-        items.put(this.id, this);
-        return this.id;
+        this.uuid = UUID.randomUUID();
+        items.put(this.uuid.toString(), this);
+        return this.uuid.toString();
     }
     public String item(String resourceId, Integer count, String nbt) {
         this.id = resourceId;
@@ -78,8 +82,9 @@ public class JSItem extends ScriptableObject implements EnvResource, JSResource 
         this.item = new ItemStack(Registry.ITEM.get(new ResourceLocation(this.id.split(":")[0],
                 this.id.split(":")[1])),
                 this.count, this.NBT);
-        items.put(this.id, this);
-        return this.id;
+        this.uuid = UUID.randomUUID();
+        items.put(this.uuid.toString(), this);
+        return this.uuid.toString();
     }
 
     public Boolean itemEquals(String item, String second) {

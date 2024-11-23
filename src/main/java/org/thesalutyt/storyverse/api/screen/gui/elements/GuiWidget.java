@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
-public class GuiWidget {
+import java.io.Serializable;
+
+public class GuiWidget implements Serializable {
     public Double x;
     public Double y;
     public Double width;

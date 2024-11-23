@@ -17,7 +17,7 @@ public class NPCModel extends AnimatedGeoModel<NPCEntity> {
     public ResourceLocation parsePath(String path) {
         String id = path;
         String modId = "storyverse";
-        String name = "animations/npc.animation_1.json";
+        String name = "animations/npc.animation.json";
         if(id.indexOf(":") != -1) {
             modId = id.substring(0,id.indexOf(":"));
         }

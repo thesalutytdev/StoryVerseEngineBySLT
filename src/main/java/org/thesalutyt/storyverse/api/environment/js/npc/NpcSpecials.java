@@ -18,36 +18,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class NpcSpecials extends ScriptableObject implements EnvResource, JSResource {
-    public static void play_once(String npcId, String animation) {
-        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setOnceAnim(animation);
-    }
-    public static void play_looped(String npcId, String animation) {
-        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setLoopAnim(animation);
-    }
     public static void stop(String npcId) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setLoopAnim("animation.npc.idle");
-        npc.setOnceAnim("animation.npc.idle");
         npc.setEmote("animation.npc.idle");
     }
-    public static void set_emote(String npcId, String emote) {
+    public static void emote(String npcId, String emote) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setEmote(emote);
+        npc.setAnimation(emote);
     }
-    public static void play(String npcId, String animation, Integer mode) {
-        switch (mode) {
-            case 0:
-                play_once(npcId, animation);
-                break;
-            case 1:
-                play_looped(npcId, animation);
-                break;
-            default:
-                break;
-        }
-    }
+
     public static void setCanPickup(String npcId, Boolean canPickup) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.canPickup = canPickup;
@@ -55,14 +34,6 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
     public static String getEmote(String npcId) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         return npc.getEmote();
-    }
-    public static String getOnceAnim(String npcId) {
-        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        return npc.getOnceAnim();
-    }
-    public static String getLoopAnim(String npcId) {
-        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        return npc.getLoopAnim();
     }
     public static String getAnimation(String npcId) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
@@ -164,22 +135,14 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         ef.setParentScope(scope);
 
         try {
-            Method playOnce = NpcSpecials.class.getMethod("play_once", String.class, String.class);
-            methodsToAdd.add(playOnce);
-            Method playLooped = NpcSpecials.class.getMethod("play_looped", String.class, String.class);
-            methodsToAdd.add(playLooped);
+            Method emote = NpcSpecials.class.getMethod("emote", String.class, String.class);
+            methodsToAdd.add(emote);
             Method stop = NpcSpecials.class.getMethod("stop", String.class);
             methodsToAdd.add(stop);
-            Method setEmote = NpcSpecials.class.getMethod("set_emote", String.class, String.class);
-            methodsToAdd.add(setEmote);
             Method setCanPickup = NpcSpecials.class.getMethod("setCanPickup", String.class, Boolean.class);
             methodsToAdd.add(setCanPickup);
             Method getEmote = NpcSpecials.class.getMethod("getEmote", String.class);
             methodsToAdd.add(getEmote);
-            Method getOnceAnim = NpcSpecials.class.getMethod("getOnceAnim", String.class);
-            methodsToAdd.add(getOnceAnim);
-            Method getLoopAnim = NpcSpecials.class.getMethod("getLoopAnim", String.class);
-            methodsToAdd.add(getLoopAnim);
             Method getAnimation = NpcSpecials.class.getMethod("getAnimation", String.class);
             methodsToAdd.add(getAnimation);
             Method getWalkAnim = NpcSpecials.class.getMethod("getWalkAnim", String.class);
@@ -192,8 +155,6 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
             methodsToAdd.add(setId);
             Method getId = NpcSpecials.class.getMethod("getId", String.class);
             methodsToAdd.add(getId);
-            Method play = NpcSpecials.class.getMethod("play", String.class, String.class, Integer.class);
-            methodsToAdd.add(play);
             Method focus = NpcSpecials.class.getMethod("focus", String.class, String.class);
             methodsToAdd.add(focus);
             Method unFocus = NpcSpecials.class.getMethod("unFocus", String.class);

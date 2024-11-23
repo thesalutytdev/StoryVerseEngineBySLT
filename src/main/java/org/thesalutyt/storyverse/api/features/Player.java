@@ -9,121 +9,142 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.STitlePacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
+import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.ScriptExecutionPacket;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class Player extends ScriptableObject implements EnvResource{
-    private static ServerPlayerEntity player;
-    public static HashMap<String, ArrayList<BaseFunction>> events = new HashMap<>();
-    public static Boolean isWaterWalking = false;
+    private ServerPlayerEntity player;
+    private static ArrayList<ServerPlayerEntity> players = new ArrayList<>();
+    public Boolean isWaterWalking = false;
 
     public Player(ServerPlayerEntity player) {
-        Player.player = player;
+        this.player = player;
+        players.add(player);
+    }
+
+    public static ServerPlayerEntity getFirstPlayer() {
+        return players.get(0);
+    }
+
+    public static ArrayList<ServerPlayerEntity> getAllRegistered() {
+        return players;
     }
 
     @Documentate(
             desc = "Returns player's name"
     )
-    public static String getPlayerName() {
+    public String getPlayerName() {
         return player.getName().getContents();
     }
     @Documentate(
             desc = "Returns player's experience levels"
     )
-    public static Integer getXPLevels() {
+    public Integer getXPLevels() {
         return player.experienceLevel;
     }
     @Documentate(
             desc = "Gives player's experience levels"
     )
-    public static void giveXPLevels(Integer levels) {
+    public void giveXPLevels(Integer levels) {
         player.giveExperienceLevels(levels);
     }
     @Documentate(
             desc = "Sets player's experience levels"
     )
-    public static void setXPLevels(Integer levels) {
+    public void setXPLevels(Integer levels) {
         player.setExperienceLevels(levels);
     }
 
     @Documentate(
             desc = "Returns player's experience points"
     )
-    public static Integer getXPPoints() {
+    public Integer getXPPoints() {
         return player.totalExperience;
     }
     @Documentate(
             desc = "Gives player's experience levels"
     )
-    public static void giveXPPoints(Integer points) {
+    public void giveXPPoints(Integer points) {
         player.giveExperiencePoints(points);
     }
     @Documentate(
             desc = "Sets player's experience levels"
     )
-    public static void setXPPoints(Integer points) {
+    public void setXPPoints(Integer points) {
         player.setExperiencePoints(points);
     }
 
     @Documentate(
             desc = "Sets player non-killable"
     )
-    public static void setInvulnerable(Boolean is) {
+    public void setInvulnerable(Boolean is) {
         player.setInvulnerable(is);
     }
 
     @Documentate(
             desc = "Sets player invisible"
     )
-    public static void setInvisible(Boolean is) {
+    public void setInvisible(Boolean is) {
         player.setInvisible(is);
     }
     @Documentate(
             desc = "Sets player name visible"
     )
-    public static void setNameVisible(Boolean is) {player.setCustomNameVisible(is);}
+    public void setNameVisible(Boolean is) {player.setCustomNameVisible(is);}
     @Documentate(
             desc = "Applies custom name to a player"
     )
-    public static void setCustomName(String name) {player.setCustomName(new StringTextComponent(name));}
+    public void setCustomName(String name) {player.setCustomName(new StringTextComponent(name));}
 
     @Documentate(
             desc = "Sends player a message"
     )
     public void sendMessage(String text) {
-        Chat.sendMessage(text);
+        player.sendMessage(new StringTextComponent(text), player.getUUID());
     }
 
     @Documentate(
             desc = "Sends player some message with sender name and text"
     )
-    public static void sendNamed(String name, String text) {
-        Chat.sendNamed(name, text);
+    public void sendNamed(String name, String text) {
+        IFormattableTextComponent message = new StringTextComponent("");
+        message.append(String.format("%s[%s]", SVEngine.CHARACTER_COLOR_STR, name));
+        message.append(String.format("§r %s", text));
+
+        player.sendMessage(message, player.getUUID());
     }
     @Documentate(
             desc = "Sends message as player"
     )
-    public static void sendAsPlayer(String message) {
+    public void sendAsPlayer(String message) {
         String final_message = String.format("<%s> %s", getPlayerName(), message);
-        Chat.sendMessage(final_message);
+        player.sendMessage(new StringTextComponent(final_message), player.getUUID());
     }
 
     @Documentate(
             desc = "Sets player's head rotation"
     )
-    public static void setHeadRotation(Double pitch, Double yaw) {
+    public void setHeadRotation(Double pitch, Double yaw) {
         player.xRot = yaw.floatValue();
         player.xRotO = yaw.floatValue();
         player.yHeadRot = pitch.floatValue();
@@ -136,21 +157,21 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's X position"
     )
-    public static Double getX() {
+    public Double getX() {
         return player.getX();
     }
 
     @Documentate(
             desc = "Returns player's Y position"
     )
-    public static Double getY() {
+    public Double getY() {
         return player.getY();
     }
 
     @Documentate(
             desc = "Returns player's Z position"
     )
-    public static Double getZ() {
+    public Double getZ() {
         return player.getZ();
     }
 
@@ -165,78 +186,78 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Sets player's position"
     )
-    public static void setPosition(Double[] pos) {
+    public void setPosition(Double[] pos) {
         player.moveTo(pos[0], pos[1], pos[2]);
     }
 
-    public static void setPosition(Double x, Double y, Double z) {
+    public void setPosition(Double x, Double y, Double z) {
         setPosition(new Double[]{x, y, z});
     }
 
     @Documentate(
             desc = "Teleports player"
     )
-    public static void teleportTo(Double x, Double y, Double z) {
+    public void teleportTo(Double x, Double y, Double z) {
         setPosition(new Double[]{x, y, z});
     }
 
     @Documentate(
             desc = "Returns player's entity"
     )
-    public static Entity getEntity() {
+    public Entity getEntity() {
         return player.getEntity();
     }
-    public static PlayerEntity getPlayerEntity() {
+    public PlayerEntity getPlayerEntity() {
         return (PlayerEntity) player.getEntity();
     }
 
     @Documentate(
             desc = "Makes player ride some entity"
     )
-    public static void startRiding(Object entity) {
+    public void startRiding(Object entity) {
         player.getEntity().startRiding((Entity) entity);
     }
 
-    public static void startRiding(String entity) {
+    public void startRiding(String entity) {
         player.getEntity().startRiding(MobJS.controllers.get(entity).getEntity());
     }
 
-    public static void testRidding() {
+    public void testRidding() {
         player.getEntity().startRiding(player.getEntity());
     }
 
     @Documentate(
             desc = "Stops player from riding"
     )
-    public static void stopRiding() {
+    public void stopRiding() {
         player.getEntity().stopRiding();
     }
 
     @Documentate(
             desc = "Sets player's X position"
     )
-    public static void setX(Double x) {
+    public void setX(Double x) {
         setPosition(x, getY(), getZ());
     }
 
     @Documentate(
             desc = "Sets player's Y position"
     )
-    public static void setY(Double y) {
+    public void setY(Double y) {
         setPosition(getX(), y, getZ());
     }
 
     @Documentate(
             desc = "Sets player's Z position"
     )
-    public static void setZ(Double z) {
+    public void setZ(Double z) {
         setPosition(getX(), getY(), z);
     }
 
     @Documentate(
             desc = "Sets player's game mode"
     )
-    public static void setGameMode(Integer mode) {
+    public void setGameMode(Integer mode) {
         if (mode == 0) {
             player.setGameMode(GameType.SURVIVAL);
 
@@ -249,7 +270,7 @@ public class Player extends ScriptableObject implements EnvResource{
         }
     }
 
-    public static void setGameMode(String mode) {
+    public void setGameMode(String mode) {
         switch (mode) {
             case "survival":
                 setGameMode(0);
@@ -266,46 +287,47 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Toggles player's abilities"
     )
-    public static void canBuild(Boolean method) {
+    public void canBuild(Boolean method) {
         player.abilities.mayBuild = method;
     }
 
-    public static void canFly(Boolean method) {
+    public void canFly(Boolean method) {
         player.abilities.flying = method;
     }
 
-    public static void instantBuild(Boolean method) {
+    public void instantBuild(Boolean method) {
         player.abilities.instabuild = method;
     }
 
-    public static void canDie(Boolean method) {
+    public void canDie(Boolean method) {
         player.abilities.invulnerable = method;
     }
 
     @Documentate(
             desc = "Sets player's speed"
     )
-    public static void setWalkSpeed(Double walkSpeed) {
+    public void setWalkSpeed(Double walkSpeed) {
         player.abilities.setWalkingSpeed(walkSpeed.floatValue());
     }
 
     @Documentate(
             desc = "Sets player's fly speed"
     )
-    public static void setFlyingSpeed(Double flyingSpeed) {
+    public void setFlyingSpeed(Double flyingSpeed) {
         player.abilities.setFlyingSpeed(flyingSpeed.floatValue());
     }
 
     @Documentate(
             desc = "Kills player"
     )
-    public static void kill() {
+    public void kill() {
         player.kill();
     }
-    public static void setPlayerByName(String playerName) {
+    public Player setPlayerByName(String playerName) {
         player = Server.getPlayerByName(playerName);
+        return this;
     }
-    public static void setPlayer(Object newPlayer) {
+    public void setPlayer(Object newPlayer) {
         if (!(newPlayer instanceof ServerPlayerEntity)) {
             return;
         }
@@ -314,28 +336,28 @@ public class Player extends ScriptableObject implements EnvResource{
     @Documentate(
             desc = "Returns player's UUID"
     )
-    public static UUID getUUID() {
+    public UUID getUUID() {
         return player.getUUID();
     }
 
     @Documentate(
             desc = "Hurts player"
     )
-    public static void hurt(Double damage, String damageSource) {
+    public void hurt(Double damage, String damageSource) {
         player.hurt(new DamageSource(damageSource), damage.floatValue());
     }
-    public static void hurt(Double damage) {
+    public void hurt(Double damage) {
         hurt(damage, "storyverse:script");
     }
-    public static void remove(Boolean keepData) {player.remove(keepData);}
-    public static Boolean isWaterWalking() {
+    public void remove(Boolean keepData) {player.remove(keepData);}
+    public Boolean isWaterWalking() {
         return isWaterWalking;
     }
-    public static void setWaterWalk(Boolean method) {
+    public void setWaterWalk(Boolean method) {
         isWaterWalking = method;
     }
-    public static void tick() {
-        if (Player.isWaterWalking()) {
+    public void tick() {
+        if (this.isWaterWalking()) {
             List<Block> water = Arrays.asList(Blocks.WATER, Blocks.KELP, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
             final BlockPos BP = new BlockPos(player.getX(), player.getY() - 0.25, player.getZ());
             final BlockPos AIR = new BlockPos(player.getX(), player.getY() + 0.3, player.getZ());
@@ -346,11 +368,11 @@ public class Player extends ScriptableObject implements EnvResource{
             }
         }
     }
-    public static String getPlayerWorld() {
+    public String getPlayerWorld() {
         return player.getLevel().toString();
     }
 
-    public static void move(Double x, Double y, Double z, Double speed) {
+    public void move(Double x, Double y, Double z, Double speed) {
         MobEntity entity = (MobEntity) player.getEntity();
 
         entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> entity.goalSelector.removeGoal(prioritizedGoal.getGoal()));
@@ -359,19 +381,19 @@ public class Player extends ScriptableObject implements EnvResource{
         entity.goalSelector.addGoal(1, moveGoal);
     }
 
-    public static Boolean isCrouching() {
+    public Boolean isCrouching() {
         return player.isCrouching();
     }
 
-    public static Boolean isSprinting() {
+    public Boolean isSprinting() {
         return player.isSprinting();
     }
 
-    public static void setSpeed(Double speed) {
+    public void setSpeed(Double speed) {
         player.setSpeed(speed.floatValue());
     }
 
-    public static String getItemInHand(Integer hand) {
+    public String getItemInHand(Integer hand) {
         switch (hand) {
             case 0:
                 return new JSItem(player.getMainHandItem()).id;
@@ -382,18 +404,18 @@ public class Player extends ScriptableObject implements EnvResource{
         }
     }
 
-    public static Double getHealth() {
+    public Double getHealth() {
         return (double) player.getHealth();
     }
 
-    public static Boolean nearTo(NativeArray pos, Double radius) {
+    public Boolean nearTo(NativeArray pos, Double radius) {
         System.out.println("nearTo: " + pos.get(0) + " " + pos.get(1) + " " + pos.get(2));
 
         Double[] pos_ = new Double[]{(Double) pos.get(0), Double.parseDouble(pos.get(1).toString()), (Double) pos.get(2)};
         return MathScript.squareDistance(new Double[]{player.getX(), player.getY(), player.getZ()}, pos_) < radius;
     }
 
-    public static Boolean getAdvancement(String playerName, String advancementName) {
+    public Boolean getAdvancement(String playerName, String advancementName) {
         ResourceLocation achievementID = new ResourceLocation(advancementName);
         ServerPlayerEntity player = Server.getPlayerByName(playerName);
         Advancement advancement = Objects.requireNonNull(player.getServer()).getAdvancements().getAdvancement(achievementID);
@@ -405,27 +427,70 @@ public class Player extends ScriptableObject implements EnvResource{
         }
     }
 
-    public static void give(String itemStack) {
+    public void give(String itemStack) {
         player.addItem(JSItem.getStack(itemStack));
     }
 
-    public static void addTag(String tag) {
+    public void addTag(String tag) {
         player.addTag(tag);
     }
 
-    public static void removeTag(String tag) {
+    public void removeTag(String tag) {
         player.removeTag(tag);
     }
 
-    public static void setHealth(Double health) {
+    public void setHealth(Double health) {
         player.setHealth(health.floatValue());
     }
 
-    public static ServerPlayerEntity getPlayer() {
+    public void sleep(NativeArray pos) {
+        player.startSleeping(new BlockPos((int) pos.get(0), (int) pos.get(1), (int) pos.get(2)));
+    }
+
+    public void wake() {
+        player.stopSleeping();
+    }
+
+    public Boolean isSleeping() {
+        return player.isSleeping();
+    }
+
+    public void stopSleeping() {
+        player.stopSleeping();
+    }
+
+    public void showActionBar(String message) {
+        player.connection.send(new STitlePacket(STitlePacket.Type.ACTIONBAR, new StringTextComponent(message)));
+    }
+
+    public void showTitle(String message) {
+        player.connection.send(new STitlePacket(STitlePacket.Type.TITLE, new StringTextComponent(message)));
+    }
+
+    public void showSubtitle(String message) {
+        player.connection.send(new STitlePacket(STitlePacket.Type.SUBTITLE, new StringTextComponent(message)));
+    }
+
+    public void runScriptAs(String script, String player) {
+        ScriptExecutionPacket packet;
+
+        if (player.equals("$every")) {
+            for (ServerPlayerEntity p : Server.getPlayers()) {
+                packet = new ScriptExecutionPacket(script);
+                Networking.sendToPlayer(packet, p);
+            }
+            return;
+        }
+
+        packet = new ScriptExecutionPacket(script);
+        Networking.sendToPlayer(packet, this.player);
+    }
+
+    public ServerPlayerEntity getPlayer() {
         return player;
     }
 
-    public static Object getNative() {
+    public Object getNative() {
         return player;
     }
 
@@ -568,6 +633,22 @@ public class Player extends ScriptableObject implements EnvResource{
             methodsToAdd.add(give);
             Method setHealth = Player.class.getMethod("setHealth", Double.class);
             methodsToAdd.add(setHealth);
+            Method sleep = Player.class.getMethod("sleep", NativeArray.class);
+            methodsToAdd.add(sleep);
+            Method wakeUp = Player.class.getMethod("wake");
+            methodsToAdd.add(wakeUp);
+            Method isSleeping = Player.class.getMethod("isSleeping");
+            methodsToAdd.add(isSleeping);
+            Method stopSleeping = Player.class.getMethod("stopSleeping");
+            methodsToAdd.add(stopSleeping);
+            Method shouldShowCape = Player.class.getMethod("showActionBar", String.class);
+            methodsToAdd.add(shouldShowCape);
+            Method runAs = Player.class.getMethod("runScriptAs", String.class, String.class);
+            methodsToAdd.add(runAs);
+            Method showTitle = Player.class.getMethod("showTitle", String.class);
+            methodsToAdd.add(showTitle);
+            Method showSubTitle = Player.class.getMethod("showSubtitle", String.class);
+            methodsToAdd.add(showSubTitle);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

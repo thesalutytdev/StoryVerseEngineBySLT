@@ -1,11 +1,14 @@
 package org.thesalutyt.storyverse.api.special.character;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGui;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGuiProperties;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IWidgetList;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiEntity;
 
+@OnlyIn(Dist.CLIENT)
 public class ReputationScreen extends IGui {
     public Reputation reputation;
     public ReputationScreen(Reputation rep) {

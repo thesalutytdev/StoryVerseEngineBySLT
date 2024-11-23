@@ -2,22 +2,21 @@ package org.thesalutyt.storyverse.api.screen.gui.character.trades;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.api.environment.trader.Offers;
 import org.thesalutyt.storyverse.api.environment.trader.TradeOffer;
 import org.thesalutyt.storyverse.api.environment.trader.Trader;
-import org.thesalutyt.storyverse.api.features.Player;
-import org.thesalutyt.storyverse.api.features.Sounds;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGui;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IGuiProperties;
 import org.thesalutyt.storyverse.api.screen.gui.constructor.IWidgetList;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiItem;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiEntity;
-import org.thesalutyt.storyverse.utils.ItemUtils;
 
 import java.util.ArrayList;
 
+@OnlyIn(Dist.CLIENT)
 public class TradeGUI extends IGui {
     protected Trader trader;
     protected Offers offers;
@@ -58,17 +57,6 @@ public class TradeGUI extends IGui {
                             "textures/gui/buttons/button_0.png",
                             ((Double) x + 50.0), ((Double) y), (Double) 40.0, (Double) 40.0,
                             "1", () -> {
-                        Player.sendNamed("tradeTest", String.format("trade%d::%s",
-                                trId,
-                                o.trader.trade(o, Player.getPlayerName())));
-                        if (o.trader.trade(o, Player.getPlayerName())) {
-                            ItemUtils.takeStack(Player.getPlayer(), o.needFirst);
-                            if (o.needSecond != null) {
-                                ItemUtils.takeStack(Player.getPlayer(), o.needSecond);
-                            }
-                            Sounds.playSoundGlobal(SoundEvents.VILLAGER_TRADE,
-                                    1.0f, 1.0f);
-                        }
                     }));
                     for (ItemStack i : o.getStacks()) {
                         itemsToRender.add(new GuiItem(i, x, y));

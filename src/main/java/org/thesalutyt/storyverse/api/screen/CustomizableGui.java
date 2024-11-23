@@ -6,6 +6,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
@@ -15,15 +17,18 @@ import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CustomizableGui extends Screen implements EnvResource {
+@OnlyIn(Dist.CLIENT)
+public class CustomizableGui extends Screen implements EnvResource, Serializable {
     public String title;
     public ArrayList<GuiLabel> labels = new ArrayList<>();
     public ArrayList<GuiButton> buttons = new ArrayList<>();
     public ArrayList<GuiImage> images = new ArrayList<>();
     public ArrayList<CircleRect> circleRect = new ArrayList<>();
     public ArrayList<GuiDisplayEntity> entities = new ArrayList<>();
+    public ArrayList<GuiItem> items = new ArrayList<>();
     public String background;
     public Boolean renderBG = true;
     public Boolean isPause = true;
@@ -32,10 +37,11 @@ public class CustomizableGui extends Screen implements EnvResource {
     public int gHeight;
     public int gMouseX;
     public int gMouseY;
-    public Integer cursorX = this.width;
-    public Integer cursorY = this.height;
+    public int cursorX = this.width;
+    public int cursorY = this.height;
     public ScriptableGui guiScriptableReference;
     public Runnable onTick;
+    public Runnable onClose;
 
     public CustomizableGui(String title) {
         super(new StringTextComponent(title));
@@ -45,21 +51,7 @@ public class CustomizableGui extends Screen implements EnvResource {
         this.guiScriptableReference = guiScriptableReference;
     }
 
-    @Override
-    public void init() {
-        super.init();
-        this.width = gWidth;
-        this.height = gHeight;
-        long windowHandle = Minecraft.getInstance().getWindow().getWindow();
-        GLFW.glfwSetCursorPos(windowHandle, cursorX, cursorY);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        if (renderBG) {
-            renderBackground(matrixStack);
-        }
+    protected void renderAllItems(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         assert this.minecraft != null;
         if (background != null && renderBG) {
             this.minecraft.getTextureManager().bind(new ResourceLocation(StoryVerse.MOD_ID, background));
@@ -101,6 +93,29 @@ public class CustomizableGui extends Screen implements EnvResource {
                 this.blit(matrixStack, image.x, image.y, 0, 0, image.width, image.height);
             }
         }
+        if (!items.isEmpty()) {
+            for (GuiItem item : items) {
+                item.itemRenderer.renderGuiItem(item.stack, item.x.intValue(), item.y.intValue());
+            }
+        }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        this.width = gWidth;
+        this.height = gHeight;
+        long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+        GLFW.glfwSetCursorPos(windowHandle, cursorX, cursorY);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        if (renderBG) {
+            renderBackground(matrixStack);
+        }
+        renderAllItems(matrixStack, mouseX, mouseY, partialTicks);
         this.gMouseX = mouseX;
         this.gMouseY = mouseY;
         super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -115,6 +130,18 @@ public class CustomizableGui extends Screen implements EnvResource {
         if (guiScriptableReference != null) {
             guiScriptableReference.tick();
         }
+    }
+
+    @Override
+    public void onClose() {
+        if (onClose != null) {
+            onClose.run();
+        }
+        if (guiScriptableReference != null) {
+            guiScriptableReference.runOnClose();
+            ScriptableGui.guis.remove(guiScriptableReference.id);
+        }
+        super.onClose();
     }
 
     @Override

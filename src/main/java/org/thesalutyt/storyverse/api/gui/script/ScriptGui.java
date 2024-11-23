@@ -6,16 +6,20 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.features.Script;
 import org.thesalutyt.storyverse.api.gui.widgets.TextAreaWidget;
 import org.thesalutyt.storyverse.utils.RenderUtils;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
 import java.io.File;
 import java.util.Objects;
 
+@OnlyIn(Dist.CLIENT)
 public class ScriptGui extends Screen {
 
     private static final int WIDTH = 256;
@@ -34,6 +38,7 @@ public class ScriptGui extends Screen {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);

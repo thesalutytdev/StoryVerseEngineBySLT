@@ -4,18 +4,17 @@ import com.mojang.serialization.Codec;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.Logger;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.js.mod.ModInterpreter;
 import org.thesalutyt.storyverse.api.features.Chat;
-import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
 import org.thesalutyt.storyverse.common.config.SVConfig;
-import org.thesalutyt.storyverse.loader.AssetsLoader;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class SVEngine {
@@ -52,19 +51,20 @@ public class SVEngine {
     public static File LOG_FILE;
     public static final String GUI_CONTAINER_NAME = "gui_container";
     public static final Integer KEY_CONTINUE_CODE = 72;
-    public static final Integer KEY_START_CODE = 71;
+    public static final Integer KEY_START_CODE = 72;
     public static SVColors CHARACTER_COLOR = SVColors.GREEN;
     public static String CHARACTER_COLOR_STR = "§3";
     public static String DEFAULT_CHARACTER_NAME = "prefix.storyverse.default.npc";
     public static final String HERO_ID = "#7f3bc";
     public static final String OP_PLAYER = "TheSALUTYT";
-    public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get();
+    public static boolean IS_DEBUG = SVConfig.DEBUG_MODE.get().booleanValue();
+    public static boolean ALLOW_PLAYER_DELETING = SVConfig.ALLOW_PLAYER_DELETING.get().booleanValue();
+    public static String WORLD_STARTER_SCRIPT = SVConfig.WORLD_STARTER_SCRIPT.get();
+    public static boolean SHOUT_PLAYER_DELETING = SVConfig.SHOUT_PLAYER_DELETING.get().booleanValue();
+    public static boolean SHOUT_SCRIPT_STARTING = SVConfig.SHOUT_SCRIPT_STARTING.get().booleanValue();
     public static Interpreter interpreter;
     public static ModInterpreter modInterpreter = new ModInterpreter(SCRIPTS_PATH);
     public static final String MOD_SCRIPT_FILE = SVConfig.MOD_SCRIPT_FILE.get();
-    public static AssetsLoader assetsLoader = new AssetsLoader();
-
-    public static FadeScreenGui fadeScreen = new FadeScreenGui();
     public SVEngine(){}
     public static enum SVError {
         TYPE_ERROR("TypeError"),
@@ -158,12 +158,14 @@ public class SVEngine {
                 Items.DIAMOND_SWORD
         ).getItem()));
     }
-    public static void initAssets() {
-        assetsLoader = new AssetsLoader();
-        try {
-            assetsLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    public static void modStart() {
+        createEngineDirectory();
+        sendInfoMessage();
+        // specialDocumentation();
+    }
+
+    public static Path getCurrentWorldDir() {
+        return ServerLifecycleHooks.getCurrentServer().getWorldPath(FolderName.ROOT).getRoot();
     }
 }

@@ -1,10 +1,13 @@
 package org.thesalutyt.storyverse.common.entities.npc;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.arguments.EntityAnchorArgument;
-import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.JumpGoal;
@@ -25,14 +28,15 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.NPCItem;
+import org.thesalutyt.storyverse.common.entities.Entities;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -46,9 +50,10 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTickable, IMerchant {
+public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTickable, IMerchant {
     private int ticks = 0;
     public String npcId = "none";
     public String traderName = "none";
@@ -66,12 +71,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             EntityDataManager.defineId(NPCEntity.class, DataSerializers.BOOLEAN);
 
     private static final DataParameter<String> ANIMATION =
-            EntityDataManager.defineId(NPCEntity.class, DataSerializers.STRING);
-
-    private static final DataParameter<String> LOOP_ANIM =
-            EntityDataManager.defineId(NPCEntity.class, DataSerializers.STRING);
-
-    private static final DataParameter<String> ONCE_ANIM =
             EntityDataManager.defineId(NPCEntity.class, DataSerializers.STRING);
 
     private static final DataParameter<String> IDLE_ANIM =
@@ -97,8 +96,20 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     public Entity focusedEntity;
     public final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    public NPCEntity(EntityType<? extends AnimalEntity> p_i48568_1_, World p_i48568_2_) {
+    public NPCEntity(EntityType<? extends MobEntity> p_i48568_1_, World p_i48568_2_) {
         super(p_i48568_1_, p_i48568_2_);
+    }
+
+    public static NPCEntity createNew(World world, String json) {
+        NPCEntity npc = new NPCEntity(Entities.NPC.get(), world);
+
+        npc.restoreFromJson(json);
+
+        return npc;
+    }
+
+    public void setId(String id) {
+        this.npcId = id;
     }
 
     @Override
@@ -113,14 +124,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         if (rotX != null || rotY != null) {
             assert rotX != null;
             assert rotY != null;
-//            xRot = rotX.floatValue();
-//            xRotO = rotX.floatValue();
-//            yHeadRot = rotY.floatValue();
-//            yBodyRot = rotY.floatValue();
-//            yRot = rotY.floatValue();
-//            yRotO = rotY.floatValue();
-//            yHeadRotO = rotY.floatValue();
-//            yBodyRotO = rotY.floatValue();
         }
         ticks++;
     }
@@ -139,7 +142,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
 
     @Override
     protected void registerGoals() {
-        // this.goalSelector.addGoal(2, new LookRandomlyGoal(this));
         // this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1));
         this.goalSelector.addGoal(4, new JumpGoal() {
             @Override
@@ -161,18 +163,20 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
                 .add(Attributes.MOVEMENT_SPEED, 0.4f).build();
     }
     private <E extends IAnimatable> PlayState emote(AnimationEvent<E> event) {
+        if (!this.getEmote().equals("")) {
+            event.getController().setAnimation(new AnimationBuilder()
+                    .addAnimation(this.getEmote()));
+            return PlayState.CONTINUE;
+        }
+
         event.getController().setAnimation(new AnimationBuilder()
-                .addAnimation(this.getEmote()));
+                .addAnimation("animation.npc.idle"));
         return PlayState.CONTINUE;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         if (event.isMoving()) {
-            if (!this.getWalkAnim().equals("")) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation(this.getWalkAnim()));
-            } else {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.walk"));
-            }
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.walking"));
             return PlayState.CONTINUE;
 
         }
@@ -182,11 +186,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
             return PlayState.CONTINUE;
         }
 
-        if (!this.getIdleAnim().equals("")) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.getIdleAnim()));
-        } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.idle"));
-        }
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.idle"));
         return PlayState.CONTINUE;
     }
 
@@ -196,28 +196,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
                 0, this::predicate));
         data.addAnimationController(new AnimationController(this, "controllerEmote",
                 0, this::emote));
-        data.addAnimationController(new AnimationController<>(this,"c_playonce",15,this::playOnceC));
-        data.addAnimationController(new AnimationController<>(this,"c_loop",15,this::loopC));
-    }
-
-    public  <E extends IAnimatable> PlayState playOnceC(AnimationEvent<E> event) {
-        event.getController().transitionLengthTicks = 15;
-        String anim = getPersistentData().getString("a_playonce");
-        if(anim == "")
-            return PlayState.STOP;
-        AnimationBuilder def = new AnimationBuilder().playOnce(anim);
-        event.getController().setAnimation(def);
-        return PlayState.CONTINUE;
-    }
-
-    public <E extends IAnimatable> PlayState loopC(AnimationEvent<E> event) {
-        event.getController().transitionLengthTicks = 15;
-        String anim = getPersistentData().getString("a_loop");
-        if(anim == "")
-            return PlayState.STOP;
-        AnimationBuilder def = new AnimationBuilder().loop(anim);
-        event.getController().setAnimation(def);
-        return PlayState.CONTINUE;
     }
 
     @Override
@@ -227,8 +205,6 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         setAnimation(tag.getString("emote"));
         setIdleAnim(tag.getString("idleAnim"));
         setWalkAnim(tag.getString("walkAnim"));
-        setLoopAnim(tag.getString("a_loop"));
-        setOnceAnim(tag.getString("a_playonce"));
     }
 
     @Override
@@ -237,10 +213,7 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
         tag.putString("emote", this.getEmote());
         tag.putString("walkAnim", this.getWalkAnim());
         tag.putString("idleAnim", this.getIdleAnim());
-        tag.putString("a_playonce", this.getOnceAnim());
-        tag.putString("a_loop", this.getLoopAnim());
     }
-
 
     @Nullable
     @Override
@@ -256,118 +229,101 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
 
     public void setTexturePath(String texture) {
         this.entityData.set(TEXTURE, texture);
+        this.getPersistentData().putString("texturePath", texture);
     }
 
     public String getTexturePath() {
-        return this.entityData.get(TEXTURE);
-    }
-
-    public String getLoopAnim() {
-        return this.entityData.get(LOOP_ANIM);
-    }
-
-    public String getOnceAnim() {
-        return this.entityData.get(ONCE_ANIM);
+        return this.getPersistentData().getString("texturePath");
     }
 
     public String getModelPath() {
-        return this.entityData.get(MODEL);
+        return this.getPersistentData().getString("modelPath");
     }
 
     public String getAnimationPath() {
-        return this.entityData.get(ANIMATION_FILE);
+        return this.getPersistentData().getString("animationPath");
     }
     public void setModelPath(String model) {
         this.entityData.set(MODEL, model);
-    }
-
-    public void setLoopAnim(String anim) {
-        this.entityData.set(LOOP_ANIM, anim);
-    }
-
-    public void setOnceAnim(String anim) {
-        this.entityData.set(ONCE_ANIM, anim);
+        this.getPersistentData().putString("modelPath", model);
     }
 
     public void setAnimationPath(String animationPath) {
         this.entityData.set(ANIMATION_FILE, animationPath);
+        this.getPersistentData().putString("animationPath", animationPath);
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(ANIMATION, "");
+        this.entityData.define(ANIMATION, "animation.npc.idle");
         this.entityData.define(EMOTION, "animation.npc.idle");
         this.entityData.define(TEXTURE, "");
         this.entityData.define(MODEL, "");
-        this.entityData.define(ONCE_ANIM, "");
-        this.entityData.define(LOOP_ANIM, "");
         this.entityData.define(ANIMATION_FILE, "");
         this.entityData.define(IDLE_ANIM, "animation.npc.idle");
         this.entityData.define(WALK_ANIM, "animation.npc.walk");
+        this.setEmote("animation.npc.idle");
+        this.setWalkAnim("animation.npc.walk");
+        this.setIdleAnim("animation.npc.idle");
     }
 
     public void setSleep(boolean sitting) {
         this.entityData.set(SLEEP, sitting);
+        this.getPersistentData().putBoolean("sleep", sitting);
     }
-
 
     public void setMove(boolean sitting) {
         this.entityData.set(MOVE, sitting);
+        this.getPersistentData().putBoolean("move", sitting);
     }
 
     public void setAnimation(String animations) {
         this.entityData.set(ANIMATION, animations);
+        this.getPersistentData().putString("animation", animations);
     }
 
     public void setIdleAnim(String idleAnim) {
         this.entityData.set(IDLE_ANIM, idleAnim);
+        this.getPersistentData().putString("idleAnim", idleAnim);
     }
 
     public void setWalkAnim(String walkAnim) {
         this.entityData.set(WALK_ANIM, walkAnim);
+        this.getPersistentData().putString("walkAnim", walkAnim);
     }
 
     public String getAnimation() {
-        return this.entityData.get(ANIMATION);
+        return this.getPersistentData().getString("animation");
     }
 
     public String getWalkAnim() {
-        return this.entityData.get(WALK_ANIM);
+        return this.getPersistentData().getString("walkAnim");
     }
 
     public String getIdleAnim() {
-        return this.entityData.get(IDLE_ANIM);
+        return this.getPersistentData().getString("idleAnim");
     }
 
     public void setEmote(String emote) {
         this.entityData.set(EMOTION, emote);
+        this.getPersistentData().putString("emote", emote);
     }
 
     public String getEmote() {
-        return this.entityData.get(EMOTION);
+        return this.getPersistentData().getString("emote");
     }
     public boolean isMove() {
-        return this.entityData.get(SLEEP);
+        return this.getPersistentData().getBoolean("move");
     }
 
     public void moveEntity(double x, double y, double z, float speed){
-        this.goalSelector.addGoal(1, new MoveGoal(this, x, y, z, speed));
+        this.getNavigation().moveTo(x, y, z, speed);
     }
 
     @Override
     public boolean removeWhenFarAway(double p_213397_1_) {
         return false;
-    }
-
-    public boolean changeDimension() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public NPCEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity ageableEntity) {
-        return null;
     }
 
     @Override
@@ -545,5 +501,128 @@ public class NPCEntity extends AnimalEntity implements IAnimatable, IAnimationTi
     @Override
     public SoundEvent getNotifyTradeSound() {
         return SoundEvents.VILLAGER_TRADE;
+    }
+
+    public void setPosition(double x, double y, double z) {
+        this.setPos(x, y, z);
+    }
+
+    public void restoreName(String name) {
+        this.setCustomName(new StringTextComponent(name));
+    }
+
+    public void restoreNameVisible(boolean nameVisible) {
+        this.setCustomNameVisible(nameVisible);
+    }
+
+    public void restoreTexture(String texture) {
+        this.setTexturePath(texture);
+    }
+
+    public void restoreModel(String model) {
+        this.setModelPath(model);
+    }
+
+    public void restoreAnimations(String animations) {
+        this.setAnimationPath(animations);
+    }
+
+    public void restoreIdleAnimation(String idleAnimation) {
+        this.setIdleAnim(idleAnimation);
+    }
+
+    public void restoreWalkAnimation(String walkAnimation) {
+        this.setWalkAnim(walkAnimation);
+    }
+
+    public void restoreOffers(MerchantOffers offers) {
+        this.overrideOffers(offers);
+    }
+
+    public void restoreCanPickup(boolean canPickup) {
+        this.canPickup = canPickup;
+    }
+
+    public void restoreShowProgressBar(boolean showProgressBar) {
+        this.showProgressBar = showProgressBar;
+    }
+
+    public void restoreIsTrader(boolean isTrader) {
+        this.isTrader = isTrader;
+    }
+
+    public void restoreIsAttackable(boolean isAttackable) {
+        this.isAttackable = isAttackable;
+    }
+
+    public void restoreTraderName(String traderName) {
+        this.traderName = traderName;
+    }
+
+    public void restoreNpcId(String npcId) {
+        this.npcId = npcId;
+    }
+
+    public void restoreUUID(UUID uuid) {
+        this.setUUID(uuid);
+    }
+
+    public String getNpcId() {
+        return npcId;
+    }
+
+
+    public String dumpToJson() {
+        String json = "{\"id\": \"" + getNpcId() + "\"," +
+                "\"uuid\": \"" + getUUID() + "\"," +
+                "\"texture\": \""
+                + getTexturePath() + "\", \"model\": \""
+                + getModelPath() + "\", \"animationsPath\": \""
+                + getAnimationPath() + "\"," +
+                "\"name\": \"" + getName().getContents() + "\"," +
+                "\"position\": [" + getX() + ", " + getY() + ", " + getZ() + "]," +
+                "\"idleAnimation\": \"" + getIdleAnim() + "\"," +
+                "\"walkAnimation\": \"" + getWalkAnim() + "\"," +
+                "\"isAttackable\": " + isAttackable + "," +
+                "\"showProgressBar\": " + showProgressBar + "," +
+                "\"canPickup\": " + canPickup + "," +
+                "\"nameVisible\": " + isCustomNameVisible() + "}";
+        return json;
+    }
+
+    public void restoreFromJson(String json) {
+        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+
+        setPosition(jsonObject.get("position").getAsJsonArray().get(0).getAsDouble(),
+                jsonObject.get("position").getAsJsonArray().get(1).getAsDouble(),
+                jsonObject.get("position").getAsJsonArray().get(2).getAsDouble());
+        restoreNpcId(jsonObject.get("id").getAsString());
+        restoreTexture(jsonObject.get("texture").getAsString());
+        restoreModel(jsonObject.get("model").getAsString());
+        restoreAnimations(jsonObject.get("animationsPath").getAsString());
+        restoreName(jsonObject.get("name").getAsString());
+        restoreIdleAnimation(jsonObject.get("idleAnimation").getAsString());
+        restoreWalkAnimation(jsonObject.get("walkAnimation").getAsString());
+//        restoreTraderName(jsonObject.get("traderName").getAsString());
+//        restoreIsTrader(jsonObject.get("isTrader").getAsBoolean());
+        restoreIsAttackable(jsonObject.get("isAttackable").getAsBoolean());
+        restoreShowProgressBar(jsonObject.get("showProgressBar").getAsBoolean());
+        restoreCanPickup(jsonObject.get("canPickup").getAsBoolean());
+        restoreUUID(UUID.fromString(jsonObject.get("uuid").getAsString()));
+        restoreNameVisible(jsonObject.get("nameVisible").getAsBoolean());
+
+//        JsonObject trades = jsonObject.get("trades").getAsJsonArray().get(0).getAsJsonObject();
+//        MerchantOffers offers = new MerchantOffers();
+//
+//        for(JsonElement trade : trades.getAsJsonArray()) {
+//            MerchantOffer offer;
+//            CompoundNBT nbt = new CompoundNBT();
+//            nbt.putString("trade", trade.getAsString());
+//
+//            offer = new MerchantOffer(nbt);
+//            offers.add(offer);
+//        }
+
+        restoreOffers(offers);
     }
 }

@@ -1,6 +1,7 @@
 package org.thesalutyt.storyverse.common.entities.client.moveGoals;
 
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;

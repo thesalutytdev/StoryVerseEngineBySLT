@@ -4,8 +4,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import org.thesalutyt.storyverse.api.environment.events.Event;
 import org.thesalutyt.storyverse.api.environment.events.EventManager;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
-import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 import org.thesalutyt.storyverse.common.events.EventType;
+import org.thesalutyt.storyverse.common.keybinds.DefaultBinds;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -39,11 +39,11 @@ public class ActionPacket implements EnvResource {
             case ON_PLAYER_SLEEP:
                 EventManager.onPlayerSleep.put(player.getUUID(), code);
             case ON_NEXT_BUTTON_PRESS:
-                if (eventArgument != ClientModEvents.keyStory){
+                if (eventArgument != DefaultBinds.keyStory){
                     return this;
                 }
                 else {
-                    EventManager.onButtonPress.put(ClientModEvents.keyStory, code);
+                    EventManager.onButtonPress.put(DefaultBinds.keyStory, code);
                 }
         }
         return this;
@@ -82,7 +82,7 @@ public class ActionPacket implements EnvResource {
     }
     public ActionPacket KEY() {
         try {
-            eventManager.runOnButtonPress(ClientModEvents.keyStory);
+            eventManager.runOnButtonPress(DefaultBinds.keyStory);
         } catch (NullPointerException ex) {
             return this;
         }

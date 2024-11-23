@@ -1,5 +1,6 @@
 package org.thesalutyt.storyverse.api.features;
 
+import net.minecraft.client.gui.screen.Screen;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -9,12 +10,29 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.js.mod.ModInterpreter;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
+import org.thesalutyt.storyverse.common.events.ModEvents;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class RootJS extends ScriptableObject implements EnvResource, JSResource {
+    public static Boolean isAltDown() {
+        return Screen.hasAltDown();
+    }
+
+    public static Boolean isCtrlDown() {
+        return Screen.hasControlDown();
+    }
+
+    public static Boolean isShiftDown() {
+        return Screen.hasShiftDown();
+    }
+
+    public static Boolean getInWorld() {
+        return ModEvents.inWorld;
+    }
+
     public static String getVersion() {
         return SVEngine.MOD_VERSION;
     }
@@ -70,6 +88,14 @@ public class RootJS extends ScriptableObject implements EnvResource, JSResource 
         ef.setParentScope(scope);
 
         try {
+            Method isAltDown = RootJS.class.getMethod("isAltDown");
+            methodsToAdd.add(isAltDown);
+            Method isCtrlDown = RootJS.class.getMethod("isCtrlDown");
+            methodsToAdd.add(isCtrlDown);
+            Method isShiftDown = RootJS.class.getMethod("isShiftDown");
+            methodsToAdd.add(isShiftDown);
+            Method inWorld = RootJS.class.getMethod("getInWorld");
+            methodsToAdd.add(inWorld);
             Method getVersion = RootJS.class.getMethod("getVersion");
             methodsToAdd.add(getVersion);
             Method getAssetsDir = RootJS.class.getMethod("getAssetsDir");

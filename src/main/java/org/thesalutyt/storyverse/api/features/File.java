@@ -8,6 +8,7 @@ import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.utils.ErrorPrinter;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.FileAlreadyExistsException;
@@ -46,8 +47,20 @@ public class File extends ScriptableObject implements EnvResource, JSResource {
 
     public static void write(String path, String data) {
         java.io.File file = new java.io.File(path);
+
         try {
-            java.nio.file.Files.write(file.toPath(), data.getBytes());
+            FileWriter fileWriter = new FileWriter(file, false);
+            fileWriter.write(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void clear(String path) {
+        java.io.File file = new java.io.File(path);
+        try {
+            FileWriter fileWriter = new FileWriter(file, false);
+            fileWriter.write("");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

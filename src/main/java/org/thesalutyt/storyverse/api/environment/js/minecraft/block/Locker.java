@@ -1,9 +1,11 @@
 package org.thesalutyt.storyverse.api.environment.js.minecraft.block;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.world.PistonEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mozilla.javascript.FunctionObject;
@@ -52,11 +54,19 @@ public class Locker extends ScriptableObject implements EnvResource, JSResource 
     public static void onExplode(ExplosionEvent event) {
         lockedBlocks.forEach(blockPos -> {
             if (event.getExplosion().getToBlow().contains(blockPos)) {
-                event.setCanceled(true);
+                event.getExplosion().clearToBlow();
             }
         });
     }
 
+    @SubscribeEvent
+    public static void onPiston(PistonEvent.Pre event) {
+        lockedBlocks.forEach(blockPos -> {
+           if (event.getPos().equals(blockPos) || event.getDirection().getNormal().equals(new Vector3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()))) {
+               event.setCanceled(true);
+           }
+        });
+    }
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
 
     public static void putIntoScope(Scriptable scope) {

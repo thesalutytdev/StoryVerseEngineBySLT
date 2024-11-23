@@ -7,12 +7,15 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 import org.thesalutyt.storyverse.utils.RenderUtils;
 import org.thesalutyt.storyverse.utils.TimeHelper;
 
 import java.awt.*;
 
+@OnlyIn(Dist.CLIENT)
 public class QuestGui extends Screen {
     Minecraft mc = Minecraft.getInstance();
     private final FontRenderer fontRenderer = Minecraft.getInstance().font;

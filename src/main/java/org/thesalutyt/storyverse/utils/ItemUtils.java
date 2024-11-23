@@ -6,6 +6,7 @@ import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.command.arguments.ItemInput;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -18,6 +19,8 @@ import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
 import org.thesalutyt.storyverse.api.features.Server;
+import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.TotemShowPacket;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -134,6 +137,17 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
         return new BlockPos(x, y, z);
     }
 
+    public static void showTotem(String player, String itemStack) {
+        if (player.equals("$every")) {
+            for (ServerPlayerEntity playerEntity : Server.getPlayers()) {
+                Networking.sendToPlayer(new TotemShowPacket(itemStack), playerEntity);
+            }
+            return;
+        }
+
+        Networking.sendToPlayer(new TotemShowPacket(itemStack), Server.getPlayerByName(player));
+    }
+
     public static CutsceneType toCutsceneType(String type) {
         switch (type.toUpperCase()) {
             case "FULL": {
@@ -234,6 +248,8 @@ public class ItemUtils extends ScriptableObject implements EnvResource, JSResour
             methodsToAdd.add(toGameMode1);
             Method toCSType = ItemUtils.class.getMethod("toCutsceneType", Integer.class);
             methodsToAdd.add(toCSType);
+            Method showTotem = ItemUtils.class.getMethod("showTotem", String.class, String.class);
+            methodsToAdd.add(showTotem);
         } catch (Exception e) {
             new ErrorPrinter(e);
         }

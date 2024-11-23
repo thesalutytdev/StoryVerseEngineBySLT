@@ -5,14 +5,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneArguments;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneType;
-import org.thesalutyt.storyverse.api.camera.cutscene.instance.CutsceneInstance;
+import org.thesalutyt.storyverse.api.camera.cutscene.instance.AbstractCutscene;
 import org.thesalutyt.storyverse.api.camera.cutscene.math.InterpolationCalculator;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.Time;
 
-public class Moving extends CutsceneInstance {
+import java.util.ArrayList;
+
+public class Moving extends AbstractCutscene {
+    public static ArrayList<Moving> activeMoving = new ArrayList<>();
+
     public BlockPos finishPos;
     public double finishRotX;
     public double finishRotY;
@@ -24,7 +27,7 @@ public class Moving extends CutsceneInstance {
     public double curRotX;
     public double curRotY;
     public ServerPlayerEntity player;
-    private final int STEP_TIME = 40;
+    private final int STEP_TIME = 60;
 
     private double steps_to_run;
 
@@ -57,6 +60,7 @@ public class Moving extends CutsceneInstance {
         setHeadRotation(player, rotX, rotY);
         this.player.setGameMode(GameType.SPECTATOR);
         EventLoop.getLoopInstance().runTimeout(Moving::runStep, this.STEP_TIME);
+        activeMoving.add(this);
     }
 
     @Override
@@ -67,10 +71,22 @@ public class Moving extends CutsceneInstance {
         setHeadRotation(player, finishRotX, finishRotY);
         this.player.setGameMode(GameType.SURVIVAL);
         Manager.movingInstances.remove(player.getName().getContents());
+        activeMoving.remove(this);
     }
 
     public static void runStep() {
-        Moving moving = Manager.movingInstances.get(Player.getPlayerName());
+        activeMoving.forEach(Moving::tick);
+    }
+
+    public void checkPlayer(double x, double y, double z) {
+        if (this.player.getX() != x || this.player.getY() != y || this.player.getZ() != z) {
+            setPosition(this.player, x, y, z);
+        }
+    }
+
+    @Override
+    public void tick() {
+        Moving moving = this;
 
         if (!moving.active) {
             return;
@@ -107,16 +123,5 @@ public class Moving extends CutsceneInstance {
         if (moving.steps_to_run > 0) {
             EventLoop.getLoopInstance().runTimeout(Moving::runStep, moving.STEP_TIME);
         }
-    }
-
-    public void checkPlayer(double x, double y, double z) {
-        if (this.player.getX() != x || this.player.getY() != y || this.player.getZ() != z) {
-            setPosition(this.player, x, y, z);
-        }
-    }
-
-    @Override
-    public void tick() {
-
     }
 }

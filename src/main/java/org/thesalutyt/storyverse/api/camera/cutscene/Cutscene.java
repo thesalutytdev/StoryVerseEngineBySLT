@@ -4,12 +4,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.camera.cutscene.instance.CutsceneInstance;
-import org.thesalutyt.storyverse.api.features.Player;
+import org.thesalutyt.storyverse.api.camera.cutscene.instance.AbstractCutscene;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.utils.ErrorPrinter;
 
-public class Cutscene extends CutsceneInstance {
+import java.util.ArrayList;
+
+public class Cutscene extends AbstractCutscene {
+    public static ArrayList<Cutscene> activeCutscenes = new ArrayList<>();
+
     public double x;
     public double y;
     public double z;
@@ -32,13 +35,13 @@ public class Cutscene extends CutsceneInstance {
         this.active = false;
         this.player = Server.getPlayerByName(playerName);
         CutsceneManager.cutscenes.put(playerName, this);
-        SVEnvironment.Root.inCutscene = false;
     }
 
     public void start() {
         this.active = true;
         SVEnvironment.Root.inCutscene = true;
         this.player.setGameMode(GameType.SPECTATOR);
+        activeCutscenes.add(this);
     }
 
     public void finish() {
@@ -49,38 +52,36 @@ public class Cutscene extends CutsceneInstance {
             this.player.teleportToWithTicket(finishPos.getX(), finishPos.getY(), finishPos.getZ());
         }
         CutsceneManager.cutscenes.remove(this.player.getName().getContents());
+        activeCutscenes.remove(this);
     }
 
     public void tick() {
-
+        Cutscene cutscene = this;
+        if (!cutscene.active) {
+            return;
+        }
+        player.setGameMode(GameType.SPECTATOR);
+        switch (cutscene.type) {
+            case FULL:
+                player.teleportToWithTicket(cutscene.x, cutscene.y, cutscene.z);
+                setHeadRotation(player, cutscene.arguments.rotX, cutscene.arguments.rotY);
+                break;
+            case POS_ONLY:
+                player.teleportToWithTicket(cutscene.x, cutscene.y, cutscene.z);
+                break;
+            case ROT_ONLY:
+                setHeadRotation(player, cutscene.arguments.rotX, cutscene.arguments.rotY);
+                break;
+            case NULL:
+            default:
+                break;
+        }
+        cutscene.ticksPassed++;
     }
 
     public static void tick(Integer tick) {
         try {
-            if (CutsceneManager.cutscenes.containsKey(Player.getPlayerName())) {
-                ServerPlayerEntity player = Player.getPlayer();
-                Cutscene cutscene = CutsceneManager.cutscenes.get(player.getName().getContents());
-                if (!cutscene.active) {
-                    return;
-                }
-                player.setGameMode(GameType.SPECTATOR);
-                switch (cutscene.type) {
-                    case FULL:
-                        player.teleportToWithTicket(cutscene.x, cutscene.y, cutscene.z);
-                        setHeadRotation(player, cutscene.arguments.rotX, cutscene.arguments.rotY);
-                        break;
-                    case POS_ONLY:
-                        player.teleportToWithTicket(cutscene.x, cutscene.y, cutscene.z);
-                        break;
-                    case ROT_ONLY:
-                        setHeadRotation(player, cutscene.arguments.rotX, cutscene.arguments.rotY);
-                        break;
-                    case NULL:
-                    default:
-                        break;
-                }
-                cutscene.ticksPassed++;
-            }
+            activeCutscenes.forEach(Cutscene::tick);
         } catch (Exception e) {
             new ErrorPrinter(e);
         }

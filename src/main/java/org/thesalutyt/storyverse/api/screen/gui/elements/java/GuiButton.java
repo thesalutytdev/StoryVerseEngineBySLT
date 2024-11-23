@@ -6,11 +6,14 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.StoryVerse;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiButton extends Button {
     public String message;
     public Runnable onClick;

@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.api;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import org.mozilla.javascript.Context;
@@ -12,6 +11,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.camera.cutscene.Cutscene;
 import org.thesalutyt.storyverse.api.camera.cutscene.Moving;
+import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
 import org.thesalutyt.storyverse.api.environment.js.action.Action;
 import org.thesalutyt.storyverse.api.environment.js.waiter.WaitCondition;
@@ -34,9 +34,10 @@ public class SVEnvironment{
     public static String version = "1";
     public Script script = new Script();
     public WorldWrapper world;
-    public SVEnvironment(ServerPlayerEntity player) {
+    public SVEnvironment() {
     }
     public static class Root {
+        public static String dataSavesPath = SVEngine.getCurrentWorldDir() + "sve_data/";
         public static Integer ticks = 0;
         public static Boolean isDay;
         public static Boolean started = false;
@@ -68,9 +69,11 @@ public class SVEnvironment{
             }
             started = true;
             ScriptProperties.run();
+            MobJS.restoreAllNPC();
         }
         public static void playerLeft(WorldEvent.Unload event) {
             SVEnvironment.Root.resetTick();
+            MobJS.killAllNPC();
         }
         public static Entity getCameraEntity() {
             return Minecraft.getInstance().cameraEntity;

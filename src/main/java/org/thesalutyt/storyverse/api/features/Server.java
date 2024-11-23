@@ -4,10 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.CustomServerBossInfo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.SVEngine;
@@ -16,12 +18,15 @@ import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class Server extends ScriptableObject implements EnvResource {
     private static final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
     private static final Minecraft mc = Minecraft.getInstance();
+    private static ArrayList<CustomServerBossInfo> bossBars = new ArrayList<>();
+    private static HashMap<String, CustomServerBossInfo> bars = new HashMap<>();
 
     @Documentate(
             desc = "Returns world"
@@ -56,6 +61,14 @@ public class Server extends ScriptableObject implements EnvResource {
     public static ServerPlayerEntity getPlayerByName(String name) {return server.getPlayerList().getPlayerByName(name);}
     public static ServerPlayerEntity getServerPlayer() {
         return server.getPlayerList().getPlayers().get(0);
+    }
+    public static NativeArray getPlayerList() {
+        Object[] list = new Object[getPlayers().size()];
+        for (int i = 0; i < list.length; i++) {
+            list[i] = getPlayers().get(i);
+        }
+
+        return new NativeArray(list);
     }
 
     @Documentate(
@@ -92,7 +105,7 @@ public class Server extends ScriptableObject implements EnvResource {
     public static int execute(String command) {
         if(server == null) return 0;
         CommandSource source = server.createCommandSourceStack()
-                .withEntity(Player.getPlayerEntity())
+                .withEntity(getFirstPlayer())
                 .withPermission(4);
         return server.getCommands().performCommand(source, command);
     }
@@ -120,6 +133,8 @@ public class Server extends ScriptableObject implements EnvResource {
             methodsToAdd.add(getWorldStr);
             Method getPlayers = Server.class.getMethod("getPlayers");
             methodsToAdd.add(getPlayers);
+            Method getPlayerList = Server.class.getMethod("getPlayerList");
+            methodsToAdd.add(getPlayerList);
             Method getPlayer = Server.class.getMethod("getServerPlayer");
             methodsToAdd.add(getPlayer);
             Method close = Server.class.getMethod("close");

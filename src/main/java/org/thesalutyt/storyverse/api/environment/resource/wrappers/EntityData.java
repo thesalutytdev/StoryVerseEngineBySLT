@@ -2,6 +2,8 @@ package org.thesalutyt.storyverse.api.environment.resource.wrappers;
 
 import net.minecraft.entity.LivingEntity;
 
+import java.util.UUID;
+
 public class EntityData {
     public double x;
     public double y;
@@ -10,6 +12,7 @@ public class EntityData {
     public boolean name_visible = true;
     public Object[] args;
     public LivingEntity entity;
+    public UUID entityUUID;
 
     public EntityData(LivingEntity type, double x, double y, double z, Object... args) {
         this.entity = type;
@@ -36,8 +39,19 @@ public class EntityData {
         this.name = name;
     }
 
-    public EntityData setNameVisible(boolean visible) {
+    public void setNameVisible(boolean visible) {
         this.name_visible = visible;
-        return this;
+    }
+
+    public void setUUID(UUID uuid) {
+        this.entityUUID = uuid;
+    }
+
+    public UUID getUUID() {
+        return this.entityUUID;
+    }
+
+    public String dump() {
+        return "{\" " + getUUID() + " \"{\"name\":\"" + name + "\",\"x\":\"" + x + "\",\"y\":\"" + y + "\",\"z\":\"" + z + "\"}}";
     }
 }

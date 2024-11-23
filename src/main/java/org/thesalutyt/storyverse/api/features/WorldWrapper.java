@@ -10,9 +10,11 @@ import net.minecraft.potion.Effect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.*;
@@ -324,7 +326,7 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             self.pull(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z));
         } else if (block instanceof TrapDoorBlock) {
             TrapDoorBlock self = (TrapDoorBlock) block;
-            self.use(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z), Player.getPlayer(), Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(x, y, z), Direction.DOWN, new BlockPos(x, y, z), false));
+            self.use(state, worldWrapper.getMCWorld(), new BlockPos(x, y, z), Server.getFirstPlayer(), Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(x, y, z), Direction.DOWN, new BlockPos(x, y, z), false));
         } else {
             System.out.println("Cannot use block " + block);
         }

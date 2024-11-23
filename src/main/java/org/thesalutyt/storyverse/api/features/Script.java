@@ -1,8 +1,10 @@
 package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +18,8 @@ import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.ExternalFunctions;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.common.events.ModEvents;
+import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.ScriptExecutionPacket;
 import org.thesalutyt.storyverse.logger.SVELogger;
 
 import java.lang.reflect.Method;
@@ -94,6 +98,21 @@ public class Script extends ScriptableObject implements EnvResource {
             interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", scriptName));
             String logs_path = SVELogger.init(scriptName);
             SVELogger.write(logs_path, "Ran script successfully");
+            if (SVEngine.SHOUT_SCRIPT_STARTING) shoutScriptStarted();
+        }).start();
+    }
+
+    public static void runScript(String script, ServerPlayerEntity player) {
+        ScriptExecutionPacket packet = new ScriptExecutionPacket(script);
+        Networking.sendToPlayer(packet, player);
+    }
+
+    public void run(String script) {
+        new Thread(() -> {
+            interpreter.executeString(String.format("ExternalFunctions.import_file(\"%s\")", script));
+            String logs_path = SVELogger.init(script);
+            SVELogger.write(logs_path, "Ran script successfully");
+            if (SVEngine.SHOUT_SCRIPT_STARTING) shoutScriptStarted();
         }).start();
     }
 
@@ -123,9 +142,12 @@ public class Script extends ScriptableObject implements EnvResource {
         ExternalFunctions ef = new ExternalFunctions(SVEngine.SCRIPTS_PATH);
         ef.log(message);
     }
-    public static void waitUntilMessage(String message) {
-        Integer waitTimeAmount = 1;
+
+    public static void shoutScriptStarted() {
+        TranslationTextComponent msg = new TranslationTextComponent("text.storyverse.script_started");
+        Chat.sendEveryone(msg);
     }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     public static void putIntoScope (Scriptable scope) {
         Script ef = new Script();

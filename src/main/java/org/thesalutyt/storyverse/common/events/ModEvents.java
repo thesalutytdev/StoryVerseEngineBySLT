@@ -2,7 +2,6 @@ package org.thesalutyt.storyverse.common.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -15,6 +14,7 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
+import org.thesalutyt.storyverse.common.commands.AddSeat;
 import org.thesalutyt.storyverse.common.commands.CrashMyGame;
 import org.thesalutyt.storyverse.common.commands.MainCommand;
 import org.thesalutyt.storyverse.common.commands.adder.CustomCommand;
@@ -22,16 +22,11 @@ import org.thesalutyt.storyverse.common.commands.home.ClearHome;
 import org.thesalutyt.storyverse.common.commands.home.GetHomePos;
 import org.thesalutyt.storyverse.common.commands.home.ReturnHome;
 import org.thesalutyt.storyverse.common.commands.home.SetHome;
-import org.thesalutyt.storyverse.common.commands.scripts.PlayerFuncsDebug;
-
-import java.util.HashMap;
-import java.util.UUID;
+import org.thesalutyt.storyverse.common.commands.ride.Ride;
+import org.thesalutyt.storyverse.common.commands.scripts.GetAll;
 
 @Mod.EventBusSubscriber(modid = StoryVerse.MOD_ID)
 public class ModEvents {
-    public static ServerPlayerEntity player;
-    public static HashMap<UUID, Integer> fadeScreenTimers = new HashMap<>();
-    public static HashMap<UUID, Integer> fadeScreenColors = new HashMap<>();
     public static boolean inWorld = false;
 
     @SubscribeEvent
@@ -42,8 +37,10 @@ public class ModEvents {
         new GetHomePos(event.getDispatcher());
         new CrashMyGame(event.getDispatcher());
         new ClearHome(event.getDispatcher());
-        new PlayerFuncsDebug(event.getDispatcher());
+        new GetAll(event.getDispatcher());
         new CustomCommand(event.getDispatcher());
+        new Ride(event.getDispatcher());
+        new AddSeat(event.getDispatcher());
 
         ConfigCommand.register(event.getDispatcher());
     }

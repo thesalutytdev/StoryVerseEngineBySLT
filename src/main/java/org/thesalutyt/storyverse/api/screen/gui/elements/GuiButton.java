@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
@@ -12,10 +14,12 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GuiButton extends Button {
+@OnlyIn(Dist.CLIENT)
+public class GuiButton extends Button implements Serializable {
     public String message;
     public ArrayList<BaseFunction> onClick = new ArrayList<>();
     public static HashMap<String, GuiButton> btns = new HashMap<>();

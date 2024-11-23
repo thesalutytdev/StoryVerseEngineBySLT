@@ -4,13 +4,16 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import org.thesalutyt.storyverse.api.SVEnvironment;
-import org.thesalutyt.storyverse.api.camera.cutscene.instance.CutsceneInstance;
+import org.thesalutyt.storyverse.api.camera.cutscene.instance.AbstractCutscene;
 import org.thesalutyt.storyverse.api.camera.cutscene.math.InterpolationCalculator;
-import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.Time;
 
-public class Moving extends CutsceneInstance {
+import java.util.ArrayList;
+
+public class Moving extends AbstractCutscene {
+    public static ArrayList<Moving> activeMoving = new ArrayList<>();
+
     public BlockPos finishPos;
     public double finishRotX;
     public double finishRotY;
@@ -51,6 +54,7 @@ public class Moving extends CutsceneInstance {
         this.player.setGameMode(GameType.SPECTATOR);
         player.teleportToWithTicket(startPos.getX(), startPos.getY(), startPos.getZ());
         setHeadRotation(player, rotX, rotY);
+        activeMoving.add(this);
     }
 
     @Override
@@ -59,6 +63,7 @@ public class Moving extends CutsceneInstance {
         SVEnvironment.Root.inMoving = false;
         this.player.setGameMode(GameType.SURVIVAL);
         CutsceneManager.movingInstances.remove(this.player.getName().getContents());
+        activeMoving.remove(this);
     }
 
     public void checkPlayer(double x, double y, double z) {
@@ -73,6 +78,11 @@ public class Moving extends CutsceneInstance {
 
     private void step() {
         Moving moving = this;
+
+        if (this.player.blockPosition() == moving.finishPos) {
+            moving.finish();
+            return;
+        }
 
         if (!moving.active) {
             return;
@@ -99,17 +109,15 @@ public class Moving extends CutsceneInstance {
             setHeadRotation(moving.player, moving.curRotX, moving.curRotY);
             setPosition(moving.player, nextX, nextY, nextZ);
         }
+        moving.ticksPassed++;
+        if (moving.ticksPassed >= moving.time.ticks || moving.player.blockPosition() == moving.finishPos) {
+            moving.finish();
+        }
     }
 
     public static void tick(Integer tick) {
         try {
-            if (CutsceneManager.movingInstances.containsKey(Player.getPlayerName())) {
-                Moving moving = CutsceneManager.movingInstances.get(Player.getPlayerName());
-
-                moving.step();
-
-                moving.ticksPassed++;
-            }
+            activeMoving.forEach(Moving::step);
         } catch (Exception e) {
             e.printStackTrace();
         }

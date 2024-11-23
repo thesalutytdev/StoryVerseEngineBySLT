@@ -3,11 +3,14 @@ package org.thesalutyt.storyverse.api.screen.gui.npc_settings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiButton;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@OnlyIn(Dist.CLIENT)
 public class NpcSetter extends Screen {
     public NPCEntity npc;
 

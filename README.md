@@ -1,5 +1,6 @@
 <h1><b>StoryVerse Engine!</b></h1>
-<h2>Current version: 5.9-Beta</h2>
+<h2>Current version: 6.0-Beta</h2>
+<h2>!! DO NOT FORGET TO INSTALL GECKOLIB 3.0.106 !!</h2>
 <h3>This is an engine, what can help you create<br>
 <b>story-based maps</b></h3>
 <h3>Abilities:</h3>

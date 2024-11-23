@@ -2,8 +2,8 @@ package org.thesalutyt.storyverse.api.environment.events;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
 import org.thesalutyt.storyverse.common.events.EventType;
+import org.thesalutyt.storyverse.common.keybinds.DefaultBinds;
 
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public class Event {
         return this;
     }
     public Event setOnNextButtonPress(Runnable code) {
-        EventManager.onButtonPress.put(ClientModEvents.keyStory, code);
+        EventManager.onButtonPress.put(DefaultBinds.keyStory, code);
 
         return this;
     }

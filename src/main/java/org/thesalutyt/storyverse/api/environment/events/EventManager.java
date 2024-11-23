@@ -7,7 +7,7 @@ import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.common.entities.client.events.ClientModEvents;
+import org.thesalutyt.storyverse.common.keybinds.DefaultBinds;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -72,7 +72,7 @@ public class EventManager extends ScriptableObject implements EnvResource, JSRes
         onInteract.put(UUID.fromString(mobID), (Runnable) function);
     }
     public static void setOnButtonPress(BaseFunction function) {
-        onButtonPress.put(ClientModEvents.keyStory, (Runnable) function);
+        onButtonPress.put(DefaultBinds.keyStory, (Runnable) function);
     }
     @Override
     public String getClassName() {

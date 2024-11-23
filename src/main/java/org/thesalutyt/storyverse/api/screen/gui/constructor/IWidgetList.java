@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.screen.gui.constructor;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiItem;
@@ -11,6 +13,7 @@ import org.thesalutyt.storyverse.api.screen.gui.elements.java.GuiEntity;
 
 import java.util.ArrayList;
 
+@OnlyIn(Dist.CLIENT)
 public class IWidgetList {
     public ArrayList<GuiButton> buttons = new ArrayList<>();
     public ArrayList<GuiLabel> labels = new ArrayList<>();

@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(
         modid = StoryVerse.MOD_ID
@@ -46,6 +47,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     private static String item_smelted = "";
     private static String item_used = "";
     private static String player = "";
+    private static UUID interacted_uuid;
+    private static String interacted_type = "";
     private static NativeArray pos_exploded = new NativeArray(3);
     private static Integer key_pressed = 0;
     private static BlockPos blockPos = new BlockPos(0, 0, 0);
@@ -138,6 +141,14 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
         }
     }
 
+    @SubscribeEvent
+    public static void onInteract(PlayerInteractEvent.EntityInteract event) {
+        interacted_type = event.getTarget().getType().toString();
+        interacted_uuid = event.getTarget().getUUID();
+        player = event.getPlayer().getName().getContents();
+        runEvent("interacted");
+    }
+
     public static void addEventListener(String event_name, BaseFunction function) {
         if (!ModEvents.inWorld) {
             return;
@@ -155,7 +166,8 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
                 || !Objects.equals(event_name, "item_pickup")
                 || !Objects.equals(event_name, "item_crafted")
                 || !Objects.equals(event_name, "item_smelted")
-                || !Objects.equals(event_name, "exploded")) {
+                || !Objects.equals(event_name, "exploded")
+                || !Objects.equals(event_name, "interacted")) {
             EventLoop.getLoopInstance().runImmediate(() -> {
                 ArrayList<BaseFunction> functions = new ArrayList<>();
                 functions.add(function);
@@ -267,6 +279,12 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static NativeArray getLastExplodedPos() {
         return pos_exploded;
     }
+    public static String getInteractedType() {
+        return interacted_type;
+    }
+    public static UUID getInteractedUUID() {
+        return interacted_uuid;
+    }
 
     public static void clear() {
         events.clear();
@@ -357,6 +375,10 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
             methodsToAdd.add(getResourceId);
             Method getLastExplodedPos = EventManagerJS.class.getMethod("getLastExplodedPos");
             methodsToAdd.add(getLastExplodedPos);
+            Method getInteractedType = EventManagerJS.class.getMethod("getInteractedType");
+            methodsToAdd.add(getInteractedType);
+            Method getInteractedUUID = EventManagerJS.class.getMethod("getInteractedUUID");
+            methodsToAdd.add(getInteractedUUID);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

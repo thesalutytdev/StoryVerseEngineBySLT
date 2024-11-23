@@ -7,9 +7,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 public class CustomModel extends Model {
     public static Minecraft mc = Minecraft.getInstance();
 

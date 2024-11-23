@@ -1,6 +1,5 @@
 package org.thesalutyt.storyverse.common.commands;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -24,28 +23,18 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
 import org.thesalutyt.storyverse.api.camera.entityCamera.Cutscene;
+import org.thesalutyt.storyverse.api.compatibility.imgui.SLTScreen;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.trader.TradeOffer;
 import org.thesalutyt.storyverse.api.environment.trader.Trader;
 import org.thesalutyt.storyverse.api.features.*;
-import org.thesalutyt.storyverse.api.gui.QuestGui;
-import org.thesalutyt.storyverse.api.gui.script.CustomGui;
-import org.thesalutyt.storyverse.api.gui.script.ScriptGui;
 import org.thesalutyt.storyverse.api.screen.gui.character.trades.TradeGUI;
-import org.thesalutyt.storyverse.api.screen.gui.elements.GuiLabel;
-import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertGui;
-import org.thesalutyt.storyverse.api.screen.gui.overlay.alert.AlertType;
 import org.thesalutyt.storyverse.api.screen.gui.test.RLC;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.api.special.character.Reputation;
 import org.thesalutyt.storyverse.api.special.character.ReputationScreen;
 import org.thesalutyt.storyverse.common.entities.Entities;
-
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 
 public class MainCommand {
     Context context = Context.enter();
@@ -120,7 +109,7 @@ public class MainCommand {
 
         world.setBlock(player.blockPosition().above(2), Blocks.DIAMOND_BLOCK);
         player.setPos(player.getX(), player.getY() + 2, player.getZ());
-        Player.teleportTo(player.getX(), player.getY() + 2, player.getZ());
+        player.teleportTo(player.getX(), player.getY() + 2, player.getZ());
         source.sendSuccess(new StringTextComponent("Whoosh!"), true);
         return 1;
     }
@@ -137,11 +126,13 @@ public class MainCommand {
     }
     public int moveCamera(CommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrException();
+
+        mc.setScreen(new RLC());
+
         return 1;
     }
     public int moveCameraNoAI(CommandSource source) throws CommandSyntaxException {
-        AlertGui ag = new AlertGui(AlertType.TEXT, new GuiLabel(100, 100, 60.0, 30.0, "da", 1, false));
-        ag.render(new MatrixStack());
+        mc.gameRenderer.displayItemActivation(new ItemStack(Items.BELL));
         return 1;
     }
 
@@ -164,12 +155,12 @@ public class MainCommand {
     }
 
     public int testFade(CommandSource source) throws CommandSyntaxException {
-        Minecraft.getInstance().setScreen(new RLC());
+        Minecraft.getInstance().setScreen(new SLTScreen());
 
         return 1;
     }
     public int testFadeColor(CommandSource source) throws CommandSyntaxException {
-        FadeScreen.text("test", 0xFF000000, 1000, 700, 700);
+        FadeScreen.text(Server.getFirstPlayer().getName().getContents(), "test", 0xFF000000, 1000, 700, 700);
         return 1;
     }
 
@@ -203,12 +194,6 @@ public class MainCommand {
     }
 
     public int actionPacketTest(CommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayerOrException();
-        WorldWrapper world = new WorldWrapper();
-        MobController mob = new MobController(player.blockPosition(), EntityType.WITHER_SKELETON);
-        CustomGui testGui = CustomGui.createGui();
-        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
-        mc.setScreen(new ScriptGui());
         return 1;
     }
     public int getBlockPos(CommandSource source) throws CommandSyntaxException {
@@ -226,13 +211,12 @@ public class MainCommand {
 //        StringSelection stringSelection = new StringSelection(myString);
 //        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 //        clipboard.setContents(stringSelection, null);
-        Clipboard cl = new Clipboard("");
-        cl.setContents(new StringSelection(myString), new ClipboardOwner() {
-            @Override
-            public void lostOwnership(Clipboard clipboard, Transferable contents) {
 
-            }
-        });
+        try {
+            mc.keyboardHandler.setClipboard(myString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 1;
     }
     public static int runScript(CommandSource source, String script_name) throws CommandSyntaxException {
@@ -246,18 +230,18 @@ public class MainCommand {
         return 1;
     }
     public static int guiTest(CommandSource source) throws CommandSyntaxException {
-        Chat.sendAsEngine("GUI test");
-        CustomGui testGui = CustomGui.createGui();
-        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
-        mc.setScreen(new ScriptGui());
+//        Chat.sendAsEngine("GUI test");
+//        CustomGui testGui = CustomGui.createGui();
+//        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+//        mc.setScreen(new ScriptGui());
         return 1;
     }
 
     public static int quest(CommandSource source) throws CommandSyntaxException {
-        Chat.sendAsEngine("Game started");
-        CustomGui testGui = CustomGui.createGui();
-        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
-        mc.setScreen(new QuestGui());
+//        Chat.sendAsEngine("Game started");
+//        CustomGui testGui = CustomGui.createGui();
+//        testGui.addButton("Test", 0, 100, button -> System.out.println("Test button pressed!"));
+//        mc.setScreen(new QuestGui());
         return 1;
     }
 
@@ -288,6 +272,11 @@ public class MainCommand {
         Chat.sendAsEngine(String.format("%s, %s", MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)));
         Chat.sendCopyable(String.format("%s, %s", MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)));
         // MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)
+        try {
+            mc.keyboardHandler.setClipboard(String.format("%s, %s", MathHelper.wrapDegrees(entity.yRot), MathHelper.wrapDegrees(entity.xRot)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 1;
     }
 

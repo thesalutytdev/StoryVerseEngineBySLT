@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.features.MobController;
-import org.thesalutyt.storyverse.api.features.Player;
+import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.quests.goal.GoalType;
 import org.thesalutyt.storyverse.api.quests.goal.NPCItem;
 import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
@@ -18,7 +18,7 @@ public class QuestManager {
     public static HashMap<LivingEntity, ItemQuest> itemQuests = new HashMap<>();
 
     public QuestManager() {
-        Quest.questList.forEach(quest -> quests.put(Player.getPlayer(), Quest.quests.get(quest)));
+        Quest.questList.forEach(quest -> quests.put(Server.getFirstPlayer(), Quest.quests.get(quest)));
     }
 
     public static void onMobInteract(PlayerInteractEvent.EntityInteract event) {

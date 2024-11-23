@@ -15,6 +15,7 @@ public class CommandAdder extends ScriptableObject implements EnvResource, JSRes
     public static ArrayList<CommandAdder> commands = new ArrayList<>();
     public static HashMap<String, CommandAdder> commandsMap = new HashMap<>();
     public String name;
+    public int permissionLevel = 0;
     public boolean isNested = false;
     public ArrayList<BaseFunction> onExecute = new ArrayList<>();
     public ArrayList<CommandAdder> nested = new ArrayList<>();
@@ -102,6 +103,11 @@ public class CommandAdder extends ScriptableObject implements EnvResource, JSRes
         return 1;
     }
 
+    public CommandAdder addPermissionLevel(Integer level) {
+        this.permissionLevel = level;
+        return this;
+    }
+
     public static class NestedWithArg {
         public CommandAdder command;
         public ArgType type;
@@ -165,6 +171,8 @@ public class CommandAdder extends ScriptableObject implements EnvResource, JSRes
             methodsToAdd.add(addNestedWithArg);
             Method executeNestedWithArg = CommandAdder.class.getMethod("executeNestedWithArg", String.class, String.class, Object.class);
             methodsToAdd.add(executeNestedWithArg);
+            Method addPermissionLevel = CommandAdder.class.getMethod("addPermissionLevel", Integer.class);
+            methodsToAdd.add(addPermissionLevel);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

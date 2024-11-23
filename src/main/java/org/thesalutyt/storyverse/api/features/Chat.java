@@ -96,6 +96,20 @@ public class Chat extends ScriptableObject implements EnvResource {
         sendEveryone(message);
     }
 
+    public static void sendAs(String name, String text) {
+        sendNamed(name, text);
+    }
+
+    public static void sendAsPlayer(String name, String text) {
+        String message = String.format("<%s> %s", name, text);
+
+        sendEveryone(new StringTextComponent(message));
+    }
+
+    public static void sendEveryone(String text) {
+        sendEveryone(new StringTextComponent(text));
+    }
+
     @Documentate(
             desc = "Returns all players"
     )
@@ -126,6 +140,12 @@ public class Chat extends ScriptableObject implements EnvResource {
             methodsToAdd.add(sendAsStoryVerse);
             Method getPlayers = Chat.class.getMethod("getPlayers");
             methodsToAdd.add(getPlayers);
+            Method sendAs = Chat.class.getMethod("sendAs", String.class, String.class);
+            methodsToAdd.add(sendAs);
+            Method sendAsPlayer = Chat.class.getMethod("sendAsPlayer", String.class, String.class);
+            methodsToAdd.add(sendAsPlayer);
+            Method sendEveryone = Chat.class.getMethod("sendEveryone", String.class);
+            methodsToAdd.add(sendEveryone);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

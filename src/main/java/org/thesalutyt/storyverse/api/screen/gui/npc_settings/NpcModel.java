@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@OnlyIn(Dist.CLIENT)
 public class NpcModel extends Screen {
     public NPCEntity npc;
     public String npcModel;

@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
-public class CircleRect extends GuiWidget {
+import java.io.Serializable;
+
+public class CircleRect extends GuiWidget implements Serializable {
     public float x;
     public float y;
     public float x1;

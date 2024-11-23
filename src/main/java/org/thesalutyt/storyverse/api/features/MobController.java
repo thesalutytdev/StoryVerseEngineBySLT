@@ -1,10 +1,7 @@
 package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -40,7 +37,7 @@ import java.util.UUID;
 
 public class MobController extends ScriptableObject implements EnvResource {
     private MobEntity entity;
-    private final WorldWrapper worldWrapper = new WorldWrapper();
+    private WorldWrapper worldWrapper;
     public HashMap<String, Runnable> handlers = new HashMap<>();
     public static HashMap<UUID, MobController> mobControllers = new HashMap<>();
     private Float mobSpeed;
@@ -53,18 +50,21 @@ public class MobController extends ScriptableObject implements EnvResource {
             desc = "Setups MobController entity"
     )
     public MobController(Double x, Double y, Double z, String type){
+        worldWrapper = new WorldWrapper();
         registerFunctions();
         BlockPos pos = WorldWrapper.pos(x, y, z);
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, WorldWrapper.toEntityType(type));
         mobSpeed = this.entity.getSpeed();
     }
     public MobController(Double x, Double y, Double z, EntityType type){
+        worldWrapper = new WorldWrapper();
         registerFunctions();
         BlockPos pos = WorldWrapper.pos(x, y, z);
         this.entity = (MobEntity) worldWrapper.spawnEntity(pos, type);
         mobSpeed = this.entity.getSpeed();
     }
     public MobController(BlockPos pos, EntityType type){
+        worldWrapper = new WorldWrapper();
         System.out.println("Registering functions");
         registerFunctions();
         System.out.println("Creating entity");
@@ -73,12 +73,27 @@ public class MobController extends ScriptableObject implements EnvResource {
         mobSpeed = this.entity.getSpeed();
     }
     public MobController(MobEntity entity) {
+        worldWrapper = new WorldWrapper();
         registerFunctions();
         this.entity = entity;
         mobSpeed = this.entity.getSpeed();
     }
 
-    public MobController() {
+    public MobController(Entity entity) {
+        worldWrapper = new WorldWrapper();
+        registerFunctions();
+        this.entity = (MobEntity) entity;
+        mobSpeed = this.entity.getSpeed();
+    }
+
+    public MobController(LivingEntity entity) {
+        worldWrapper = new WorldWrapper();
+        registerFunctions();
+        this.entity = (MobEntity) entity;
+        mobSpeed = this.entity.getSpeed();
+    }
+
+    protected MobController() {
         registerFunctions();
     }
     @Documentate(
@@ -132,13 +147,14 @@ public class MobController extends ScriptableObject implements EnvResource {
     }
 
     public MobController moveToPlayer() {
-        this.moveTo(Player.getPlayer().blockPosition(), this.entity.getSpeed());
+        this.moveTo(Server.getFirstPlayer().blockPosition(), this.entity.getSpeed());
         return this;
     }
 
     public MobController followPlayer() {
+        ServerPlayerEntity player = Server.getFirstPlayer();
         MovePlayerEntity goal = new MovePlayerEntity(this.entity,
-                new BlockPos(Player.getX(), Player.getY(), Player.getZ()), this.entity.getSpeed());
+                new BlockPos(player.getX(), player.getY(), player.getZ()), this.entity.getSpeed());
         this.entity.goalSelector.getRunningGoals().forEach(prioritizedGoal -> {
             this.entity.goalSelector.removeGoal(prioritizedGoal.getGoal());
         });
@@ -560,17 +576,8 @@ public class MobController extends ScriptableObject implements EnvResource {
         this.entity.lookAt(player, pitch, yaw);
         return this;
     }
-    public MobController lookPlayer(Object player, Double pitch, Double yaw) {
-        this.entity.lookAt((PlayerEntity) player, pitch.floatValue(), yaw.floatValue());
-        return this;
-    }
-    public MobController lookPlayer(Double pitch, Double yaw) {
-        this.entity.lookAt(Player.getPlayer(), pitch.floatValue(), yaw.floatValue());
-        return this;
-    }
-
-    public MobController lookPlayer() {
-        this.entity.lookAt(Player.getPlayer(), Player.getPlayer().xRot, Player.getPlayer().yRot);
+    public MobController lookPlayer(String player, Double pitch, Double yaw) {
+        this.entity.lookAt(Server.getPlayerByName(player), pitch.floatValue(), yaw.floatValue());
         return this;
     }
 
@@ -608,8 +615,8 @@ public class MobController extends ScriptableObject implements EnvResource {
         Minecraft.getInstance().setScreen(null);
         return this.entity.isAlive();
     }
-    public MobController attackPlayer() {
-        this.entity.setTarget((LivingEntity) Player.getPlayerEntity().getEntity());
+    public MobController attackPlayer(String player) {
+        this.entity.setTarget((LivingEntity) Server.getPlayerByName(player).getEntity());
         return this;
     }
     public MobController attackPlayer(PlayerEntity player) {
@@ -640,6 +647,36 @@ public class MobController extends ScriptableObject implements EnvResource {
             Chat.sendNamed(String.format("%s", SVEngine.DEFAULT_CHARACTER_NAME), text);
         }
         return this;
+    }
+
+    public MobController setHitBox(String pose, Double x, Double y, Double z) {
+        this.entity.setBoundingBox(this.entity.getDimensions(getPose(pose)).makeBoundingBox(x, y, z));
+        return this;
+    }
+
+    public MobController noCulling(Boolean method) {
+        this.entity.noCulling = method;
+        return this;
+    }
+
+    public Pose getPose(String pose) {
+        switch (pose.toUpperCase()) {
+            case "STANDING":
+                return Pose.STANDING;
+            case "FALL_FLYING":
+                return Pose.FALL_FLYING;
+            case "SPIN_ATTACK":
+                return Pose.SPIN_ATTACK;
+            case "SLEEPING":
+                return Pose.SLEEPING;
+            case "SWIMMING":
+                return Pose.SWIMMING;
+            case "CROUCHING":
+                return Pose.CROUCHING;
+            case "GET":
+            default:
+                return this.entity.getPose();
+        }
     }
 
     @Documentate(
@@ -680,21 +717,32 @@ public class MobController extends ScriptableObject implements EnvResource {
         return this;
     }
 
+    public MobController noCollide(Boolean method) {
+        this.entity.noCulling = method;
+        return this;
+    }
+
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
     private void registerFunctions() {
 
         try {
-            Method setTarget = MobController.class.getMethod("setTarget", Object.class);
+            Method noCollide = MobController.class.getMethod("noCollide", Boolean.class);
+            methodsToAdd.add(noCollide);
+            Method changeDimension = MobController.class.getMethod("changeDimension", String.class);
+            methodsToAdd.add(changeDimension);
+            Method canPickUpLoot = MobController.class.getMethod("canPickUpLoot", Boolean.class);
+            methodsToAdd.add(canPickUpLoot);
+            Method setTarget = MobController.class.getMethod("setTarget", String.class);
             methodsToAdd.add(setTarget);
             Method isAlive = MobController.class.getMethod("isAlive");
             methodsToAdd.add(isAlive);
-            Method attackPlayer = MobController.class.getMethod("attackPlayer");
+            Method attackPlayer = MobController.class.getMethod("attackPlayer", String.class);
             methodsToAdd.add(attackPlayer);
             Method setAggressive = MobController.class.getMethod("setAggressive", Boolean.class);
             methodsToAdd.add(setAggressive);
             Method moveTo = MobController.class.getMethod("moveTo", Double.class, Double.class, Double.class, Double.class);
             methodsToAdd.add(moveTo);
-            Method lookAtPlayer = MobController.class.getMethod("lookPlayer", Object.class, Double.class, Double.class);
+            Method lookAtPlayer = MobController.class.getMethod("lookPlayer", String.class, Double.class, Double.class);
             methodsToAdd.add(lookAtPlayer);
             Method setPlAggressive = MobController.class.getMethod("setPlayerAggressive", Boolean.class);
             methodsToAdd.add(setPlAggressive);
@@ -796,8 +844,12 @@ public class MobController extends ScriptableObject implements EnvResource {
             methodsToAdd.add(setPos);
             Method jump = MobController.class.getMethod("jump");
             methodsToAdd.add(jump);
-            Method changeDimension = MobController.class.getMethod("changeDimension", String.class);
-            methodsToAdd.add(changeDimension);
+            Method getPose = MobController.class.getMethod("getPose", String.class);
+            methodsToAdd.add(getPose);
+            Method setHitBox = MobController.class.getMethod("setHitBox", String.class, Double.class, Double.class, Double.class);
+            methodsToAdd.add(setHitBox);
+            Method noCulling = MobController.class.getMethod("noCulling", Boolean.class);
+            methodsToAdd.add(noCulling);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

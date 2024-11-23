@@ -5,10 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "storyverse.refmap.json",
   "mixins": [
-    "IngameGuiMixin"
+    "GLFWInitMixin"
   ],
   "client": [
-    "IngameGuiMixin"
+    "TailRenderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

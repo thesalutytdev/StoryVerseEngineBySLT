@@ -15,6 +15,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
     }
 
     public static class ITime extends ScriptableObject implements EnvResource, JSResource {
+        public double cs_ticks;
         public double milliSeconds;
         public double seconds;
         public int ticks;
@@ -24,6 +25,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
         public ITime(double milliSeconds) {
             this.milliSeconds = milliSeconds;
             this.seconds = milliSeconds / 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
@@ -33,17 +35,18 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
             this.ticks = ticks;
             this.milliSeconds = ticks * 50;
             this.seconds = milliSeconds / 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
         }
 
-        public ITime() {
-        }
+        private ITime() {}
 
         public ITime milliSeconds(Double milliSeconds) {
             this.milliSeconds = milliSeconds;
             this.seconds = milliSeconds / 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
@@ -53,6 +56,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
         public ITime seconds(Double seconds) {
             this.seconds = seconds;
             this.milliSeconds = seconds * 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
@@ -63,6 +67,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
             this.ticks = ticks;
             this.milliSeconds = ticks * 50;
             this.seconds = milliSeconds / 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
@@ -73,6 +78,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
             this.minutes = minutes;
             this.seconds = minutes * 60;
             this.milliSeconds = seconds * 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;
@@ -84,6 +90,7 @@ public class Time extends ScriptableObject implements EnvResource, JSResource {
             this.minutes = hours * 60;
             this.seconds = minutes * 60;
             this.milliSeconds = seconds * 1000;
+            this.cs_ticks = (int) (seconds * 60);
             this.ticks = (int) (seconds * 20);
             this.minutes = seconds / 60;
             this.hours = minutes / 60;

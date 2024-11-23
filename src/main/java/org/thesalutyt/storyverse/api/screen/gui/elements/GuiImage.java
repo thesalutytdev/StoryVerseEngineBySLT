@@ -1,6 +1,8 @@
 package org.thesalutyt.storyverse.api.screen.gui.elements;
 
-public class GuiImage extends GuiWidget {
+import java.io.Serializable;
+
+public class GuiImage extends GuiWidget implements Serializable {
     public String path;
     public Integer x;
     public Integer y;

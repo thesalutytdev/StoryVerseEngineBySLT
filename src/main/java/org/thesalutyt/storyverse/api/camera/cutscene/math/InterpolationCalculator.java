@@ -21,11 +21,11 @@ public class InterpolationCalculator {
     }
 
     public static Vector3d interpolateNonTicking(Vector3d from, Vector3d to, ITime time) {
-        return new Vector3d(calculateMS(from.x, to.x, time), calculateMS(from.y, to.y, time), calculateMS(from.z, to.z, time));
+        return new Vector3d(interpolateNonTicking(from.x, to.x, time), interpolateNonTicking(from.y, to.y, time), interpolateNonTicking(from.z, to.z, time));
     }
 
     public static double interpolateNonTicking(double from, double to, ITime time) {
-        return calculateMS(from, to, time);
+        return (to - from) / time.cs_ticks;
     }
 
     public static class Vector3d {

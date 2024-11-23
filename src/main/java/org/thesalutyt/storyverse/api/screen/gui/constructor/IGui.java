@@ -7,6 +7,8 @@ import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.screen.gui.elements.CircleRect;
 import org.thesalutyt.storyverse.api.screen.gui.elements.GuiImage;
@@ -21,6 +23,7 @@ import org.thesalutyt.storyverse.utils.ErrorPrinter;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
 
+@OnlyIn(Dist.CLIENT)
 public class IGui extends Screen {
     public IGuiProperties properties;
     public IWidgetList widgets;

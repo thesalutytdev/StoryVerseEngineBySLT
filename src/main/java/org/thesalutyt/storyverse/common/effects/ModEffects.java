@@ -11,7 +11,7 @@ public class ModEffects {
     public static DeferredRegister<Effect> EFFECTS = DeferredRegister.create(ForgeRegistries.POTIONS, StoryVerse.MOD_ID);
 
     public static void addEffect(CustomEffect effect) {
-        EFFECTS.register(effect.name, () -> effect);
+        EFFECTS.register(effect.getName(), () -> effect);
     }
     public static void register(IEventBus eventBus) {
         EFFECTS.register(eventBus);

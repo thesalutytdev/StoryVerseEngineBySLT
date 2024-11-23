@@ -5,13 +5,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneArguments;
 import org.thesalutyt.storyverse.api.camera.cutscene.CutsceneType;
-import org.thesalutyt.storyverse.api.camera.cutscene.instance.CutsceneInstance;
+import org.thesalutyt.storyverse.api.camera.cutscene.instance.AbstractCutscene;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
-import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.Time;
 
-public class Cutscene extends CutsceneInstance {
+public class Cutscene extends AbstractCutscene {
     public double x;
     public double y;
     public double z;
@@ -44,9 +43,8 @@ public class Cutscene extends CutsceneInstance {
         this.stepsToRun = time.milliSeconds / STEP_TIME;
     }
 
-    public static void runStep() {
-        ServerPlayerEntity player = Player.getPlayer();
-        Cutscene cutscene = Manager.default_cutscenes.get(player.getName().getContents());
+    public void runStep() {
+        Cutscene cutscene = this;
         if (!cutscene.active) {
             return;
         }
@@ -72,7 +70,7 @@ public class Cutscene extends CutsceneInstance {
         cutscene.stepsToRun--;
 
         if (cutscene.stepsToRun > 0) {
-            EventLoop.getLoopInstance().runTimeout(Cutscene::runStep, cutscene.STEP_TIME);
+            EventLoop.getLoopInstance().runTimeout(this::runStep, cutscene.STEP_TIME);
         }
     }
 
@@ -85,7 +83,7 @@ public class Cutscene extends CutsceneInstance {
     @Override
     public void start() {
         this.active = true;
-        EventLoop.getLoopInstance().runTimeout(Cutscene::runStep, this.STEP_TIME);
+        EventLoop.getLoopInstance().runTimeout(this::runStep, this.STEP_TIME);
     }
 
     @Override

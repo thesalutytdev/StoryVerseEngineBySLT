@@ -1,17 +1,23 @@
 package org.thesalutyt.storyverse.api.environment.js;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.StoryVerse;
@@ -19,8 +25,8 @@ import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.wrappers.EntityData;
 import org.thesalutyt.storyverse.api.environment.resource.wrappers.NPCData;
+import org.thesalutyt.storyverse.api.features.Chat;
 import org.thesalutyt.storyverse.api.features.MobController;
-import org.thesalutyt.storyverse.api.features.Player;
 import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.features.WorldWrapper;
 import org.thesalutyt.storyverse.api.quests.QuestManager;
@@ -33,10 +39,11 @@ import org.thesalutyt.storyverse.common.items.NpcDeleter;
 import org.thesalutyt.storyverse.common.items.NpcSettings;
 import org.thesalutyt.storyverse.utils.StoryUtils;
 
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(
@@ -44,14 +51,17 @@ import java.util.UUID;
 )
 public class MobJS extends ScriptableObject implements EnvResource {
     private static EventLoop eventLoop;
-    public MobJS(EventLoop eventLoop) {
-        MobJS.eventLoop = eventLoop;
-    }
     public static HashMap<String, MobController> controllers = new HashMap<>();
     public static HashMap<UUID, String> mobNames = new HashMap<>();
     public static HashMap<String, EntityData> entityData = new HashMap<>();
     public static HashMap<String, NPCData> npcData = new HashMap<>();
     public static HashMap<MobController, HashMap<String, ArrayList<BaseFunction>>> events = new HashMap<>();
+    private static HashMap<String, NPCEntity> npcs = new HashMap<>();
+
+    public MobJS(EventLoop eventLoop) {
+        MobJS.eventLoop = eventLoop;
+    }
+
     public MobController addEventListener(String id, String mobId, BaseFunction function) {
         ArrayList<BaseFunction> functions = new ArrayList<>();
         functions.add(function);
@@ -84,6 +94,22 @@ public class MobJS extends ScriptableObject implements EnvResource {
         // QuestManager.onMobInteract(event);
         if (event.getItemStack().getItem() instanceof NpcDeleter ||
                 event.getItemStack().getItem() instanceof EntityDeleter) {
+
+            if (event.getTarget() instanceof PlayerEntity) {
+                if (!SVEngine.ALLOW_PLAYER_DELETING) return;
+                event.getTarget().remove();
+                String msg = "Player " +
+                        event.getPlayer().getName().getContents() +
+                        " deleted " +
+                        event.getTarget().getName().getContents() +
+                        " (" +
+                        event.getTarget().getUUID() + ")";
+                System.out.println(msg);
+
+                if (SVEngine.SHOUT_PLAYER_DELETING) Chat.sendEveryone(msg);
+            }
+
+
             if (event.getTarget() instanceof NPCEntity && !((NPCEntity) event.getTarget()).isDeadOrDying()
             && event.getItemStack().getItem() instanceof NpcDeleter) {
                 event.getTarget().remove();
@@ -104,7 +130,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
             if(event.getHand() == Hand.MAIN_HAND) {
                 if (npc.offers != null && npc.isTrader) {
                     StoryUtils.openTrade((PlayerEntity) event.getPlayer(), new StringTextComponent(npc.traderName),
-                            npc.offers, 0, false);
+                            npc.offers, npc.getVillagerXp(), npc.showProgressBar);
                 }
             }
         }
@@ -133,13 +159,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
     public static void onKilled(LivingDeathEvent event) {
         LivingEntity entity = event.getEntityLiving();
         runEvent(getMob(entity.getUUID()), "kill");
-        if (!Objects.equals(event.getSource(), DamageSource.playerAttack(Player.getPlayer()))) {
-            System.out.printf("%s(%s, %s) killed %s with this damage source: %s%n",
-                    event.getEntityLiving().getType(), event.getEntityLiving().getUUID(),
-                    event.getEntityLiving(), event.getSource().getEntity(),
-                    event.getSource());
-            return;
-        }
+
         if (entity instanceof LivingEntity) {
             System.out.println("Player killed " + entity.getUUID() + " (" + event.getEntityLiving().getType() + ")");
             runEvent(getMob(entity.getUUID()), "kill");
@@ -250,7 +270,7 @@ public class MobJS extends ScriptableObject implements EnvResource {
         npcData_.setNameVisible(visible);
 
         EntityData entityData_ = new EntityData((LivingEntity) npc.getEntity(), name, x, y, z,
-                new Object[]{npc.getModelPath(), npc.getAnimation(), npc.getTexturePath()});
+                npc.getModelPath(), npc.getAnimation(), npc.getTexturePath());
 
         entityData_.setNameVisible(visible);
 
@@ -260,14 +280,68 @@ public class MobJS extends ScriptableObject implements EnvResource {
         mob.defineNPCData(npcData_);
         mob.defineData(entityData_);
 
+        npcs.put(id, ((NPCEntity) mob.getEntity()));
+        ((NPCEntity) mob.getEntity()).setId(id);
+
+        saveAllNPC();
+
         return mob;
     }
+
+    public static void saveAllNPC() {
+        final String[] finalString = {"{"};
+        npcs.forEach((id, npc) -> {
+            String thisString = "\"";
+            thisString += id;
+            thisString += "\":";
+            thisString += npc.dumpToJson();
+            thisString += ",";
+            finalString[0] += thisString;
+        });
+        finalString[0] = finalString[0].substring(0, finalString[0].length() - 1);
+        finalString[0] += "}";
+        File file = new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory().getPath() + "/npcs.json");
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(finalString[0]);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void killAllNPC() {
+        npcs.forEach((id, npc) -> {
+            npc.remove();
+        });
+        npcs.clear();
+    }
+
+    public static void restoreAllNPC() {
+        File file = new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory().getPath() + "/npcs.json");
+        try {
+            FileReader reader = new FileReader(file);
+            JsonParser parser = new JsonParser();
+            JsonObject json = parser.parse(new JsonReader(reader)).getAsJsonObject();
+
+            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                NPCEntity.createNew(Server.getWorld(), entry.getValue().toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public static MobController getMob(String id) {
         return controllers.get(id);
     }
+
     public static MobController getMob(UUID id) {
         return controllers.get(mobNames.get(id));
     }
+
     public static Entity mob(String id) {
         return controllers.get(id).getEntity();
     }

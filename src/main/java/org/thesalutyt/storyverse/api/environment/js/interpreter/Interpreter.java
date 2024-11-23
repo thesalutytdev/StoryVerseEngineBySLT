@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.environment.js.interpreter;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.thesalutyt.json.JSON;
 import org.thesalutyt.storyverse.api.environment.js.LocationCreator;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.ScriptProperties;
@@ -15,21 +16,23 @@ import org.thesalutyt.storyverse.api.environment.js.cutscene.tick.MovingJS;
 import org.thesalutyt.storyverse.api.environment.js.event.EventManagerJS;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.block.JSBlock;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.block.Locker;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.enchantment.JSEnchant;
 import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.js.npc.NpcSpecials;
 import org.thesalutyt.storyverse.api.environment.js.npc.Trader;
 import org.thesalutyt.storyverse.api.environment.js.thread.Delayed;
 import org.thesalutyt.storyverse.api.environment.js.thread.ThreaderJS;
 import org.thesalutyt.storyverse.api.environment.js.waiter.WaitConditionJS;
-import org.thesalutyt.storyverse.api.environment.json.JSON;
 import org.thesalutyt.storyverse.api.features.*;
 import org.thesalutyt.storyverse.api.quests.Quest;
 import org.thesalutyt.storyverse.api.quests.goal.IGoalBuilder;
 import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
+import org.thesalutyt.storyverse.api.screen.gui.overlay.ScriptableOverlay;
 import org.thesalutyt.storyverse.api.screen.gui.script.ScriptableGui;
 import org.thesalutyt.storyverse.api.special.FadeScreen;
 import org.thesalutyt.storyverse.api.special.character.Reputation;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.PacketJS;
 import org.thesalutyt.storyverse.utils.ItemUtils;
 
 
@@ -85,6 +88,9 @@ public class Interpreter {
             ItemQuest.putIntoScope(scope);
             EntityCamera.putIntoScope(scope);
             JSON.putIntoScope(scope);
+            PacketJS.putIntoScope(scope);
+            JSEnchant.putIntoScope(scope);
+            ScriptableOverlay.putIntoScope(scope);
         });
     }
     public Scriptable getScope() {

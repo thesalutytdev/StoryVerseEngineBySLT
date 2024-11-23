@@ -25,5 +25,8 @@
   "text.storyverse.set_female": "Set Female",
   "text.storyverse.set_male": "Set Male",
   "text.storyverse.model_settings": "Model Settings",
-  "text.storyverse.quests.item.bring": "Bring me %COUNT% %ITEM%!"
+  "text.storyverse.quests.item.bring": "Bring me %COUNT% %ITEM%!",
+  "text.storyverse.script_started": "§a[SCRIPT]§r Script started: ",
+  "text.storyverse.directories": "Directories",
+  "text.storyverse.files": "Files"
 }

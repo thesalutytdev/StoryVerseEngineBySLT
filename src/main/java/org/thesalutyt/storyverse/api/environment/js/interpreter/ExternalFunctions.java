@@ -133,6 +133,7 @@ public class ExternalFunctions extends ScriptableObject {
             }
         } else {
             System.out.println("Invalid path (" + path_to_file + "): path ends outside root script directory");
+            Chat.sendError("Invalid path (" + path_to_file + "): path ends outside root script directory");
         }
     }
 

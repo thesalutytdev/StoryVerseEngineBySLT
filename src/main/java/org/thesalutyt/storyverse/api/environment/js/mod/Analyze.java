@@ -26,6 +26,8 @@ public class Analyze extends ScriptableObject {
                 }
             } catch (final FileNotFoundException e) {
                 System.out.println("Mod script file not found");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         } else {
             return;

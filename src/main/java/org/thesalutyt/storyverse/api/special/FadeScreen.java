@@ -1,23 +1,46 @@
 package org.thesalutyt.storyverse.api.special;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
-import org.thesalutyt.storyverse.api.gui.FadeScreenGui;
+import org.thesalutyt.storyverse.api.environment.resource.wrappers.FadeScreenWrapper;
+import org.thesalutyt.storyverse.api.features.Server;
+import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.FadeScreenPacket;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class FadeScreen extends ScriptableObject implements EnvResource, JSResource {
+    public static void text(String player, String text, Integer color, Integer time, Integer input, Integer output) {
+        FadeScreenWrapper data = new FadeScreenWrapper(text, time, input, output, color);
+        FadeScreenPacket packet = new FadeScreenPacket(data.getId());
 
-    public static void text(String text, Integer color, Integer time, Integer input, Integer output) {
-        FadeScreenGui.fade(text, time, color, input, output);
+        if (player.equals("$every")) {
+            for (ServerPlayerEntity pl : Server.getPlayers()) {
+                Networking.sendToPlayer(packet, pl);
+            }
+            return;
+        }
+
+        Networking.sendToPlayer(packet, Server.getPlayerByName(player));
     }
 
-    public static void fade(Integer color, Integer time, Integer input, Integer output) {
-        FadeScreenGui.fade(" ", time, color, input, output);
+    public static void fade(String player, Integer color, Integer time, Integer input, Integer output) {
+        FadeScreenWrapper data = new FadeScreenWrapper(time, input, output, color);
+        FadeScreenPacket packet = new FadeScreenPacket(data.getId());
+
+        if (player.equals("$every")) {
+            for (ServerPlayerEntity pl : Server.getPlayers()) {
+                Networking.sendToPlayer(packet, pl);
+            }
+            return;
+        }
+
+        Networking.sendToPlayer(packet, Server.getPlayerByName(player));
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -25,9 +48,9 @@ public class FadeScreen extends ScriptableObject implements EnvResource, JSResou
         FadeScreen ef = new FadeScreen();
         ef.setParentScope(scope);
         try {
-            Method fade = FadeScreen.class.getMethod("text", String.class, Integer.class, Integer.class, Integer.class, Integer.class);
+            Method fade = FadeScreen.class.getMethod("text", String.class, String.class, Integer.class, Integer.class, Integer.class, Integer.class);
             methodsToAdd.add(fade);
-            Method fade2 = FadeScreen.class.getMethod("fade", Integer.class, Integer.class, Integer.class, Integer.class);
+            Method fade2 = FadeScreen.class.getMethod("fade", String.class, Integer.class, Integer.class, Integer.class, Integer.class);
             methodsToAdd.add(fade2);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

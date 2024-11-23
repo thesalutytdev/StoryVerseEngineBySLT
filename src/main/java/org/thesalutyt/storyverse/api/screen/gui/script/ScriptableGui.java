@@ -1,23 +1,34 @@
 package org.thesalutyt.storyverse.api.screen.gui.script;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
+import org.thesalutyt.storyverse.api.environment.js.minecraft.item.JSItem;
 import org.thesalutyt.storyverse.api.environment.resource.EnvResource;
 import org.thesalutyt.storyverse.api.environment.resource.JSResource;
+import org.thesalutyt.storyverse.api.features.Server;
 import org.thesalutyt.storyverse.api.screen.CustomizableGui;
 import org.thesalutyt.storyverse.api.screen.gui.elements.*;
 import org.thesalutyt.storyverse.api.screen.gui.resource.GuiType;
+import org.thesalutyt.storyverse.common.specific.networking.Networking;
+import org.thesalutyt.storyverse.common.specific.networking.packets.custom.SVGuiPacket;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScriptableGui extends ScriptableObject implements EnvResource, JSResource {
+@OnlyIn(Dist.CLIENT)
+public class ScriptableGui extends ScriptableObject implements EnvResource, JSResource, Serializable {
+    public String id;
     public CustomizableGui gui;
     public static HashMap<String, CustomizableGui> guis = new HashMap<>();
     public ArrayList<BaseFunction> onGuiTick = new ArrayList<>();
+    public ArrayList<BaseFunction> onGuiClose = new ArrayList<>();
     public Integer ticks = 0;
     public static GuiType toGuiType(String type) {
         switch (type) {
@@ -40,6 +51,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         gui.init();
         gui.setScriptableReference(this);
         guis.put(name, gui);
+        this.id = name;
         return this;
     }
     public ScriptableGui setPause(Boolean pause) {
@@ -80,7 +92,7 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
     public Long toDouble(Double long_) {
         return long_.longValue();
     }
-        public Integer getMouseX() {
+    public Integer getMouseX() {
         return gui.gMouseX;
     }
     public Integer getMouseY() {
@@ -93,17 +105,39 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
                                      Boolean centered) {
         return new GuiLabel((Integer) x.intValue(), (Integer) y.intValue(), width, height, text, size, centered).message;
     }
-    public void render() {
-        Minecraft.getInstance().setScreen(gui);
+
+    public static ScriptableGui remove(String type, String id) {
+        switch (type) {
+            case "button":
+                GuiButton.btns.remove(id);
+                break;
+            case "label":
+                GuiLabel.labels.remove(id);
+                break;
+            default:
+                break;
+        }
+        return null;
     }
 
-    public void render(String name) {
+    public static void render(String name) {
         Minecraft.getInstance().setScreen(guis.get(name));
+    }
+
+    public static void render(String player, String name) {
+        if (player.equals("$every")) {
+            for (ServerPlayerEntity p : Server.getPlayers()) {
+                Networking.sendToPlayer(new SVGuiPacket(guis.get(name)), p);
+            }
+            return;
+        }
+        Networking.sendToPlayer(new SVGuiPacket(guis.get(name)), Server.getPlayerByName(player));
     }
 
     public void close() {
         Minecraft.getInstance().setScreen(null);
     }
+
     public ScriptableGui setCloseOnEsc(Boolean closeOnEsc) {
         gui.closeOnEsc = closeOnEsc;
         return this;
@@ -113,10 +147,12 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         gui.images.add(img);
         return img;
     }
+
     public ScriptableGui renderBackground(Boolean method) {
         gui.renderBG = method;
         return this;
     }
+
     public ScriptableGui setCursorPos(Integer x, Integer y) {
         gui.cursorX = x;
         gui.cursorY = y;
@@ -141,6 +177,48 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
         });
 
         return this;
+    }
+
+    public ScriptableGui setOnClose(BaseFunction function) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onGuiClose.add(function);
+        });
+        return this;
+    }
+
+    public ScriptableGui onClose(BaseFunction function) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onGuiClose.add(function);
+        });
+        return this;
+    }
+
+    public ScriptableGui setOnTick(BaseFunction function) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onGuiTick.add(function);
+        });
+        return this;
+    }
+
+    public ScriptableGui onTick(BaseFunction function) {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            onGuiTick.add(function);
+        });
+        return this;
+    }
+
+    public void runOnClose() {
+        EventLoop.getLoopInstance().runImmediate(() -> {
+            for (BaseFunction function : onGuiClose) {
+                function.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
+                        new Object[]{});
+            }
+        });
+        guis.remove(this.id);
+    }
+
+    public void addItem(String stack, Double x, Double y) {
+        gui.items.add(new GuiItem(JSItem.getStack(stack), x, y));
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -179,10 +257,12 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             Method createLabel = ScriptableGui.class.getMethod("createLabel", Double.class, Double.class, Double.class, Double.class, String.class,
                     Integer.class, Boolean.class);
             methodsToAdd.add(createLabel);
-            Method render = ScriptableGui.class.getMethod("render");
-            methodsToAdd.add(render);
             Method close = ScriptableGui.class.getMethod("close");
             methodsToAdd.add(close);
+            Method render = ScriptableGui.class.getMethod("render", String.class);
+            methodsToAdd.add(render);
+            Method renderToPlayer = ScriptableGui.class.getMethod("render", String.class, String.class);
+            methodsToAdd.add(renderToPlayer);
             Method setCloseOnEsc = ScriptableGui.class.getMethod("setCloseOnEsc", Boolean.class);
             methodsToAdd.add(setCloseOnEsc);
             Method addImage = ScriptableGui.class.getMethod("addImage",
@@ -197,6 +277,18 @@ public class ScriptableGui extends ScriptableObject implements EnvResource, JSRe
             methodsToAdd.add(onGuiTick);
             Method tick = ScriptableGui.class.getMethod("tick");
             methodsToAdd.add(tick);
+            Method setOnClose = ScriptableGui.class.getMethod("setOnClose", BaseFunction.class);
+            methodsToAdd.add(setOnClose);
+            Method onClose = ScriptableGui.class.getMethod("onClose", BaseFunction.class);
+            methodsToAdd.add(onClose);
+            Method setOnTick = ScriptableGui.class.getMethod("setOnTick", BaseFunction.class);
+            methodsToAdd.add(setOnTick);
+            Method onTick = ScriptableGui.class.getMethod("onTick", BaseFunction.class);
+            methodsToAdd.add(onTick);
+            Method runOnClose = ScriptableGui.class.getMethod("runOnClose");
+            methodsToAdd.add(runOnClose);
+            Method addItem = ScriptableGui.class.getMethod("addItem", String.class, Double.class, Double.class);
+            methodsToAdd.add(addItem);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

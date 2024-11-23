@@ -67,6 +67,7 @@ public class CustomBlock extends ScriptableObject implements ICustomElement {
     public CustomBlock(String name) {
         this(name, Material.STONE);
     }
+
     public static CustomBlock create(String name, String material, Integer harvestLevel, Boolean requiresTool,
                               String toolType, Double hardnessAndResistance, Integer lightLevel) {
         CustomBlock block__ = new CustomBlock(name, getMaterial(material),
@@ -77,6 +78,7 @@ public class CustomBlock extends ScriptableObject implements ICustomElement {
         return block__;
 
     }
+    
     public static CustomBlock create(String name, String tab,
                                      String material, Integer harvestLevel, Boolean requiresTool,
                                      String toolType, Double hardnessAndResistance, Integer lightLevel) {

@@ -751,7 +751,7 @@
 				}
 			}
 		},
-		"бег 993": {
+		"animation.npc.pidor": {
 			"loop": true,
 			"animation_length": 1.6667,
 			"bones": {

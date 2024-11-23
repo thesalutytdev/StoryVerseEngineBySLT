@@ -2,12 +2,15 @@ package org.thesalutyt.storyverse.common.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.thesalutyt.storyverse.annotations.Documentate;
 import org.thesalutyt.storyverse.api.features.Chat;
 
 import java.util.HashMap;
 import java.util.UUID;
 
+@OnlyIn(Dist.CLIENT)
 public class LegacyEventManager {
     private LegacyEventManager eventManager;
     public HashMap<UUID, Boolean> managers = new HashMap<>();

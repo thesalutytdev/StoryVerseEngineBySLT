@@ -3,9 +3,10 @@ package org.thesalutyt.storyverse.api.screen.gui.elements;
 import net.minecraft.entity.LivingEntity;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class GuiDisplayEntity extends GuiWidget {
+public class GuiDisplayEntity extends GuiWidget implements Serializable {
     public Double size;
     public LivingEntity entity;
     public GuiWidget widget;

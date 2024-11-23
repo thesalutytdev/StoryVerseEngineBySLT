@@ -6,6 +6,8 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.util.Deque;
 
 import static org.lwjgl.opengl.GL11.*;
 
+@OnlyIn(Dist.CLIENT)
 public class RenderUtils {
 
     private static final Minecraft mc = Minecraft.getInstance();
