@@ -30,6 +30,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.ActResult;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.quests.Quest;
@@ -163,30 +164,30 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
                 .add(Attributes.MOVEMENT_SPEED, 0.4f).build();
     }
     private <E extends IAnimatable> PlayState emote(AnimationEvent<E> event) {
-        if (!this.getEmote().equals("")) {
+        if (!this.getEmote().isEmpty()) {
             event.getController().setAnimation(new AnimationBuilder()
                     .addAnimation(this.getEmote()));
             return PlayState.CONTINUE;
         }
 
         event.getController().setAnimation(new AnimationBuilder()
-                .addAnimation("animation.npc.idle"));
+                .addAnimation("animation.npc.blinking"));
         return PlayState.CONTINUE;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         if (event.isMoving()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.walking"));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(getWalkAnim()));
             return PlayState.CONTINUE;
-
         }
 
-        if (!this.getAnimation().equals("")) {
+        if (!this.getAnimation().isEmpty()) {
+            //StoryVerse.LOGGER.info("Playing anim: " + getAnimation() + " for npc " + getNpcId());
             event.getController().setAnimation((new AnimationBuilder()).addAnimation(this.getAnimation()));
             return PlayState.CONTINUE;
         }
 
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.npc.idle"));
+        event.getController().setAnimation(new AnimationBuilder().addAnimation(getIdleAnim()));
         return PlayState.CONTINUE;
     }
 
@@ -233,15 +234,15 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
     }
 
     public String getTexturePath() {
-        return this.getPersistentData().getString("texturePath");
+        return this.entityData.get(TEXTURE);
     }
 
     public String getModelPath() {
-        return this.getPersistentData().getString("modelPath");
+        return this.entityData.get(MODEL);
     }
 
     public String getAnimationPath() {
-        return this.getPersistentData().getString("animationPath");
+        return this.entityData.get(ANIMATION_FILE);
     }
     public void setModelPath(String model) {
         this.entityData.set(MODEL, model);
@@ -256,16 +257,13 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(ANIMATION, "animation.npc.idle");
-        this.entityData.define(EMOTION, "animation.npc.idle");
+        this.entityData.define(ANIMATION, "");
+        this.entityData.define(EMOTION, "");
         this.entityData.define(TEXTURE, "");
         this.entityData.define(MODEL, "");
         this.entityData.define(ANIMATION_FILE, "");
         this.entityData.define(IDLE_ANIM, "animation.npc.idle");
         this.entityData.define(WALK_ANIM, "animation.npc.walk");
-        this.setEmote("animation.npc.idle");
-        this.setWalkAnim("animation.npc.walk");
-        this.setIdleAnim("animation.npc.idle");
     }
 
     public void setSleep(boolean sitting) {
@@ -294,15 +292,15 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
     }
 
     public String getAnimation() {
-        return this.getPersistentData().getString("animation");
+        return this.entityData.get(ANIMATION);
     }
 
     public String getWalkAnim() {
-        return this.getPersistentData().getString("walkAnim");
+        return this.entityData.get(WALK_ANIM);
     }
 
     public String getIdleAnim() {
-        return this.getPersistentData().getString("idleAnim");
+        return this.entityData.get(IDLE_ANIM);
     }
 
     public void setEmote(String emote) {
@@ -311,7 +309,7 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
     }
 
     public String getEmote() {
-        return this.getPersistentData().getString("emote");
+        return this.entityData.get(EMOTION);
     }
     public boolean isMove() {
         return this.getPersistentData().getBoolean("move");

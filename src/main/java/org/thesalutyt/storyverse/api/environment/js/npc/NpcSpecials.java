@@ -20,9 +20,14 @@ import java.util.ArrayList;
 public class NpcSpecials extends ScriptableObject implements EnvResource, JSResource {
     public static void stop(String npcId) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
-        npc.setEmote("animation.npc.idle");
+        npc.setAnimation("");
     }
     public static void emote(String npcId, String emote) {
+        NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
+        npc.setEmote(emote);
+    }
+
+    public static void anim(String npcId, String emote) {
         NPCEntity npc = (NPCEntity) MobJS.getMob(npcId).getEntity();
         npc.setAnimation(emote);
     }
@@ -137,6 +142,8 @@ public class NpcSpecials extends ScriptableObject implements EnvResource, JSReso
         try {
             Method emote = NpcSpecials.class.getMethod("emote", String.class, String.class);
             methodsToAdd.add(emote);
+            Method anim = NpcSpecials.class.getMethod("anim", String.class, String.class);
+            methodsToAdd.add(anim);
             Method stop = NpcSpecials.class.getMethod("stop", String.class);
             methodsToAdd.add(stop);
             Method setCanPickup = NpcSpecials.class.getMethod("setCanPickup", String.class, Boolean.class);
