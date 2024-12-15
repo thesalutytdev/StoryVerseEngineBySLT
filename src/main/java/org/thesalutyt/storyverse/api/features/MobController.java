@@ -642,7 +642,7 @@ public class MobController extends ScriptableObject implements EnvResource {
     )
     public MobController send(String text) {
         try {
-            Chat.sendNamed(Objects.requireNonNull(this.entity.getCustomName()).getContents(), text);
+            Chat.sendNamed(Objects.requireNonNull(this.entity.getName()).getContents(), text);
         } catch (NullPointerException ex) {
             Chat.sendNamed(String.format("%s", SVEngine.DEFAULT_CHARACTER_NAME), text);
         }

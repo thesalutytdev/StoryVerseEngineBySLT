@@ -33,6 +33,7 @@ import org.thesalutyt.storyverse.api.quests.QuestManager;
 import org.thesalutyt.storyverse.api.quests.item.ItemQuest;
 import org.thesalutyt.storyverse.api.screen.gui.npc_settings.NpcSetter;
 import org.thesalutyt.storyverse.common.entities.Entities;
+import org.thesalutyt.storyverse.common.entities.adder.CustomEntity;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 import org.thesalutyt.storyverse.common.items.EntityDeleter;
 import org.thesalutyt.storyverse.common.items.NpcDeleter;
@@ -283,56 +284,19 @@ public class MobJS extends ScriptableObject implements EnvResource {
         npcs.put(id, ((NPCEntity) mob.getEntity()));
         ((NPCEntity) mob.getEntity()).setId(id);
 
-        saveAllNPC();
-
         return mob;
     }
 
-    public static void saveAllNPC() {
-        final String[] finalString = {"{"};
-        npcs.forEach((id, npc) -> {
-            String thisString = "\"";
-            thisString += id;
-            thisString += "\":";
-            thisString += npc.dumpToJson();
-            thisString += ",";
-            finalString[0] += thisString;
-        });
-        finalString[0] = finalString[0].substring(0, finalString[0].length() - 1);
-        finalString[0] += "}";
-        File file = new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory().getPath() + "/npcs.json");
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(finalString[0]);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static MobController custom(String mobId, String entityId, Double x, Double y, Double z, String type) {
+        MobController mob = new MobController(WorldWrapper.pos(x, y, z), WorldWrapper.toEntityType(type));
+        controllers.put(mobId, mob);
+        mobNames.put(mob.getUUID(), mobId);
+
+        CustomEntity entity = (CustomEntity) mob.getEntity();
+        entity.setId(entityId);
+
+        return mob;
     }
-
-    public static void killAllNPC() {
-        npcs.forEach((id, npc) -> {
-            npc.remove();
-        });
-        npcs.clear();
-    }
-
-    public static void restoreAllNPC() {
-        File file = new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory().getPath() + "/npcs.json");
-        try {
-            FileReader reader = new FileReader(file);
-            JsonParser parser = new JsonParser();
-            JsonObject json = parser.parse(new JsonReader(reader)).getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                NPCEntity.createNew(Server.getWorld(), entry.getValue().toString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 
     public static MobController getMob(String id) {
         return controllers.get(id);
@@ -414,6 +378,8 @@ public class MobJS extends ScriptableObject implements EnvResource {
             methodsToAdd.add(respawn);
             Method respawnNpc = MobJS.class.getMethod("respawnNpc", String.class);
             methodsToAdd.add(respawnNpc);
+            Method custom = MobJS.class.getMethod("custom", String.class, String.class, Double.class, Double.class, Double.class, String.class);
+            methodsToAdd.add(custom);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -435,7 +401,3 @@ public class MobJS extends ScriptableObject implements EnvResource {
         return "MobJS";
     }
 }
-//var mob = entity.create('id', 0.66, 4.00, 0.67, 'SHEEP', 'Настя', false)
-//
-//mob.moveTo(1.44, 4.00, 16.37, 1)
-//

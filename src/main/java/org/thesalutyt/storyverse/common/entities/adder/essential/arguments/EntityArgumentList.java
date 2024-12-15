@@ -18,6 +18,9 @@ public class EntityArgumentList {
     public ArrayList<BaseFunction> onDeath = new ArrayList<>();
     public boolean canOpenDoor;
     public boolean isAttackable;
+    public String model;
+    public String skin;
+    public String animation;
 
     public EntityArgumentList() {}
 
@@ -76,6 +79,21 @@ public class EntityArgumentList {
         EventLoop.getLoopInstance().runImmediate(() -> {
             this.onDeath.add(onDeath);
         });
+        return this;
+    }
+
+    public EntityArgumentList setModel(String model) {
+        this.model = model;
+        return this;
+    }
+
+    public EntityArgumentList setSkin(String skin) {
+        this.skin = skin;
+        return this;
+    }
+
+    public EntityArgumentList setAnimation(String animation) {
+        this.animation = animation;
         return this;
     }
 }

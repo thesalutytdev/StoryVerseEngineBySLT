@@ -69,11 +69,9 @@ public class SVEnvironment{
             }
             started = true;
             ScriptProperties.run();
-            MobJS.restoreAllNPC();
         }
         public static void playerLeft(WorldEvent.Unload event) {
             SVEnvironment.Root.resetTick();
-            MobJS.killAllNPC();
         }
         public static Entity getCameraEntity() {
             return Minecraft.getInstance().cameraEntity;

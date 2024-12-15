@@ -9,6 +9,10 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.thesalutyt.storyverse.StoryVerse;
+import org.thesalutyt.storyverse.common.entities.adder.CustomEntity;
+import org.thesalutyt.storyverse.common.entities.adder.essential.CustomAnimalEntity;
+import org.thesalutyt.storyverse.common.entities.adder.essential.CustomFlyingEntity;
+import org.thesalutyt.storyverse.common.entities.adder.essential.CustomMobEntity;
 import org.thesalutyt.storyverse.common.entities.npc.NPCEntity;
 import org.thesalutyt.storyverse.common.entities.sit.SeatEntity;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
@@ -27,6 +31,15 @@ public class Entities {
             ENTITY_TYPES.register("seat", () -> EntityType.Builder.of(SeatEntity::new, EntityClassification.MISC)
                     .sized(0.5f, 0.5f)
                     .build(new ResourceLocation(StoryVerse.MOD_ID, "seat").toString()));
+    public static final RegistryObject<EntityType<CustomAnimalEntity>> CUSTOM_ANIMAL = ENTITY_TYPES.register("custom_animal",
+            () -> EntityType.Builder.of(CustomAnimalEntity::new, EntityClassification.CREATURE)
+                    .build(new ResourceLocation(StoryVerse.MOD_ID, "custom_animal").toString()));
+    public static final RegistryObject<EntityType<CustomFlyingEntity>> CUSTOM_FLYING = ENTITY_TYPES.register("custom_flying",
+            () -> EntityType.Builder.of(CustomFlyingEntity::new, EntityClassification.CREATURE)
+                    .build(new ResourceLocation(StoryVerse.MOD_ID, "custom_flying").toString()));
+    public static final RegistryObject<EntityType<CustomMobEntity>> CUSTOM_MOB = ENTITY_TYPES.register("custom_mob",
+            () -> EntityType.Builder.of(CustomMobEntity::new, EntityClassification.CREATURE)
+                    .build(new ResourceLocation(StoryVerse.MOD_ID, "custom_mob").toString()));
 
     public static ArrayList<RegistryObject<EntityType<?>>> entityList = new ArrayList<>();
     public static HashMap<String, RegistryObject<EntityType<?>>> entityMap = new HashMap<>();
@@ -38,14 +51,5 @@ public class Entities {
         for (RegistryObject<EntityType<?>> entity : entityList) {
             eventBus.register(entity);
         }
-    }
-
-    public static void addEntity(String name, LivingEntity entity, Class<? extends GeoEntityRenderer<?>> renderer) {
-//        RegistryObject<EntityType<?>> entityType = ENTITY_TYPES.register()
-//                .setRegistryName(new ResourceLocation(StoryVerse.MOD_ID, name));
-//        entityList.add();
-//        entityMap.put(name, entity);
-//        renderMap.put(entityType, renderer);
-//        entityTypeHashMap.put(name, entityType.get());
     }
 }

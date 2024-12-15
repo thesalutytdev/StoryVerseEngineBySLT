@@ -3,6 +3,7 @@ package org.thesalutyt.storyverse.common.entities.adder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
+import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -23,8 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EntityAdder extends ScriptableObject implements ICustomElement, EnvResource, JSResource {
-    public static HashMap<String, LivingEntity> entityHashMap = new HashMap<>();
-
     private String name;
     private CustomEntityType type;
     private ResourceLocation path;
@@ -82,24 +81,43 @@ public class EntityAdder extends ScriptableObject implements ICustomElement, Env
         return this;
     }
 
+    public EntityAdder setOnTick(BaseFunction onTick) {
+        this.arguments.setOnTick(onTick);
+        return this;
+    }
+
+    public EntityAdder setOnPickup(BaseFunction onPickup) {
+        this.arguments.setOnPickup(onPickup);
+        return this;
+    }
+
+    public EntityAdder setOnInteract(BaseFunction onInteract) {
+        this.arguments.setOnInteract(onInteract);
+        return this;
+    }
+
+    public EntityAdder setOnDeath(BaseFunction onDeath) {
+        this.arguments.setOnDeath(onDeath);
+        return this;
+    }
+
+    public EntityAdder setModel(String model) {
+        this.arguments.setModel(model);
+        return this;
+    }
+
+    public EntityAdder setSkin(String skin) {
+        this.arguments.setSkin(skin);
+        return this;
+    }
+
+    public EntityAdder setAnimations(String texture) {
+        this.arguments.setAnimation(texture);
+        return this;
+    }
+
     public void build() {
-        switch (type) {
-            case MOB:
-                this.finalEntity = new CustomMobEntity(arguments, name);
-                Entities.addEntity(name, finalEntity, CustomMobEntityRender.class);
-                break;
-            case ANIMAL:
-                this.finalEntity = new CustomAnimalEntity(arguments, name);
-                Entities.addEntity(name, finalEntity, CustomAnimalEntityRender.class);
-                break;
-            case FLYING:
-                this.finalEntity = new CustomFlyingEntity(arguments, name);
-                Entities.addEntity(name, finalEntity, CustomMobEntityRender.class);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid entity type: " + type);
-        }
-        entityHashMap.put(name, finalEntity);
+        CustomEntityArgsHandler.setArgs(this.name, this.arguments);
     }
 
     public static ArrayList<Method> methodsToAdd = new ArrayList<>();
@@ -122,8 +140,22 @@ public class EntityAdder extends ScriptableObject implements ICustomElement, Env
             methodsToAdd.add(setAttackable);
             Method setCanOpenDoor = EntityAdder.class.getMethod("setCanOpenDoor", Boolean.class);
             methodsToAdd.add(setCanOpenDoor);
+            Method setOnTick = EntityAdder.class.getMethod("setOnTick", BaseFunction.class);
+            methodsToAdd.add(setOnTick);
+            Method setOnPickup = EntityAdder.class.getMethod("setOnPickup", BaseFunction.class);
+            methodsToAdd.add(setOnPickup);
+            Method setOnInteract = EntityAdder.class.getMethod("setOnInteract", BaseFunction.class);
+            methodsToAdd.add(setOnInteract);
+            Method setOnDeath = EntityAdder.class.getMethod("setOnDeath", BaseFunction.class);
+            methodsToAdd.add(setOnDeath);
             Method build = EntityAdder.class.getMethod("build");
             methodsToAdd.add(build);
+            Method setModel = EntityAdder.class.getMethod("setModel", String.class);
+            methodsToAdd.add(setModel);
+            Method setSkin = EntityAdder.class.getMethod("setSkin", String.class);
+            methodsToAdd.add(setSkin);
+            Method setAnimations = EntityAdder.class.getMethod("setAnimations", String.class);
+            methodsToAdd.add(setAnimations);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

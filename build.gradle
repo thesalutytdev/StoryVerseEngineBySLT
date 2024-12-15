@@ -110,8 +110,8 @@ dependencies {
 
     // shade files("libs/JSHelper   -1.0.jar")
 
-    implementation("kotlin.graphics:uno:0.7.21")
-    implementation('com.github.kotlin-graphics.imgui:imgui:v1.89.7-1') {
+    shade("kotlin.graphics:uno:0.7.21")
+    shade('com.github.kotlin-graphics.imgui:imgui:v1.89.7-1') {
         exclude group: "org.lwjgl"
     }
 

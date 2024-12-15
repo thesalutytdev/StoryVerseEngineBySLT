@@ -57,7 +57,7 @@ public class EventManagerJS extends ScriptableObject implements EnvResource, JSR
     public static void onMessage(ClientChatReceivedEvent event) {
         msg = event.getMessage().getString();
         System.out.println("Message: " + msg);
-        System.out.println("Full: " + event.getMessage().toString());
+        // System.out.println("Full: " + event.getMessage().toString());
         runEvent("message");
     }
     @SubscribeEvent

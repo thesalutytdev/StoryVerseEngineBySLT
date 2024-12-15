@@ -2,6 +2,7 @@ package org.thesalutyt.storyverse.api.features;
 
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.impl.SummonCommand;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.mozilla.javascript.*;
 import org.thesalutyt.storyverse.SVEngine;
@@ -124,7 +126,7 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         this.world.addFreshEntity(entity);
         return entity;
     }
-    public Entity spawnEntity(BlockPos pos, EntityType<?> type){
+    public Entity spawnEntity(BlockPos pos, EntityType<?> type) {
         Entity entity = type.create(this.world);
         assert entity != null;
         entity.setPos(pos.getX(), pos.getY(), pos.getZ());
@@ -135,101 +137,11 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
         return new BlockPos(x, y, z);
     }
     public static EntityType<?> toEntityType(String entityType) {
-        switch (entityType.toUpperCase()) {
-            case "BAT": {
-                return EntityType.BAT;
-            }
-            case "SHEEP": {
-                return EntityType.SHEEP;
-            }
-            case "WITHER": {
-                return EntityType.WITHER;
-            }
-            case "SPIDER": {
-                return EntityType.SPIDER;
-            }
-            case "FIREBALL": {
-                return EntityType.FIREBALL;
-            }
-            case "WITHER_SKELETON": {
-                return EntityType.WITHER_SKELETON;
-            }
-            case "PIG": {
-                return EntityType.PIG;
-            }
-            case "FOX": {
-                return EntityType.FOX;
-            }
-            case "COW": {
-                return EntityType.COW;
-            }
-            case "ARMOR_STAND": {
-                return EntityType.ARMOR_STAND;
-            }
-            case "NPC": {
-                return Entities.NPC.get();
-            }
-            case "SQUID": {
-                return EntityType.SQUID;
-            }
-            case "SKELETON": {
-                return EntityType.SKELETON;
-            }
-            case "ZOMBIE": {
-                return EntityType.ZOMBIE;
-            }
-            case "BLAZE": {
-                return EntityType.BLAZE;
-            }
-            case "VILLAGER": {
-                return EntityType.VILLAGER;
-            }
-            case "ENDERMAN": {
-                return EntityType.ENDERMAN;
-            }
-            case "PLAYER": {
-                return EntityType.PLAYER;
-            }
-            case "CREEPER": {
-                return EntityType.CREEPER;
-            }
-            case "ENDER_DRAGON": {
-                return EntityType.ENDER_DRAGON;
-            }
-            case "END_CRYSTAL": {
-                return EntityType.END_CRYSTAL;
-            }
-            case "SKELETON_HORSE": {
-                return EntityType.SKELETON_HORSE;
-            }
-            case "ZOMBIE_HORSE": {
-                return EntityType.ZOMBIE_HORSE;
-            }
-            case "DONKEY": {
-                return EntityType.DONKEY;
-            }
-            case "MULE": {
-                return EntityType.MULE;
-            }
-            case "HORSE": {
-                return EntityType.HORSE;
-            }
-            case "RABBIT": {
-                return EntityType.RABBIT;
-            }
-            case "VEX": {
-                return EntityType.VEX;
-            }
-            case "VINDICATOR": {
-                return EntityType.VINDICATOR;
-            }
-            case "ILLUSIONER": {
-                return EntityType.ILLUSIONER;
-            }
-            default: {
-                return EntityType.SHEEP;
-            }
-        }
+        return (EntityType<?>) GameRegistry.findRegistry(EntityType.class).getValue(ResourceLocation.tryParse(entityType));
+    }
+
+    public static EntityType<?> toEntityType(String mod, String id) {
+        return (EntityType<?>) GameRegistry.findRegistry(EntityType.class).getValue(new ResourceLocation(mod, id));
     }
 
     public static Integer armorSlot(String slot) {
@@ -458,6 +370,8 @@ public class WorldWrapper extends ScriptableObject implements EnvResource {
             methodsToAdd.add(pos);
             Method toEntityType = WorldWrapper.class.getMethod("toEntityType", String.class);
             methodsToAdd.add(toEntityType);
+            Method getEntity = WorldWrapper.class.getMethod("toEntityType", String.class, String.class);
+            methodsToAdd.add(getEntity);
             Method checkState = WorldWrapper.class.getMethod("getState", Double.class, Double.class, Double.class);
             methodsToAdd.add(checkState);
             Method checkBlock = WorldWrapper.class.getMethod("checkBlock", Double.class, Double.class, Double.class);

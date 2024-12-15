@@ -18,6 +18,7 @@
     · Adding custom gui screens
     · Cutscenes and Moving cutscenes
     · Condition waiter
+    · Trades
 
 </h4>
 
@@ -25,7 +26,6 @@
     
     · Assets Loader - 0%
     · Quests - 40%
-    · Trades - 50%
     
 
 <h2>If you want to build mod, run shadowJar task</h2>

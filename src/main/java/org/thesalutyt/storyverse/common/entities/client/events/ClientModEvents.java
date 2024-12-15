@@ -8,6 +8,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.common.entities.Entities;
+import org.thesalutyt.storyverse.common.entities.adder.essential.CustomMobEntity;
+import org.thesalutyt.storyverse.common.entities.adder.essential.renderers.CustomAnimalEntityRender;
+import org.thesalutyt.storyverse.common.entities.adder.essential.renderers.CustomFlyingEntityRender;
+import org.thesalutyt.storyverse.common.entities.adder.essential.renderers.CustomMobEntityRender;
 import org.thesalutyt.storyverse.common.entities.npc.NPCRender;
 import org.thesalutyt.storyverse.common.entities.sit.SeatRenderer;
 
@@ -22,15 +26,8 @@ public class ClientModEvents {
         RenderingRegistry.registerEntityRenderingHandler(Entities.NPC.get(), NPCRender::new);
         RenderingRegistry.registerEntityRenderingHandler(Entities.SEAT.get(), SeatRenderer::new);
 
-//        Entities.renderMap.forEach((key, value) -> {
-//            if (EntityAdder.entityHashMap.containsKey(key.get().getRegistryName())) {
-//                LivingEntity entity = EntityAdder.entityHashMap.get(key.get().getRegistryName());
-//                if (entity instanceof CustomMobEntity) {
-//                    RenderingRegistry.registerEntityRenderingHandler(
-//                            Entities.entityTypeHashMap.get(Objects.requireNonNull(key.get().getRegistryName()).getPath()),
-//                            CustomMobEntityRender::new);
-//                }
-//            }
-//        });
+        RenderingRegistry.registerEntityRenderingHandler(Entities.CUSTOM_ANIMAL.get(), CustomAnimalEntityRender::new);
+        RenderingRegistry.registerEntityRenderingHandler(Entities.CUSTOM_FLYING.get(), CustomFlyingEntityRender::new);
+        RenderingRegistry.registerEntityRenderingHandler(Entities.CUSTOM_MOB.get(), CustomMobEntityRender::new);
     }
 }

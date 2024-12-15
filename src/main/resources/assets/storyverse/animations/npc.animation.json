@@ -977,7 +977,7 @@
 				}
 			}
 		},
-		"animation.npc.walking": {
+		"animation.npc.walk": {
 			"loop": true,
 			"bones": {
 				"Head": {

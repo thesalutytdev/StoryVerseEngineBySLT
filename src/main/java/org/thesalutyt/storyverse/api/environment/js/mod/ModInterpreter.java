@@ -20,6 +20,7 @@ import org.thesalutyt.storyverse.common.commands.adder.CommandAdder;
 import org.thesalutyt.storyverse.common.dimension.Dimensions;
 import org.thesalutyt.storyverse.common.echantments.adder.EnchantAdder;
 import org.thesalutyt.storyverse.common.effects.adder.EffectAdder;
+import org.thesalutyt.storyverse.common.entities.adder.EntityAdder;
 import org.thesalutyt.storyverse.common.events.adder.SpecialListener;
 import org.thesalutyt.storyverse.common.items.adder.CustomItem;
 import org.thesalutyt.storyverse.common.items.adder.armor.CustomArmorMaterial;
@@ -58,6 +59,7 @@ public class ModInterpreter {
             EnchantAdder.putIntoScope(scope);
             Time.ITime.putIntoScope(scope);
             MobController.putIntoScope(scope);
+            EntityAdder.putIntoScope(scope);
             if (FMLEnvironment.dist.isClient()) {
                 EffectAdder.putIntoScope(scope);
                 CustomBind.putIntoScope(scope);

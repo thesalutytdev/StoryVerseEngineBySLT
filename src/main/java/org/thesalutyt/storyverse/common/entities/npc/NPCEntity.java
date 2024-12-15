@@ -176,14 +176,15 @@ public class NPCEntity extends MobEntity implements IAnimatable, IAnimationTicka
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (event.isMoving()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(getWalkAnim()));
-            return PlayState.CONTINUE;
-        }
 
         if (!this.getAnimation().isEmpty()) {
             //StoryVerse.LOGGER.info("Playing anim: " + getAnimation() + " for npc " + getNpcId());
             event.getController().setAnimation((new AnimationBuilder()).addAnimation(this.getAnimation()));
+            return PlayState.CONTINUE;
+        }
+
+        if (event.isMoving()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(getWalkAnim()));
             return PlayState.CONTINUE;
         }
 

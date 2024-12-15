@@ -25,6 +25,9 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
+import org.thesalutyt.storyverse.api.features.MobController;
+import org.thesalutyt.storyverse.common.entities.adder.CustomEntity;
+import org.thesalutyt.storyverse.common.entities.adder.CustomEntityArgsHandler;
 import org.thesalutyt.storyverse.common.entities.adder.essential.arguments.EntityArgumentList;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -38,7 +41,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickable, IAnimatable {
+public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickable, IAnimatable, CustomEntity {
     public String id;
     public boolean isInvulnerable = false;
     public boolean isInvisible = false;
@@ -85,13 +88,8 @@ public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickab
         super(p_i48568_1_, p_i48568_2_);
     }
 
-    public CustomAnimalEntity(EntityArgumentList arguments, String name) {
-        super(null, null);
-        this.arguments = arguments;
-        this.id = name;
-        this.setSilent(arguments.silent);
-        this.setInvisible(arguments.invisible);
-        this.setInvulnerable(arguments.invulnerable);
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setArguments(EntityArgumentList arguments) {
@@ -114,6 +112,12 @@ public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickab
     @Override
     public void tick() {
         super.tick();
+        this.arguments = CustomEntityArgsHandler.getArgs(id);
+
+        this.setTexturePath(arguments.skin);
+        this.setModelPath(arguments.model);
+        this.setAnimationPath(arguments.animation);
+
         setTexturePath(getTexturePath());
         setModelPath(getModelPath());
         setAnimationPath(getAnimationPath());
@@ -124,7 +128,7 @@ public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onTick) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
     }
@@ -135,7 +139,7 @@ public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onDeath) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
     }
@@ -145,7 +149,7 @@ public class CustomAnimalEntity extends AnimalEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onInteract) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
         return super.interactAt(player,vec,hand);

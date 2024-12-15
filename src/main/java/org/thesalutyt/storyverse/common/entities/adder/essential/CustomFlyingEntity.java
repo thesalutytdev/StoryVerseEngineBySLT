@@ -18,6 +18,8 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.thesalutyt.storyverse.SVEngine;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.EventLoop;
+import org.thesalutyt.storyverse.api.features.MobController;
+import org.thesalutyt.storyverse.common.entities.adder.CustomEntityArgsHandler;
 import org.thesalutyt.storyverse.common.entities.adder.essential.arguments.EntityArgumentList;
 import org.thesalutyt.storyverse.common.entities.client.moveGoals.MoveGoal;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -77,13 +79,8 @@ public class CustomFlyingEntity extends FlyingEntity implements IAnimationTickab
         super(entity, level);
     }
 
-    public CustomFlyingEntity(EntityArgumentList arguments, String name) {
-        super(null, null);
-        this.arguments = arguments;
-        this.id = name;
-        this.setSilent(arguments.silent);
-        this.setInvisible(arguments.invisible);
-        this.setInvulnerable(arguments.invulnerable);
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setArguments(EntityArgumentList arguments) {
@@ -128,6 +125,13 @@ public class CustomFlyingEntity extends FlyingEntity implements IAnimationTickab
     @Override
     public void tick() {
         super.tick();
+
+        this.arguments = CustomEntityArgsHandler.getArgs(this.id);
+
+        this.setTexturePath(arguments.skin);
+        this.setModelPath(arguments.model);
+        this.setAnimationPath(arguments.animation);
+
         setTexturePath(getTexturePath());
         setModelPath(getModelPath());
         setAnimationPath(getAnimationPath());
@@ -138,7 +142,7 @@ public class CustomFlyingEntity extends FlyingEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onTick) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
     }
@@ -149,7 +153,7 @@ public class CustomFlyingEntity extends FlyingEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onDeath) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
     }
@@ -159,7 +163,7 @@ public class CustomFlyingEntity extends FlyingEntity implements IAnimationTickab
         EventLoop.getLoopInstance().runImmediate(() -> {
             for (BaseFunction i : arguments.onInteract) {
                 i.call(Context.getCurrentContext(), SVEngine.interpreter.getScope(), SVEngine.interpreter.getScope(),
-                        new Object[]{this.getUUID(), this});
+                        new Object[]{new MobController(this), ticks});
             }
         });
         return super.interactAt(player,vec,hand);
