@@ -23,7 +23,6 @@ import org.thesalutyt.storyverse.StoryVerse;
 import org.thesalutyt.storyverse.api.SVEnvironment;
 import org.thesalutyt.storyverse.api.camera.entityCamera.CameraType;
 import org.thesalutyt.storyverse.api.camera.entityCamera.Cutscene;
-import org.thesalutyt.storyverse.api.compatibility.imgui.SLTScreen;
 import org.thesalutyt.storyverse.api.environment.js.MobJS;
 import org.thesalutyt.storyverse.api.environment.js.interpreter.Interpreter;
 import org.thesalutyt.storyverse.api.environment.trader.TradeOffer;
@@ -155,7 +154,6 @@ public class MainCommand {
     }
 
     public int testFade(CommandSource source) throws CommandSyntaxException {
-        Minecraft.getInstance().setScreen(new SLTScreen());
 
         return 1;
     }

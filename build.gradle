@@ -110,10 +110,10 @@ dependencies {
 
     // shade files("libs/JSHelper   -1.0.jar")
 
-    shade("kotlin.graphics:uno:0.7.21")
-    shade('com.github.kotlin-graphics.imgui:imgui:v1.89.7-1') {
-        exclude group: "org.lwjgl"
-    }
+    // shade("kotlin.graphics:uno:0.7.21")
+    // shade('com.github.kotlin-graphics.imgui:imgui:v1.89.7-1') {
+    //     exclude group: "org.lwjgl"
+    // }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
